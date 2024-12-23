@@ -1,6 +1,16 @@
+import os
 from flask import Flask
+from api.database import db
+
+BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 
 app = Flask(__name__)
 app.config["DEBUG"] = True
+app.config["SECRET_KEY"] = os.getenv("FLASK_SECRET_KEY")
+app.config["SQLITE_DB_DIR"] = os.path.join(BASE_DIR, "../instance")
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + os.path.join(app.config["SQLITE_DB_DIR"],"quiz.db")
+
+db.init_app(app)
+app.app_context().push()
 
 import api.routes
