@@ -2,7 +2,7 @@
 </script>
 
 <template>
-  Testing!
+  <button class="btn btn-danger">Click!</button>
 </template>
 
 <style scoped>
