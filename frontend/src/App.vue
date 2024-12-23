@@ -2,7 +2,7 @@
 </script>
 
 <template>
-
+  Testing!
 </template>
 
 <style scoped>
