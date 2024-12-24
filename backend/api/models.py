@@ -46,6 +46,7 @@ class Chapter(db.Model):
     __tablename__ = "chapters"
 
     id = db.Column(db.Integer, primary_key = True)
+    subject_id = db.Column(db.Integer, db.ForeignKey("subjects.id"), nullable = False)
     name = db.Column(db.String(40),unique = True, nullable = False)
     description = db.Column(db.String(128))
     order = db.Column(db.Integer)
@@ -82,7 +83,7 @@ class Question(db.Model):
     correct = db.Column(db.Integer, nullable = False)
     marks = db.Column(db.Integer, nullable = False)
 
-    responses = db.relationship('Response', backref='quiz')
+    responses = db.relationship('Response', backref='question')
 
 class Response(db.Model):
     """
