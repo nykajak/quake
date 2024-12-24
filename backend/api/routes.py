@@ -49,8 +49,8 @@ def register():
     except IntegrityError as e:
         return "Account creation failed!"
 
-
 @app.get("/all")
+@jwt_required()
 def all():
     l = User.query.filter()
     res = []

@@ -15,7 +15,7 @@ app.config["JWT_TOKEN_LOCATION"] = ["headers", "cookies"]
 app.config["JWT_SECRET_KEY"] = os.getenv("FLASK_SECRET_KEY")
 
 jwt = JWTManager(app)
-CORS(app)
+CORS(app,supports_credentials=True)
 db.init_app(app)
 app.app_context().push()
 
