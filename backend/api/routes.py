@@ -1,4 +1,4 @@
-from api import app,db
+from api import app,db,bcrypt
 from api.models import *
 from flask import request, jsonify
 from flask_jwt_extended import create_access_token,jwt_required,set_access_cookies,unset_jwt_cookies
@@ -14,7 +14,9 @@ def login():
     username = request.form.get("username",None)
     password = request.form.get("password",None)
     
-    res = User.query.filter(User.name == username, User.password == password).scalar()
+    res = User.query.filter(User.name == username).scalar()
+    if res:
+        res = bcrypt.check_password_hash(res.password,password)
 
     if res:
         response = jsonify(msg="Login success!")
@@ -40,6 +42,7 @@ def register():
     if password != confirm_password:
         return "Account creation failed!"
 
+    password = bcrypt.generate_password_hash(password)
     u = User(name = username, email = email, password = password)
     try:
         db.session.add(u)
@@ -58,7 +61,7 @@ def all():
         res.append(
             {
                 "name" : x.name,
-                "password" : x.password,
+                # "password" : x.password,
             }
         )
     return jsonify(payload = res)

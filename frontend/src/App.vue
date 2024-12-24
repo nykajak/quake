@@ -9,7 +9,7 @@
       let res = await api.post("/login",f);
 
       // let res = await api.post("/logout");
-      return res.data.msg
+      return res
     }
     catch{
       return 0
@@ -32,9 +32,9 @@
   //     console.log(x)
   //   })
   // })
-  sendReq().then((data) =>{
-    console.log(data)
-  })
+  // sendReq().then((data) =>{
+  //   console.log(data)
+  // })
   access().then((x)=>{
       console.log(x)
     })
