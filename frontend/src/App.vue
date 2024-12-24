@@ -1,14 +1,14 @@
 <script setup>
-  import axios from 'axios'
+  import { api } from './api';
 
   async function sendReq(){
     try{
       let f = new FormData()
       f.set("username", "Nykaj")
       f.set("password", "123456")
-      let res = await axios.post("http://localhost:5000/login",f,{ withCredentials: true });
+      let res = await api.post("/login",f);
 
-      // let res = await axios.post("http://localhost:5000/logout",new FormData(),{ withCredentials: true });
+      // let res = await api.post("/logout");
       return res.data.msg
     }
     catch{
@@ -18,7 +18,7 @@
 
   async function access(){
     try{
-      let res = await axios.get("http://localhost:5000/all",{ withCredentials: true });
+      let res = await api.get("/all");
       return res.data
     }
     catch{
