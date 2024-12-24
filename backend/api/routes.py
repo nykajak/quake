@@ -1,6 +1,7 @@
 from api import app,db
 from api.models import *
 from flask import request, jsonify
+from flask_jwt_extended import create_access_token,jwt_required,set_access_cookies,unset_jwt_cookies
 from sqlalchemy.exc import IntegrityError
 
 @app.get("/")
@@ -13,11 +14,20 @@ def login():
     password = request.form.get("password",None)
     
     res = User.query.filter(User.name == username, User.password == password).scalar()
-    print(res)
-    if res:
-        return "Logged in!"
 
-    return "Unable to login!"
+    if res:
+        response = jsonify(msg="Login success!")
+        access_token = create_access_token(identity=username)
+        set_access_cookies(response,access_token)
+        return response
+
+    return jsonify(msg="Login failed!")
+
+@app.route("/logout", methods=["POST"])
+def logout():
+    response = jsonify({"msg": "logout successful"})
+    unset_jwt_cookies(response)
+    return response
 
 @app.post("/register")
 def register():
