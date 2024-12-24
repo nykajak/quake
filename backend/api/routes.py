@@ -6,7 +6,8 @@ from sqlalchemy.exc import IntegrityError
 
 @app.get("/")
 def home():
-    return "Hello world!"
+    return jsonify(msg="Hello world!")
+
 
 @app.post("/login")
 def login():

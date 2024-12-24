@@ -1,5 +1,6 @@
 import os
 from flask import Flask
+from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from api.database import db
 
@@ -14,6 +15,7 @@ app.config["JWT_TOKEN_LOCATION"] = ["headers", "cookies"]
 app.config["JWT_SECRET_KEY"] = os.getenv("FLASK_SECRET_KEY")
 
 jwt = JWTManager(app)
+CORS(app)
 db.init_app(app)
 app.app_context().push()
 
