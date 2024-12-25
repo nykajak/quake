@@ -1,5 +1,6 @@
 <script setup>
   import { api } from './api';
+  import { RouterView } from 'vue-router';
 
   async function sendReq(){
     try{
@@ -25,23 +26,10 @@
       return 0
     }
   }
-
-  // sendReq().then((data) => {
-  //   console.log(data);
-  //   access().then((x)=>{
-  //     console.log(x)
-  //   })
-  // })
-  // sendReq().then((data) =>{
-  //   console.log(data)
-  // })
-  access().then((x)=>{
-      console.log(x)
-    })
 </script>
 
 <template>
-  <button class="btn btn-danger" @click="access">Click!</button>
+  <RouterView/>
 </template>
 
 <style scoped>
