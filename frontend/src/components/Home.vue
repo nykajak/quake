@@ -4,9 +4,9 @@ import { ref } from 'vue';
 
 async function sendReq(){
     try{
-        let res = await api.get("/");
+        let res = await api.get("/admin/users");
         console.log(res.data)
-        return res.data.msg
+        return res.data.payload[0]["name"]
     }
     catch(err){
         console.log(err)

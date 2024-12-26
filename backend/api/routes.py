@@ -18,4 +18,7 @@ def home():
     return jsonify(msg="Hello anonymous person!")
 
 from api.blueprints.anon.anon_routes import anon_routes
+from api.blueprints.admin import admin_routes
+
 app.register_blueprint(anon_routes)
+app.register_blueprint(admin_routes,url_prefix="/admin")
