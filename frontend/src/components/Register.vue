@@ -5,13 +5,12 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 async function validateForm(e){
     try{
-        let res = await api.post("/login",new FormData(e.target));
+        let res = await api.post("/register",new FormData(e.target));
         console.log(res.data.msg);
-        // router.push({"path":"/"})
     }
     catch{
         console.log(-1);
-        // router.push({"path":"/login"})
+        console.log(res.data.msg)
     }
 }
 
@@ -25,11 +24,21 @@ async function validateForm(e){
         </div>
 
         <div>
+            <label for="email">Email </label>
+            <input type="email" name="email">
+        </div>
+
+        <div>
             <label for="password">Password: </label>
             <input type="password" name="password">
         </div>
 
-        <button type="submit" class="btn btn-primary">Login</button>
+        <div>
+            <label for="confirm">Confirm password: </label>
+            <input type="password" name="confirm">
+        </div>
+
+        <button type="submit" class="btn btn-primary">Register</button>
     </form>
 </template>
 

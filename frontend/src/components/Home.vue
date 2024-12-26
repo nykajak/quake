@@ -8,6 +8,10 @@ async function sendReq(){
     return res.data.payload[0]
 }
 
+async function sendLogout(){
+    let res = await api.post("/logout");
+}
+
 const message = ref("")
 sendReq().then(data => {
     message.value = data;
@@ -17,6 +21,7 @@ sendReq().then(data => {
 
 <template>
     <h3>Home {{message}} !</h3>
+    <button @click="sendLogout">Logout</button>
 </template>
 
 <style scoped>
