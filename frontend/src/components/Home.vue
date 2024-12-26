@@ -4,13 +4,13 @@ import { ref } from 'vue';
 
 async function sendReq(){
     try{
-        let res = await api.get("/all");
+        let res = await api.get("/");
         console.log(res.data)
-        return res.data.payload[0]
+        return res.data.msg
     }
     catch(err){
         console.log(err)
-        return "Not found"
+        return "Something went wrong!"
     }
 }
 
@@ -26,7 +26,7 @@ sendReq().then(data => {
 </script>
 
 <template>
-    <h3>Home {{message}} !</h3>
+    <h3>{{message}}</h3>
     <button @click="sendLogout">Logout</button>
 </template>
 

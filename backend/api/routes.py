@@ -1,25 +1,21 @@
-from api import app,db,bcrypt
+from api import app,db,bcrypt,jwt
 from api.models import *
 from flask import request, jsonify
-from flask_jwt_extended import create_access_token,jwt_required,set_access_cookies,unset_jwt_cookies
+from flask_jwt_extended import jwt_required,current_user
 from sqlalchemy.exc import IntegrityError
 
-@app.get("/")
-def home():
-    return jsonify(msg="Hello world!")
+@jwt.user_lookup_loader
+def user_lookup_callback(_jwt_header, jwt_data):
+    identity = jwt_data["sub"]
+    return User.query.filter(User.name == identity).scalar()
 
-@app.get("/all")
-@jwt_required()
-def all():
-    l = User.query.filter()
-    res = []
-    for x in l:
-        res.append(
-            {
-                "name" : x.name,
-            }
-        )
-    return jsonify(payload = res)
+@app.get("/")
+@jwt_required(optional=True)
+def home():
+    if current_user:
+        return jsonify(msg = f"Hello {current_user.name}!")
+    
+    return jsonify(msg="Hello anonymous person!")
 
 from api.blueprints.anon.anon_routes import anon_routes
 app.register_blueprint(anon_routes)
