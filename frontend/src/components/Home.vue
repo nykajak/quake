@@ -3,9 +3,15 @@ import { api } from '@/api';
 import { ref } from 'vue';
 
 async function sendReq(){
-    let res = await api.get("/all");
-    console.log(res)
-    return res.data.payload[0]
+    try{
+        let res = await api.get("/all");
+        console.log(res.data)
+        return res.data.payload[0]
+    }
+    catch(err){
+        console.log(err)
+        return "Not found"
+    }
 }
 
 async function sendLogout(){

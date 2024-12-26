@@ -8,9 +8,8 @@ async function validateForm(e){
         let res = await api.post("/register",new FormData(e.target));
         console.log(res.data.msg);
     }
-    catch{
-        console.log(-1);
-        console.log(res.data.msg)
+    catch(err){
+        console.log(err)
     }
 }
 

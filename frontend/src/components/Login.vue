@@ -7,11 +7,9 @@ async function validateForm(e){
     try{
         let res = await api.post("/login",new FormData(e.target));
         console.log(res.data.msg);
-        // router.push({"path":"/"})
     }
-    catch{
-        console.log(-1);
-        // router.push({"path":"/login"})
+    catch(err){
+        console.log(err);
     }
 }
 
