@@ -26,8 +26,8 @@ const RegisterStatus = ref(0);
 <template>
     <form @submit.prevent="validateForm">
         <div class="form-div form-info-div">
-            <h3>Hello there!</h3>
-            <p>
+            <h3 class="text-center">Hello there!</h3>
+            <p class="text-center">
                 Register to start learning now!
                 <br>
                 Already have an account? <RouterLink to="/login"> Login </RouterLink>

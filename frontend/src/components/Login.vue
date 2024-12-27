@@ -25,8 +25,8 @@ const LoginStatus = ref(0);
 <template>
     <form @submit.prevent="validateForm">
         <div class="form-div form-info-div">
-            <h3>Welcome back!</h3>
-            <p>
+            <h3 class="text-center">Welcome back!</h3>
+            <p class="text-center">
                 Login with your credentials to continue your learning journey.
                 <br>
                 Don't have an account yet? <RouterLink to="/register"> Register </RouterLink>
@@ -39,7 +39,7 @@ const LoginStatus = ref(0);
         <div :class="{'form-div':true, 'form-error-div':LoginStatus === 0 && LoginMsg !== '', 'form-success-div':LoginStatus === 1}">
             <input type="password" name="password" placeholder="Password">
         </div>
-
+    
         <div v-if="LoginMsg!==''" :class="['form-div',LoginStatus == 0 ? 'error-div' : 'success-div']">
             {{LoginMsg}}
         </div>
