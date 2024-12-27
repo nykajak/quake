@@ -13,7 +13,7 @@ def all_users():
     per_page = int(request.args.get("per_page",1))
     
     res = []
-    for u in User.query.filter().paginate(page=page,per_page=per_page):
+    for u in User.query.filter().paginate(page=page,per_page=per_page,max_per_page=2):
         res.append({"name" : u.name})
     
     return jsonify(payload=res)
