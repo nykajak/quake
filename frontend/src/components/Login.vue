@@ -9,6 +9,7 @@ async function validateForm(e){
         let res = await api.post("/login",new FormData(e.target));
         LoginMsg.value = res.data.msg;
         LoginStatus.value = 1;
+        router.push({"name":"home"})
     }
     catch(err){
         LoginMsg.value = err.response.data.msg;

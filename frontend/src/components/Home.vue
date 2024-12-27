@@ -1,11 +1,11 @@
 <script setup>
 import { api } from '@/api';
 import { ref } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRouter,useRoute } from 'vue-router';
 
-
+const router = useRouter()
+const route = useRoute()
 async function sendReq(){
-    let route = useRoute();
 
     try{
         let res = await api.get("/admin/users",{params : {
@@ -23,6 +23,7 @@ async function sendReq(){
 
 async function sendLogout(){
     let res = await api.post("/logout");
+    router.push({"name":"login"})
 }
 
 const message = ref("")
