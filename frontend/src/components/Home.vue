@@ -1,10 +1,17 @@
 <script setup>
 import { api } from '@/api';
 import { ref } from 'vue';
+import { useRoute } from 'vue-router';
+
 
 async function sendReq(){
+    let route = useRoute();
+
     try{
-        let res = await api.get("/admin/users");
+        let res = await api.get("/admin/users",{params : {
+            "page":route.query["page"],
+            "per_page":route.query["per_page"],
+        }});
         console.log(res.data)
         return res.data.payload[0]["name"]
     }
