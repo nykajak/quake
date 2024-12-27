@@ -29,8 +29,16 @@
 </script>
 
 <template>
-  <RouterView/>
+  <div class="container-div">
+    <RouterView/>
+  </div>
 </template>
 
 <style scoped>
+
+.container-div {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
 </style>

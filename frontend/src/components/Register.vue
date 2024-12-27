@@ -2,6 +2,7 @@
 import { api } from '@/api';
 import { ref } from 'vue';
 import { useRouter, RouterLink } from 'vue-router'
+import Header from './Header.vue';
 
 const router = useRouter()
 async function validateForm(e){
@@ -24,49 +25,85 @@ const RegisterStatus = ref(0);
 </script>
 
 <template>
-    <form @submit.prevent="validateForm">
-        <div class="form-div form-info-div">
-            <h3 class="text-center">Hello there!</h3>
-            <p class="text-center">
-                <span class="redirect">
-                    Already have an account? <RouterLink class="link" to="/login"> <strong> Login </strong> </RouterLink>
-                </span>
-            </p>
+    <Header></Header>
+
+    <div class="content-container">
+        <div class="img-div">
+            <img src="@\assets\logo.png" width="100%" alt="">
         </div>
 
-        <div :class="{'form-div':true, 'form-error-div':RegisterStatus === 0 && RegisterMsg !== '', 'form-success-div':RegisterStatus === 1}">
-            <input type="text" name="username" placeholder="Username">
+        <div class="register-div d-flex">
+            <form @submit.prevent="validateForm">
+                <div class="form-div form-info-div">
+                    <h3 class="text-center">Hello there!</h3>
+                    <p class="text-center">
+                        <span class="redirect">
+                            Already have an account? <RouterLink class="link" to="/login"> <strong> Login </strong> </RouterLink>
+                        </span>
+                    </p>
+                </div>
+        
+                <div :class="{'form-div':true, 'form-error-div':RegisterStatus === 0 && RegisterMsg !== '', 'form-success-div':RegisterStatus === 1}">
+                    <input type="text" name="username" placeholder="Username">
+                </div>
+        
+                <div :class="{'form-div':true, 'form-error-div':RegisterStatus === 0 && RegisterMsg !== '', 'form-success-div':RegisterStatus === 1}">
+                    <input type="email" name="email" placeholder="Email">
+                </div>
+        
+                <div :class="{'form-div':true, 'form-error-div':RegisterStatus === 0 && RegisterMsg !== '', 'form-success-div':RegisterStatus === 1}">
+                    <input type="password" name="password" placeholder="Password">
+                </div>
+        
+                <div :class="{'form-div':true, 'form-error-div':RegisterStatus === 0 && RegisterMsg !== '', 'form-success-div':RegisterStatus === 1}">
+                    <input type="password" name="confirm" placeholder="Confirm password">
+                </div>
+        
+                <div v-if="RegisterMsg!==''" :class="['form-div',RegisterStatus == 0 ? 'error-div' : 'success-div']">
+                    {{RegisterMsg}}
+                </div>
+        
+        
+                <div class="form-div">
+                    <button type="submit">Register</button>
+                </div>
+            </form>
         </div>
-
-        <div :class="{'form-div':true, 'form-error-div':RegisterStatus === 0 && RegisterMsg !== '', 'form-success-div':RegisterStatus === 1}">
-            <input type="email" name="email" placeholder="Email">
-        </div>
-
-        <div :class="{'form-div':true, 'form-error-div':RegisterStatus === 0 && RegisterMsg !== '', 'form-success-div':RegisterStatus === 1}">
-            <input type="password" name="password" placeholder="Password">
-        </div>
-
-        <div :class="{'form-div':true, 'form-error-div':RegisterStatus === 0 && RegisterMsg !== '', 'form-success-div':RegisterStatus === 1}">
-            <input type="password" name="confirm" placeholder="Confirm password">
-        </div>
-
-        <div v-if="RegisterMsg!==''" :class="['form-div',RegisterStatus == 0 ? 'error-div' : 'success-div']">
-            {{RegisterMsg}}
-        </div>
-
-
-        <div class="form-div">
-            <button type="submit">Register</button>
-        </div>
-    </form>
+    </div>
 </template>
 
 <style scoped>
+
+.content-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+img {
+    aspect-ratio: 1 / 1;
+}
+
+.img-div {
+    display: flex;
+    flex-grow: 3;
+}
+
+.register-div{
+    display: flex;
+    flex-grow: 2;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    border-left: 2px solid light-dark(var(--dark-color),var(--light-color));
+}
+
 form {
     padding: 10px;
     margin: 2px;
-    border: 2px solid light-dark(var(--dark-color),var(--light-color));
-    width: 75%;
+    width: 100%;
+    min-width: fit-content;
 }
 
 .form-div {

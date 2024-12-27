@@ -2,6 +2,7 @@
 import { api } from '@/api';
 import { ref } from 'vue';
 import { useRouter,useRoute } from 'vue-router';
+import Header from './Header.vue';
 
 const router = useRouter()
 const route = useRoute()
@@ -34,6 +35,7 @@ sendReq().then(data => {
 </script>
 
 <template>
+    <Header></Header>
     <h3>{{message}}</h3>
     <button @click="sendLogout">Logout</button>
 </template>

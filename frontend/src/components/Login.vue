@@ -2,6 +2,7 @@
 import { api } from '@/api';
 import { ref } from 'vue';
 import { useRouter, RouterLink } from 'vue-router'
+import Header from './Header.vue';
 
 const router = useRouter()
 async function validateForm(e){
@@ -23,37 +24,74 @@ const LoginStatus = ref(0);
 </script>
 
 <template>
-    <form @submit.prevent="validateForm">
-        <div class="form-div form-info-div">
-            <h3 class="text-center">Welcome back!</h3>
-            <p class="text-center">
-                <span class="redirect">Don't have an account yet? <RouterLink class="link" to="/register"><strong> Register </strong></RouterLink></span>
-            </p>
-        </div>
-        <div :class="{'form-div':true, 'form-error-div':LoginStatus === 0 && LoginMsg !== '', 'form-success-div':LoginStatus === 1}">
-            <input type="text" name="username" placeholder="Username">
-        </div>
-
-        <div :class="{'form-div':true, 'form-error-div':LoginStatus === 0 && LoginMsg !== '', 'form-success-div':LoginStatus === 1}">
-            <input type="password" name="password" placeholder="Password">
-        </div>
+    <Header></Header>
     
-        <div v-if="LoginMsg!==''" :class="['form-div',LoginStatus == 0 ? 'error-div' : 'success-div']">
-            {{LoginMsg}}
+    <div class="content-container">
+        <div class="img-div">
+            <img src="@\assets\logo.png" width="100%" alt="">
         </div>
+        
+        <div class="login-div d-flex">
+            <form @submit.prevent="validateForm">
+                <div class="form-div form-info-div">
+                    <h3 class="text-center">Welcome back!</h3>
+                    <p class="text-center">
+                        <span class="redirect">Don't have an account yet? <RouterLink class="link" to="/register"><strong> Register </strong></RouterLink></span>
+                    </p>
+                </div>
+                <div :class="{'form-div':true, 'form-error-div':LoginStatus === 0 && LoginMsg !== '', 'form-success-div':LoginStatus === 1}">
+                    <input type="text" name="username" placeholder="Username">
+                </div>
+        
+                <div :class="{'form-div':true, 'form-error-div':LoginStatus === 0 && LoginMsg !== '', 'form-success-div':LoginStatus === 1}">
+                    <input type="password" name="password" placeholder="Password">
+                </div>
+            
+                <div v-if="LoginMsg!==''" :class="['form-div',LoginStatus == 0 ? 'error-div' : 'success-div']">
+                    {{LoginMsg}}
+                </div>
+        
+                <div class="form-div">
+                    <button type="submit">Login</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
-        <div class="form-div">
-            <button type="submit">Login</button>
-        </div>
-    </form>
 </template>
 
 <style scoped>
+
+.content-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+img {
+    aspect-ratio: 1 / 1;
+}
+
+.img-div {
+    display: flex;
+    flex-grow: 3;
+}
+
+.login-div{
+    display: flex;
+    flex-grow: 2;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    border-left: 2px solid light-dark(var(--dark-color),var(--light-color));
+}
+
 form {
     padding: 10px;
     margin: 2px;
-    border: 2px solid light-dark(var(--dark-color),var(--light-color));
-    width: 75%;
+    width: 100%;
+    min-width: fit-content;
 }
 
 .form-div {
