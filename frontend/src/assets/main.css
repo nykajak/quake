@@ -4,8 +4,14 @@
     --primary-color: rgb(82, 72, 156);
     --secondary-color: rgb(64, 98, 187);
     --tertiary-color: rgb(50, 144, 143);
+    --error-color: lightcoral;
 }
 
 html{
-    color-scheme: light;
+    color-scheme: dark;
+}
+
+body{
+    background-color: light-dark(var(--light-color),var(--dark-color));
+    color: light-dark(var(--dark-color),var(--light-color));
 }
