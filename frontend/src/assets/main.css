@@ -5,6 +5,7 @@
     --secondary-color: rgb(64, 98, 187);
     --tertiary-color: rgb(50, 144, 143);
     --error-color: lightcoral;
+    --contrast-color: grey;
 }
 
 html{

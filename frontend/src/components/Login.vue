@@ -27,9 +27,9 @@ const LoginStatus = ref(0);
         <div class="form-div form-info-div">
             <h3 class="text-center">Welcome back!</h3>
             <p class="text-center">
-                Login with your credentials to continue your learning journey.
+                <span class="subheading">Login to continue learning</span>
                 <br>
-                Don't have an account yet? <RouterLink to="/register"> Register </RouterLink>
+                <span class="redirect">Don't have an account yet? <RouterLink class="link" to="/register"><strong> Register </strong></RouterLink></span>
             </p>
         </div>
         <div :class="{'form-div':true, 'form-error-div':LoginStatus === 0 && LoginMsg !== '', 'form-success-div':LoginStatus === 1}">
@@ -61,6 +61,21 @@ form {
 .form-div {
     display: flex;
     margin: 0.75rem;
+}
+
+.form-div h3{
+    font-size: 3.5em;
+    color: var(--secondary-color);
+}
+
+
+.form-div .subheading{
+    font-size: 1.25em;
+}
+
+.form-div .redirect{
+    font-size: 0.9em;
+    color: var(--contrast-color);
 }
 
 .form-error-div{
@@ -107,5 +122,12 @@ form {
     border: none;
 }
 
+.link {
+    color: var(--secondary-color);
+}
+
+.link:hover {
+    color: var(--primary-color);
+}
 
 </style>

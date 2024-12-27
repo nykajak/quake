@@ -28,9 +28,13 @@ const RegisterStatus = ref(0);
         <div class="form-div form-info-div">
             <h3 class="text-center">Hello there!</h3>
             <p class="text-center">
-                Register to start learning now!
+                <span class="subheading">
+                    Register to start learning now
+                </span>
                 <br>
-                Already have an account? <RouterLink to="/login"> Login </RouterLink>
+                <span class="redirect">
+                    Already have an account? <RouterLink class="link" to="/login"> <strong> Login </strong> </RouterLink>
+                </span>
             </p>
         </div>
 
@@ -72,6 +76,20 @@ form {
 .form-div {
     display: flex;
     margin: 0.75rem;
+}
+
+.form-div h3{
+    font-size: 3.5em;
+    color: var(--secondary-color);
+}
+
+.form-div .subheading{
+    font-size: 1.25em;
+}
+
+.form-div .redirect{
+    font-size: 0.9em;
+    color: var(--contrast-color);
 }
 
 .form-error-div{
@@ -116,5 +134,13 @@ form {
     background-color: var(--secondary-color);
     color: var(--light-color);
     border: none;
+}
+
+.link {
+    color: var(--secondary-color);
+}
+
+.link:hover {
+    color: var(--primary-color);
 }
 </style>
