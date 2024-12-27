@@ -27,8 +27,6 @@ const LoginStatus = ref(0);
         <div class="form-div form-info-div">
             <h3 class="text-center">Welcome back!</h3>
             <p class="text-center">
-                <span class="subheading">Login to continue learning</span>
-                <br>
                 <span class="redirect">Don't have an account yet? <RouterLink class="link" to="/register"><strong> Register </strong></RouterLink></span>
             </p>
         </div>
@@ -66,11 +64,6 @@ form {
 .form-div h3{
     font-size: 3.5em;
     color: var(--secondary-color);
-}
-
-
-.form-div .subheading{
-    font-size: 1.25em;
 }
 
 .form-div .redirect{

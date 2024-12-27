@@ -28,10 +28,6 @@ const RegisterStatus = ref(0);
         <div class="form-div form-info-div">
             <h3 class="text-center">Hello there!</h3>
             <p class="text-center">
-                <span class="subheading">
-                    Register to start learning now
-                </span>
-                <br>
                 <span class="redirect">
                     Already have an account? <RouterLink class="link" to="/login"> <strong> Login </strong> </RouterLink>
                 </span>
@@ -81,10 +77,6 @@ form {
 .form-div h3{
     font-size: 3.5em;
     color: var(--secondary-color);
-}
-
-.form-div .subheading{
-    font-size: 1.25em;
 }
 
 .form-div .redirect{
