@@ -1,0 +1,11 @@
+:root{
+    --light-color: rgb(234, 242, 239);
+    --dark-color: rgb(7, 2, 13);
+    --primary-color: rgb(82, 72, 156);
+    --secondary-color: rgb(64, 98, 187);
+    --tertiary-color: rgb(50, 144, 143);
+}
+
+html{
+    color-scheme: light;
+}
