@@ -1,7 +1,7 @@
 <script setup>
 import { api } from '@/api';
-import { useRouter } from 'vue-router'
 import { ref } from 'vue';
+import { useRouter, RouterLink } from 'vue-router'
 
 const router = useRouter()
 async function validateForm(e){
@@ -28,6 +28,8 @@ const LoginStatus = ref(0);
             <h3>Welcome back!</h3>
             <p>
                 Login with your credentials to continue your learning journey.
+                <br>
+                Don't have an account yet? <RouterLink to="/register"> Register </RouterLink>
             </p>
         </div>
         <div :class="{'form-div':true, 'form-error-div':LoginStatus === 0 && LoginMsg !== '', 'form-success-div':LoginStatus === 1}">

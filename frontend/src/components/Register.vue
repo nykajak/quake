@@ -1,7 +1,7 @@
 <script setup>
 import { api } from '@/api';
 import { ref } from 'vue';
-import { useRouter } from 'vue-router'
+import { useRouter, RouterLink } from 'vue-router'
 
 const router = useRouter()
 async function validateForm(e){
@@ -29,6 +29,8 @@ const RegisterStatus = ref(0);
             <h3>Hello there!</h3>
             <p>
                 Register to start learning now!
+                <br>
+                Already have an account? <RouterLink to="/login"> Login </RouterLink>
             </p>
         </div>
 
