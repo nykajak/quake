@@ -1,5 +1,18 @@
 <script setup>
 import { RouterLink } from 'vue-router';
+import {useThemeStore} from "@/stores/theme.js"
+
+// const themeStore = useThemeStore();
+
+function toggle(){
+    if (document.body.style.colorScheme == "dark"){
+        document.body.style.colorScheme = "light";
+    }
+    else{
+        document.body.style.colorScheme = "dark";
+    }
+}
+
 </script>
 
 <template>
@@ -21,7 +34,7 @@ import { RouterLink } from 'vue-router';
         </div>
 
         <div class="header-inner-div" id="utility-div">
-            <button>Toggle</button>
+            <button @click="toggle()">Toggle</button>
         </div>
     </div>
 </template>
