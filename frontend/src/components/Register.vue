@@ -29,7 +29,7 @@ const RegisterStatus = ref(0);
 
     <div class="content-container">
         <div class="img-div">
-            <img src="@\assets\logo.png" width="100%" alt="">
+    
         </div>
 
         <div class="register-div d-flex">
@@ -74,29 +74,35 @@ const RegisterStatus = ref(0);
 
 <style scoped>
 
-.content-container {
+.content{
     display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
+    flex-direction: column;
+    flex-grow: 1;
 }
 
-img {
-    aspect-ratio: 1 / 1;
+.content-container {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    height: 100%;
 }
 
 .img-div {
     display: flex;
-    flex-grow: 3;
+    height: 100%;
+    width: 100%;
+    flex-shrink: 1;
+    background-image: linear-gradient(to bottom right,  light-dark( var(--primary-color),var(--dark-color)),  light-dark( var(--secondary-color),var(--contrast-color)));
 }
 
 .register-div{
     display: flex;
-    flex-grow: 2;
+    flex-shrink: 2;
     height: 100%;
+    width: 100%;
     justify-content: center;
     align-items: center;
-    border-left: 2px solid light-dark(var(--dark-color),var(--light-color));
+    border-right: 1px solid light-dark(var(--dark-color),var(--light-color));
 }
 
 form {
