@@ -1,16 +1,17 @@
 <script setup>
 import { RouterLink } from 'vue-router';
 import {useThemeStore} from "@/stores/theme.js"
+import { onMounted } from 'vue';
 
-// const themeStore = useThemeStore();
+
+const themeStore = useThemeStore();
+onMounted(() => {
+    document.body.style.colorScheme = themeStore.theme || "light dark";
+})
 
 function toggle(){
-    if (document.body.style.colorScheme == "dark"){
-        document.body.style.colorScheme = "light";
-    }
-    else{
-        document.body.style.colorScheme = "dark";
-    }
+    themeStore.toggle()
+    document.body.style.colorScheme = themeStore.theme || "light dark";
 }
 
 </script>
