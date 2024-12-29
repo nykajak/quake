@@ -2,6 +2,7 @@
 test*
 *.env
 questions.txt
+user_secrets.txt
 
 
 # Logs
