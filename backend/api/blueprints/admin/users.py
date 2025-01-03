@@ -2,6 +2,7 @@ from flask import Blueprint,jsonify,request
 from flask_jwt_extended import jwt_required
 from api.models import *
 from api.blueprints.admin import admin_required
+from sqlalchemy.exc import IntegrityError
 
 user_routes = Blueprint('user_routes', __name__)
 
@@ -34,6 +35,22 @@ def specific_users_subjects(id):
     if u:
         return jsonify(payload=u.serialise(required = ("subjects")))
     return jsonify(msg="No such user found!"),400
+
+@user_routes.post("/<uid>/subjects/<sid>")
+@jwt_required()
+@admin_required
+def add_user_to_subject(uid,sid):
+    u = User.query.filter(User.id == uid).scalar()
+    s = Subject.query.filter(Subject.id == sid).scalar()
+    if u and s:
+        try:
+            u.subjects.append(s)
+            db.session.commit()
+            return jsonify(msg = "Added subject!"),200
+        except IntegrityError as e:
+            return jsonify(msg = "Already enrolled!"),400
+        
+    return jsonify(msg="No such user or subject found!"),400
 
 @user_routes.get("/<id>/scores")
 @jwt_required()
