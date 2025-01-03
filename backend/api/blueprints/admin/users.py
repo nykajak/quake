@@ -10,11 +10,10 @@ user_routes = Blueprint('user_routes', __name__)
 @admin_required
 def all_users():
     page = int(request.args.get("page",1))
-    per_page = int(request.args.get("per_page",1))
-    
-    res = []
-    for u in User.query.filter().paginate(page=page,per_page=per_page,max_per_page=2):
-        res.append({"name" : u.name})
+    per_page = int(request.args.get("per_page",5))
+
+    query = User.query.filter().paginate(page=page,per_page=per_page,max_per_page=10)
+    res = [u.serialise() for u in query]
     
     return jsonify(payload=res)
 
@@ -24,5 +23,5 @@ def all_users():
 def specific_users(name):
     u = User.query.filter(User.name == name).scalar()
     if u:
-        return jsonify(payload=u.name)
+        return jsonify(payload=u.serialise())
     return jsonify(msg="No such user found!"),400
