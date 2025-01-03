@@ -87,7 +87,7 @@ class Chapter(db.Model):
 
     id = db.Column(db.Integer, primary_key = True)
     subject_id = db.Column(db.Integer, db.ForeignKey("subjects.id"), nullable = False)
-    name = db.Column(db.String(40),unique = True, nullable = False)
+    name = db.Column(db.String(40), nullable = False)
     description = db.Column(db.String(128))
     order = db.Column(db.Integer)
 

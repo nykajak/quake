@@ -52,3 +52,43 @@ def add_subject():
     
     except IntegrityError as e:
         return jsonify(msg="Name is not unique!"),400
+    
+@subject_routes.get("/<id>/chapters")
+@jwt_required()
+@admin_required
+def all_chapters(id):
+    s = Subject.query.filter(Subject.id == id).scalar()
+    if s:
+        return jsonify(payload = s.serialise(required=("chapters")))
+    
+    return jsonify(msg="Subject not found!"),400
+
+@subject_routes.get("/<sid>/chapters/<cid>")
+@jwt_required()
+@admin_required
+def specific_chapter(sid,cid):
+    s = Subject.query.filter(Subject.id == sid).scalar()
+    c = Chapter.query.filter(Chapter.id == cid).scalar()
+    if s and c:
+        if c in s.chapters:
+            return jsonify(payload = s.serialise(required=("chapters")))
+    
+    return jsonify(msg="Subject or chapter not found!"),400
+
+# @subject_routes.post("/<sid>/chapters")
+# @jwt_required()
+# @admin_required
+# def add_chapter(sid):
+#     name = request.form.get("name",None)
+#     description = request.form.get("description",None)
+
+#     if name is None:
+#         return jsonify(msg="Malformed request!"),400
+    
+#     c = Chapter(name = name, description = description)
+#     db.session.add(c)
+#     db.session.commit()
+#     c.order = c.id
+#     db.session.commit()
+    
+#     return jsonify(),200
