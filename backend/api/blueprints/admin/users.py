@@ -17,11 +17,38 @@ def all_users():
     
     return jsonify(payload=res)
 
-@user_routes.get("/<name>")
+@user_routes.get("/<id>")
 @jwt_required()
 @admin_required
-def specific_users(name):
-    u = User.query.filter(User.name == name).scalar()
+def specific_users(id):
+    u = User.query.filter(User.id == id).scalar()
     if u:
         return jsonify(payload=u.serialise())
+    return jsonify(msg="No such user found!"),400
+
+@user_routes.get("/<id>/subjects")
+@jwt_required()
+@admin_required
+def specific_users_subjects(id):
+    u = User.query.filter(User.id == id).scalar()
+    if u:
+        return jsonify(payload=u.serialise(required = ("subjects")))
+    return jsonify(msg="No such user found!"),400
+
+@user_routes.get("/<id>/scores")
+@jwt_required()
+@admin_required
+def specific_users_scores(id):
+    u = User.query.filter(User.id == id).scalar()
+    if u:
+        return jsonify(payload=u.serialise(required = ("scores")))
+    return jsonify(msg="No such user found!"),400
+
+@user_routes.get("/<id>/responses")
+@jwt_required()
+@admin_required
+def specific_users_responses(id):
+    u = User.query.filter(User.id == id).scalar()
+    if u:
+        return jsonify(payload=u.serialise(required = ("responses")))
     return jsonify(msg="No such user found!"),400

@@ -14,4 +14,7 @@ def admin_required(fun):
     return inner
 
 from api.blueprints.admin.users import user_routes
+from api.blueprints.admin.subjects import subject_routes
+
 admin_routes.register_blueprint(user_routes,url_prefix = "/users")
+admin_routes.register_blueprint(subject_routes,url_prefix = "/subjects")
