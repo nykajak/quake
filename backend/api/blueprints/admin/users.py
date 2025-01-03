@@ -52,6 +52,23 @@ def add_user_to_subject(uid,sid):
         
     return jsonify(msg="No such user or subject found!"),400
 
+@user_routes.delete("/<uid>/subjects/<sid>")
+@jwt_required()
+@admin_required
+def remove_user_from_subject(uid,sid):
+    u = User.query.filter(User.id == uid).scalar()
+    s = Subject.query.filter(Subject.id == sid).scalar()
+    if u and s:
+        try:
+            u.subjects.remove(s)
+            db.session.commit()
+            return jsonify(msg="Subject removed from user enrollment!"),200
+
+        except ValueError as e:
+            return jsonify(msg="User is not enrolled!"),400
+    return jsonify(msg="No such user or subject found!"),400
+
+
 @user_routes.get("/<id>/scores")
 @jwt_required()
 @admin_required
