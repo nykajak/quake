@@ -9,12 +9,9 @@ const route = useRoute()
 async function sendReq(){
 
     try{
-        let res = await api.get("/admin/users",{params : {
-            "page":route.query["page"],
-            "per_page":route.query["per_page"],
-        }});
+        let res = await api.get("/admin/users/Nykaj");
         console.log(res.data)
-        return res.data.payload[0]["name"]
+        return res.data.payload
     }
     catch(err){
         console.log(err)

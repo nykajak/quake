@@ -17,3 +17,12 @@ def all_users():
         res.append({"name" : u.name})
     
     return jsonify(payload=res)
+
+@user_routes.get("/<name>")
+@jwt_required()
+@admin_required
+def specific_users(name):
+    u = User.query.filter(User.name == name).scalar()
+    if u:
+        return jsonify(payload=u.name)
+    return jsonify(msg="No such user found!"),400
