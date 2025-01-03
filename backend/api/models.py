@@ -26,6 +26,27 @@ class User(db.Model):
     responses = db.relationship('Response', backref="user")
     scores = db.relationship('Score', backref = 'user')
 
+    def serialise(self,required = ()):
+        res = {
+            "id" : self.id,
+            "name": self.name,
+            "email": self.email,
+        }
+
+        if len(required) == 0:
+            return res
+        
+        if "subjects" in required:
+            res["subjects"] = [subject.serialise() for subject in self.subjects]
+        
+        if "responses" in required:
+            res["responses"] = [response.serialise() for response in self.responses]
+
+        if "scores" in required:
+            res["scores"] = [score.serialise() for score in self.scores]
+
+        return res
+
 class Subject(db.Model):
     """
         Subject model representing a certain field of study.
@@ -38,6 +59,25 @@ class Subject(db.Model):
     credits = db.Column(db.Integer, nullable = False)
 
     chapters = db.relationship('Chapter', backref='subject')
+
+    def serialise(self,required = ()):
+        res = {
+            "id": self.id,
+            "name": self.name,
+            "description": self.description,
+            "credits": self.credits
+        }
+
+        if len(required) == 0:
+            return res
+
+        if "chapters" in required:
+            res["chapters"] = [chapter.serialise() for chapter in self.chapters]
+        
+        if "users" in required:
+            res["users"] = [user.serialise() for user in self.users]
+
+        return res
 
 class Chapter(db.Model):
     """
@@ -53,6 +93,28 @@ class Chapter(db.Model):
 
     quizes = db.relationship('Quiz', backref = "chapter")
     questions = db.relationship("Question", backref = "chapter")
+
+    def serialise(self,required = ()):
+        res = {
+            "id": self.id,
+            "name": self.name,
+            "description": self.description,
+            "order": self.order
+        }
+
+        if len(required) == 0:
+            return res
+
+        if "subject" in required:
+            res["subject"] = self.subject.serialise()
+
+        if "quizes" in required:
+            res["quizes"] = [quiz.serialise() for quiz in self.quizes]
+
+        if "questions" in required:
+            res["questions"] = [question.serialise() for question in self.questions]
+
+        return res
 
 class Quiz(db.Model):
     """
@@ -70,6 +132,31 @@ class Quiz(db.Model):
     responses = db.relationship('Response', backref='quiz')
     scores = db.relationship('Score', backref = 'quiz')
 
+    def serialise(self,required = ()):
+        res = {
+            "id": self.id,
+            "dated": self.dated,
+            "duration": self.duration,
+            "description": self.description
+        }
+
+        if len(required) == 0:
+            return res
+
+        if "chapter" in required:
+            res["chapter"] = self.chapter.serialise()
+
+        if "questions" in required:
+            res["questions"] = [question.serialise() for question in self.questions]
+        
+        if "responses" in required:
+            res["responses"] = [response.serialise() for response in self.responses]
+
+        if "scores" in required:
+            res["scores"] = [score.serialise() for score in self.scores]
+
+        return res
+
 class Question(db.Model):
     """
         Question model representing a MCQ on some chapter.
@@ -85,6 +172,25 @@ class Question(db.Model):
 
     responses = db.relationship('Response', backref='question')
 
+    def serialise(self,required = ()):
+        res = {
+            "id": self.id,
+            "description": self.description,
+            "options": self.options.split("#"),
+            "correct": self.correct,
+            "marks": self.marks
+        }
+
+        if len(required) == 0:
+            return res
+
+        if "chapter" in required:
+            res["chapter"] = self.chapter.serialise()
+        
+        if "responses" in required:
+            res["responses"] = [response.serialise() for response in self.responses]
+        return res
+
 class Response(db.Model):
     """
         Response model representing an answer to a question in a quiz by some user.
@@ -98,6 +204,27 @@ class Response(db.Model):
     marked = db.Column(db.Integer, nullable = False)
     answered_at = db.Column(db.DateTime, nullable = False)
 
+    def serialise(self,required = ()):
+        res = {
+            "id": self.id,
+            "marked": self.marked,
+            "answered_at": self.answered_at,
+        }
+
+        if len(required) == 0:
+            return res
+
+        if "user" in required:
+            res["user"] = self.user.serialise()
+        
+        if "question" in required:
+            res["question"] = self.question.serialise()
+
+        if "quiz" in required:
+            res["quiz"] = self.quiz.serialise()
+
+        return res
+
 class Score(db.Model):
     """
         Score model representing the result of a quiz given by some user.
@@ -110,3 +237,22 @@ class Score(db.Model):
     total = db.Column(db.Integer, nullable = False)
     start_time = db.Column(db.DateTime, nullable = False)
     end_time = db.Column(db.DateTime, nullable = False)
+
+    def serialise(self,required = ()):
+        res = {
+            "id": self.id,
+            "total": self.total,
+            "start_time": self.start_time,
+            "end_time": self.end_time
+        }
+
+        if len(required) == 0:
+            return res
+        
+        if "user" in required:
+            res["user"] = self.user.serialise()
+
+        if "quiz" in required:
+            res["quiz"] = self.quiz.serialise()
+
+        return res
