@@ -2,6 +2,7 @@
 import { RouterLink } from 'vue-router';
 import {useThemeStore} from "@/stores/theme.js"
 import { onMounted } from 'vue';
+import ToggleDark from './ToggleDark.vue';
 
 
 const themeStore = useThemeStore();
@@ -35,7 +36,9 @@ function toggle(){
         </div>
 
         <div class="header-inner-div" id="utility-div">
-            <button @click="toggle()">Toggle</button>
+            <button class="btn btn-default" @click="toggle()">
+                <ToggleDark/>
+            </button>
         </div>
     </div>
 </template>
