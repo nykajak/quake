@@ -86,7 +86,7 @@ class Chapter(db.Model):
     __tablename__ = "chapters"
 
     id = db.Column(db.Integer, primary_key = True)
-    subject_id = db.Column(db.Integer, db.ForeignKey("subjects.id"), primary_key = True)
+    subject_id = db.Column(db.Integer, db.ForeignKey("subjects.id"), nullable = False)
     name = db.Column(db.String(40), nullable = False)
     description = db.Column(db.String(128))
     order = db.Column(db.Integer)
@@ -123,7 +123,7 @@ class Quiz(db.Model):
     __tablename__ = "quizes"
 
     id = db.Column(db.Integer, primary_key = True)
-    chapter_id = db.Column(db.Integer, db.ForeignKey('chapters.id'), primary_key = True)
+    chapter_id = db.Column(db.Integer, db.ForeignKey('chapters.id'), nullable = False)
     dated = db.Column(db.DateTime, nullable = False)
     duration = db.Column(db.Integer, nullable = False)
     description = db.Column(db.String(128))
@@ -164,7 +164,7 @@ class Question(db.Model):
     __tablename__ = "questions"
 
     id = db.Column(db.Integer, primary_key = True)
-    chapter_id = db.Column(db.Integer, db.ForeignKey('chapters.id'), primary_key = True)
+    chapter_id = db.Column(db.Integer, db.ForeignKey('chapters.id'), nullable = False)
     description = db.Column(db.String(512), nullable = False)
     options = db.Column(db.String(256), nullable = False)
     correct = db.Column(db.Integer, nullable = False)
