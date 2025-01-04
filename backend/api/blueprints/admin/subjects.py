@@ -75,20 +75,24 @@ def specific_chapter(sid,cid):
     
     return jsonify(msg="Subject or chapter not found!"),400
 
-# @subject_routes.post("/<sid>/chapters")
-# @jwt_required()
-# @admin_required
-# def add_chapter(sid):
-#     name = request.form.get("name",None)
-#     description = request.form.get("description",None)
+@subject_routes.post("/<sid>/chapters")
+@jwt_required()
+@admin_required
+def add_chapter(sid):
+    s = Subject.query.filter(Subject.id == sid).scalar()
+    if s is None:
+        return jsonify(msg="Subject not found!"),400
+    
+    name = request.form.get("name",None)
+    description = request.form.get("description",None)
 
-#     if name is None:
-#         return jsonify(msg="Malformed request!"),400
+    if name is None:
+        return jsonify(msg="Malformed request!"),400
     
-#     c = Chapter(name = name, description = description)
-#     db.session.add(c)
-#     db.session.commit()
-#     c.order = c.id
-#     db.session.commit()
+    c = Chapter(name = name, description = description, subject_id = sid)
+    db.session.add(c)
+    db.session.commit()
+    c.order = c.id
+    db.session.commit()
     
-#     return jsonify(),200
+    return jsonify(msg="Chapter created!"),200
