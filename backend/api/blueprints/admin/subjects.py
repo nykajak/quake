@@ -39,12 +39,7 @@ def add_subject():
     if credits == 0 or name is None:
         return jsonify(msg="Malformed request: Check if all fields included"),400
     
-    s = None
-    if description is None:
-        s = Subject(name = name,credits = credits)
-    else:
-        s = Subject(name = name,credits = credits, description = description)
-
+    s = Subject(name = name, credits = credits, description = description)
     try:
         db.session.add(s)
         db.session.commit()
@@ -71,7 +66,7 @@ def specific_chapter(sid,cid):
     c = Chapter.query.filter(Chapter.id == cid).scalar()
     if s and c:
         if c in s.chapters:
-            return jsonify(payload = s.serialise(required=("chapters")))
+            return jsonify(payload = c.serialise())
     
     return jsonify(msg="Subject or chapter not found!"),400
 
@@ -91,8 +86,6 @@ def add_chapter(sid):
     
     c = Chapter(name = name, description = description, subject_id = sid)
     db.session.add(c)
-    db.session.commit()
-    c.order = c.id
     db.session.commit()
     
     return jsonify(msg="Chapter created!"),200
