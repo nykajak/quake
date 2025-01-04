@@ -86,7 +86,7 @@ class Chapter(db.Model):
     __tablename__ = "chapters"
 
     id = db.Column(db.Integer, primary_key = True)
-    subject_id = db.Column(db.Integer, db.ForeignKey("subjects.id"), nullable = False)
+    subject_id = db.Column(db.Integer, db.ForeignKey("subjects.id"), primary_key = True)
     name = db.Column(db.String(40), nullable = False)
     description = db.Column(db.String(128))
     order = db.Column(db.Integer)
@@ -123,7 +123,7 @@ class Quiz(db.Model):
     __tablename__ = "quizes"
 
     id = db.Column(db.Integer, primary_key = True)
-    chapter_id = db.Column(db.Integer, db.ForeignKey('chapters.id'), nullable = False)
+    chapter_id = db.Column(db.Integer, db.ForeignKey('chapters.id'), primary_key = True)
     dated = db.Column(db.DateTime, nullable = False)
     duration = db.Column(db.Integer, nullable = False)
     description = db.Column(db.String(128))
@@ -164,7 +164,7 @@ class Question(db.Model):
     __tablename__ = "questions"
 
     id = db.Column(db.Integer, primary_key = True)
-    chapter_id = db.Column(db.Integer, db.ForeignKey('chapters.id'), nullable = False)
+    chapter_id = db.Column(db.Integer, db.ForeignKey('chapters.id'), primary_key = True)
     description = db.Column(db.String(512), nullable = False)
     options = db.Column(db.String(256), nullable = False)
     correct = db.Column(db.Integer, nullable = False)
@@ -197,10 +197,9 @@ class Response(db.Model):
     """ 
     __tablename__ = "responses"
 
-    id = db.Column(db.Integer, primary_key = True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable = False)
-    quiz_id = db.Column(db.Integer, db.ForeignKey('quizes.id'), nullable = False)
-    question_id = db.Column(db.Integer, db.ForeignKey('questions.id'), nullable = False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key = True)
+    quiz_id = db.Column(db.Integer, db.ForeignKey('quizes.id'), primary_key = True)
+    question_id = db.Column(db.Integer, db.ForeignKey('questions.id'), primary_key = True)
     marked = db.Column(db.Integer, nullable = False)
     answered_at = db.Column(db.DateTime, nullable = False)
 
@@ -231,9 +230,8 @@ class Score(db.Model):
     """
     __tablename__ = "scores"
 
-    id = db.Column(db.Integer, primary_key = True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable = False)
-    quiz_id = db.Column(db.Integer, db.ForeignKey('quizes.id'), nullable = False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key = True)
+    quiz_id = db.Column(db.Integer, db.ForeignKey('quizes.id'), primary_key = True)
     total = db.Column(db.Integer, nullable = False)
     start_time = db.Column(db.DateTime, nullable = False)
     end_time = db.Column(db.DateTime, nullable = False)

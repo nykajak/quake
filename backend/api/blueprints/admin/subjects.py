@@ -96,3 +96,48 @@ def add_chapter(sid):
     db.session.commit()
     
     return jsonify(msg="Chapter created!"),200
+
+@subject_routes.get("/<sid>/chapters/<cid>/quizes")
+@jwt_required()
+@admin_required
+def all_quizes(sid,cid):
+    s = Subject.query.filter(Subject.id == sid).scalar()
+    c = Chapter.query.filter(Chapter.id == cid).scalar()
+    if s and c:
+        if c in s.chapters:
+            return jsonify(payload = c.serialise(required=("quizes")))
+    
+    return jsonify(msg="Subject or chapter not found!"),400
+
+@subject_routes.post("/<sid>/chapters/<cid>/quizes")
+@jwt_required()
+@admin_required
+def add_quiz(sid,cid):
+    s = Subject.query.filter(Subject.id == sid).scalar()
+    c = Chapter.query.filter(Chapter.id == cid).scalar()
+    if s and c:
+        dated = request.form.get("dated",None)
+        duration = request.form.get("duration",None)
+        description = request.form.get("description",None)
+
+        if dated is None or duration is None:
+            return jsonify(msg="Malformed request!"),400    
+
+        q = Quiz(chapter_id = cid, dated = dated, duration = duration, description = description)
+        return jsonify(msg="Quiz added!"),200
+    
+    return jsonify(msg="Subject or chapter not found!"),400
+
+@subject_routes.get("/<sid>/chapters/<cid>/quizes/<qid>")
+@jwt_required()
+@admin_required
+def specific_quiz(sid,cid,qid):
+    s = Subject.query.filter(Subject.id == sid).scalar()
+    c = Chapter.query.filter(Chapter.id == cid).scalar()
+    q = Quiz.query.filter(Quiz.id == qid).scalar()
+
+    if s and c:
+        if c in s.chapters and q in c.quizes:
+            return jsonify(payload = q.serialise())
+    
+    return jsonify(msg="Subject, chapter or quiz not found!"),400
