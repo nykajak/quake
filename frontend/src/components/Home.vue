@@ -7,11 +7,10 @@ import Header from './Header.vue';
 const router = useRouter()
 const route = useRoute()
 async function sendReq(){
-
+    
     try{
-        let res = await api.get("/admin/users/1");
-        console.log(res.data)
-        return res.data.payload["email"]
+        let res = await api.get("/");
+        return res.data.msg
     }
     catch(err){
         console.log(err)
