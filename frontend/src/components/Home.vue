@@ -41,7 +41,9 @@ const page = ref(0);
                 <p class="lead">
                     Your one stop solution for all your quizzing needs!
                 </p>
+            </div>
 
+            <div class=" d-flex justify-content-center">
                 <div class="slideshow">
                     <div class="slideshow-control-div">
                         <button class="slideshow-control" @click="page=(page+2)%3">&lt;</button>
@@ -53,12 +55,12 @@ const page = ref(0);
                                 <h3>?</h3>
                             </div>
                             <div class="slideshow-question">
-                                <h3>Question 1</h3>
+                                <h3>Our mission</h3>
                             </div>
                         </div>
                         <div class="slideshow-answer">
                             <p>
-                                Answer to question 1 given here!
+                                Revolutionise exam preparation by making 
                             </p>
                         </div>
                     </div>
@@ -69,7 +71,7 @@ const page = ref(0);
                                 <h3>?</h3>
                             </div>
                             <div class="slideshow-question">
-                                <h3>Question 2</h3>
+                                <h3>Why choose us?</h3>
                             </div>
                         </div>
                         <div class="slideshow-answer">
@@ -128,6 +130,7 @@ const page = ref(0);
 }
 
 .slideshow-item{
+    border: 1px solid light-dark(var(--dark-color),var(--light-color));
     width: 100%;
     justify-content: center;
     align-items: center;
@@ -137,6 +140,7 @@ const page = ref(0);
     display: flex;
     flex-direction: row;
     border: 1px solid light-dark(var(--dark-color),var(--light-color));
+    text-align: center;
 }
 
 .slideshow-symbol{
@@ -151,6 +155,7 @@ const page = ref(0);
 .slideshow-answer{
     display: flex;
     flex-direction: column;
+    padding: 1em;
 }
 
 .marketing {
