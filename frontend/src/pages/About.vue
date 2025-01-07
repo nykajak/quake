@@ -2,7 +2,7 @@
 import { api } from '@/api';
 import { ref } from 'vue';
 import { useRouter,useRoute } from 'vue-router';
-import Header from './Header.vue';
+import Header from '@/components/Header.vue';
 
 const router = useRouter()
 const route = useRoute()
