@@ -1,5 +1,6 @@
 <script setup>
     import Header from '@/components/Header.vue';
+    import Branding from '@/components/Branding.vue';
 </script>
 
 <template>
@@ -13,6 +14,7 @@
                 </p>
             </div>
         </div>
+        <Branding/>
     </div>
 </template>
 
@@ -21,7 +23,7 @@
     display: flex;
     flex-direction: column;
     flex-grow: 1;
-    color: light-dark( var(--light-color),var(--dark-color));
+    color: var(--light-color);
 }
 
 .marketing {
