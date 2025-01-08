@@ -4,9 +4,9 @@ from api.models import *
 from api.blueprints.admin import admin_required
 from sqlalchemy.exc import IntegrityError
 
-subject_routes = Blueprint('subject_routes', __name__)
+admin_subject_routes = Blueprint('admin_subject_routes', __name__, url_prefix="/subjects")
 
-@subject_routes.get("/")
+@admin_subject_routes.get("/")
 @jwt_required()
 @admin_required
 def all_subjects():
@@ -18,7 +18,7 @@ def all_subjects():
     
     return jsonify(payload=res)
 
-@subject_routes.get("/<id>")
+@admin_subject_routes.get("/<id>")
 @jwt_required()
 @admin_required
 def specific_subjects(id):
@@ -28,7 +28,7 @@ def specific_subjects(id):
     
     return jsonify(msg="No such subject found!"),400
 
-@subject_routes.post("/")
+@admin_subject_routes.post("/")
 @jwt_required()
 @admin_required
 def add_subject():
@@ -48,7 +48,7 @@ def add_subject():
     except IntegrityError as e:
         return jsonify(msg="Name is not unique!"),400
     
-@subject_routes.get("/<id>/chapters")
+@admin_subject_routes.get("/<id>/chapters")
 @jwt_required()
 @admin_required
 def all_chapters(id):
@@ -58,7 +58,7 @@ def all_chapters(id):
     
     return jsonify(msg="Subject not found!"),400
 
-@subject_routes.get("/<sid>/chapters/<cid>")
+@admin_subject_routes.get("/<sid>/chapters/<cid>")
 @jwt_required()
 @admin_required
 def specific_chapter(sid,cid):
@@ -70,7 +70,7 @@ def specific_chapter(sid,cid):
     
     return jsonify(msg="Subject or chapter not found!"),400
 
-@subject_routes.post("/<sid>/chapters")
+@admin_subject_routes.post("/<sid>/chapters")
 @jwt_required()
 @admin_required
 def add_chapter(sid):
@@ -90,7 +90,7 @@ def add_chapter(sid):
     
     return jsonify(msg="Chapter created!"),200
 
-@subject_routes.get("/<sid>/chapters/<cid>/quizes")
+@admin_subject_routes.get("/<sid>/chapters/<cid>/quizes")
 @jwt_required()
 @admin_required
 def all_quizes(sid,cid):
@@ -102,7 +102,7 @@ def all_quizes(sid,cid):
     
     return jsonify(msg="Subject or chapter not found!"),400
 
-@subject_routes.post("/<sid>/chapters/<cid>/quizes")
+@admin_subject_routes.post("/<sid>/chapters/<cid>/quizes")
 @jwt_required()
 @admin_required
 def add_quiz(sid,cid):
@@ -121,7 +121,7 @@ def add_quiz(sid,cid):
     
     return jsonify(msg="Subject or chapter not found!"),400
 
-@subject_routes.get("/<sid>/chapters/<cid>/quizes/<qid>")
+@admin_subject_routes.get("/<sid>/chapters/<cid>/quizes/<qid>")
 @jwt_required()
 @admin_required
 def specific_quiz(sid,cid,qid):

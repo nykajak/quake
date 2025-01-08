@@ -19,6 +19,8 @@ def home():
 
 from api.blueprints.anon import anon_routes
 from api.blueprints.admin import admin_routes
+from api.blueprints.user import user_routes
 
 app.register_blueprint(anon_routes)
-app.register_blueprint(admin_routes,url_prefix="/admin")
+app.register_blueprint(admin_routes)
+app.register_blueprint(user_routes)

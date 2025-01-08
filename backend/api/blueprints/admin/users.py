@@ -4,9 +4,9 @@ from api.models import *
 from api.blueprints.admin import admin_required
 from sqlalchemy.exc import IntegrityError
 
-user_routes = Blueprint('user_routes', __name__)
+admin_user_routes = Blueprint('admin_user_routes', __name__, url_prefix="/users")
 
-@user_routes.get("/")
+@admin_user_routes.get("/")
 @jwt_required()
 @admin_required
 def all_users():
@@ -18,7 +18,7 @@ def all_users():
     
     return jsonify(payload=res)
 
-@user_routes.get("/<id>")
+@admin_user_routes.get("/<id>")
 @jwt_required()
 @admin_required
 def specific_users(id):
@@ -27,7 +27,7 @@ def specific_users(id):
         return jsonify(payload=u.serialise())
     return jsonify(msg="No such user found!"),400
 
-@user_routes.get("/<id>/subjects")
+@admin_user_routes.get("/<id>/subjects")
 @jwt_required()
 @admin_required
 def specific_users_subjects(id):
@@ -36,7 +36,7 @@ def specific_users_subjects(id):
         return jsonify(payload=u.serialise(required = ("subjects")))
     return jsonify(msg="No such user found!"),400
 
-@user_routes.post("/<uid>/subjects/<sid>")
+@admin_user_routes.post("/<uid>/subjects/<sid>")
 @jwt_required()
 @admin_required
 def add_user_to_subject(uid,sid):
@@ -52,7 +52,7 @@ def add_user_to_subject(uid,sid):
         
     return jsonify(msg="No such user or subject found!"),400
 
-@user_routes.delete("/<uid>/subjects/<sid>")
+@admin_user_routes.delete("/<uid>/subjects/<sid>")
 @jwt_required()
 @admin_required
 def remove_user_from_subject(uid,sid):
@@ -69,7 +69,7 @@ def remove_user_from_subject(uid,sid):
     return jsonify(msg="No such user or subject found!"),400
 
 
-@user_routes.get("/<id>/scores")
+@admin_user_routes.get("/<id>/scores")
 @jwt_required()
 @admin_required
 def specific_users_scores(id):
@@ -78,7 +78,7 @@ def specific_users_scores(id):
         return jsonify(payload=u.serialise(required = ("scores")))
     return jsonify(msg="No such user found!"),400
 
-@user_routes.get("/<id>/responses")
+@admin_user_routes.get("/<id>/responses")
 @jwt_required()
 @admin_required
 def specific_users_responses(id):
