@@ -2,7 +2,7 @@ from functools import wraps
 from flask import jsonify,Blueprint
 from flask_jwt_extended import get_current_user, jwt_required
 
-user_routes = Blueprint('user_routes', __name__)
+user_routes = Blueprint('user_routes', __name__, url_prefix="/user")
 
 def user_required(fun):
     @wraps(fun)

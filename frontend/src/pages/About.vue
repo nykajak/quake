@@ -1,6 +1,16 @@
 <script setup>
     import Header from '@/components/Header.vue';
     import Branding from '@/components/Branding.vue';
+
+    import { api } from '@/api';
+    async function test(){
+        let res = await api.get("/user");
+        return res.data
+    }
+
+    test().then(data => {
+        console.log(data);
+    })
 </script>
 
 <template>
