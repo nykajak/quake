@@ -72,6 +72,7 @@
     color: light-dark(var(--dark-color),var(--light-color));
     align-items: center;
     width: 650px;
+    justify-content: center;
 }
 
 .option{
@@ -85,6 +86,7 @@
 }
 
 .option-letter {
+    font-weight: bold;
     text-align: center;
     justify-content: center;
     align-items: center;
@@ -95,6 +97,7 @@
 }
 
 .option-text{
+    font-weight: bold;
     display: flex;
     align-items: center;
     padding-left: 1em;
