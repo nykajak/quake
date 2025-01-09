@@ -9,6 +9,11 @@ def user_lookup_callback(_jwt_header, jwt_data):
     identity = jwt_data["sub"]
     return User.query.filter(User.name == identity).scalar()
 
+@app.errorhandler(404)
+def page_not_found(e):
+    resp = jsonify(msg="Page not found!")
+    return resp,404
+
 @app.get("/")
 @jwt_required(optional=True)
 def home():

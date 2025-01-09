@@ -5,7 +5,7 @@
     import { api } from '@/api';
     async function test(){
         try{
-            let res = await api.get("/admin/users/");
+            let res = await api.get("/user/");
             return res.data
         }
         catch(err){
