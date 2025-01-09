@@ -1,6 +1,7 @@
 <script setup>
 import { useRouter,useRoute } from 'vue-router';
 import { api } from '@/api';
+
 const router = useRouter()
 async function sendReq(){
     
@@ -18,11 +19,6 @@ async function sendLogout(){
     let res = await api.post("/logout");
     router.push({"name":"login"})
 }
-
-const message = ref("")
-sendReq().then(data => {
-    message.value = data;
-})
 
 </script>
 
