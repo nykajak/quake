@@ -4,8 +4,14 @@
 
     import { api } from '@/api';
     async function test(){
-        let res = await api.get("/user");
-        return res.data
+        try{
+            let res = await api.get("/admin/users/");
+            return res.data
+        }
+        catch(err){
+            console.log(err);
+            return 0;
+        }
     }
 
     test().then(data => {
