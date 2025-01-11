@@ -18,9 +18,10 @@ def page_not_found(e):
 @jwt_required(optional=True)
 def home():
     if current_user:
-        return jsonify(msg = f"Hello {current_user.name}!")
+        role = "user" if current_user.is_admin == 0 else "admin"
+        return jsonify(msg = f"Hello {current_user.name}!", role = role)
     
-    return jsonify(msg="Hello anonymous person!")
+    return jsonify(msg = "Hello anonymous person!", role = "anon")
 
 from api.blueprints.anon import anon_routes
 from api.blueprints.admin import admin_routes
