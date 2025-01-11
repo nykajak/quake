@@ -22,6 +22,7 @@
 
 <template>
     <div class="results-div">
+        <h4 class="text-center">HASGDJK</h4>
         <div class="user-card-div" v-for="u in users">
             <div class="profile-div">
 
@@ -37,6 +38,7 @@
 
 <style scoped>
 .results-div{
+    margin-top: 3em;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -47,7 +49,8 @@
     flex-direction: column;
     align-items: center;
     flex-grow: 1;
-    border: 1px solid light-dark(var(--dark-color),var(--light-color));
+    /* border: 1px solid light-dark(var(--dark-color),var(--light-color));
+    border-radius: 0.5em;    */
     margin: 1em;    
     padding: 1em;
 }

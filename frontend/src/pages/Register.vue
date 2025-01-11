@@ -92,7 +92,7 @@ const RegisterStatus = ref(0);
     height: 100%;
     width: 100%;
     flex-shrink: 1;
-    background-image: linear-gradient(to bottom right,  light-dark( var(--primary-color),var(--dark-color)),  light-dark( var(--secondary-color),var(--contrast-color)));
+    background-image: linear-gradient(to bottom right, var(--primary-color),  var(--secondary-color));
 }
 
 .register-div{

@@ -48,6 +48,6 @@
     justify-content: center;
     align-items: center;
     padding: 1em;
-    background-image: linear-gradient(to bottom right,  light-dark( var(--primary-color),var(--dark-color)),  light-dark( var(--secondary-color),var(--contrast-color)));
+    background-image: linear-gradient(to bottom right, var(--primary-color),  var(--secondary-color));
 }
 </style>
