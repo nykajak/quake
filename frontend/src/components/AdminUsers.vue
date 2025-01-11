@@ -21,10 +21,54 @@
 </script>
 
 <template>
-    <div v-for="u in users">
-        {{ u.name }}
+    <div class="results-div">
+        <div class="user-card-div" v-for="u in users">
+            <div class="profile-div">
+
+            </div>
+
+            <div class="info-div">
+                <h3>{{ u.name }}</h3>
+                <div class="email-div">{{u.email}}</div>
+            </div>
+        </div>
     </div>
 </template>
 
 <style scoped>
+.results-div{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.user-card-div{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-grow: 1;
+    border: 1px solid light-dark(var(--dark-color),var(--light-color));
+    margin: 1em;    
+    padding: 1em;
+}
+
+.profile-div{
+    display: flex;
+    width: 100px;
+    height: 100px;
+    border-radius: 100%;
+    border: 1px solid light-dark(var(--dark-color),var(--light-color));
+    margin-bottom: 1em;
+}
+
+.info-div{
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    color: var(--secondary-color);
+}
+
+.email-div{
+    color: var(--contrast-color);
+}
 </style>
