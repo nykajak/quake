@@ -1,5 +1,5 @@
 <script setup>
-import Logout from '@/components/Logout.vue';
+import AdminHeader from '@/components/AdminHeader.vue';
 import { api } from '@/api';
 import { ref } from 'vue';
 
@@ -18,9 +18,7 @@ fetchUsers().then((data)=>{
 </script>
 
 <template>
-    HI!!!
-    <Logout/>
-
+    <AdminHeader/>
     <div v-for="u in users">
         {{ u.name }}
     </div>

@@ -23,11 +23,17 @@ async function sendLogout(){
 </script>
 
 <template>
-    <div>
-        <h3>{{message}}</h3>
-        <button @click="sendLogout">Logout</button>
+    <div class="d-flex align-items-center">
+        <button class="logout-button" @click="sendLogout">Sign out</button>
     </div>
 </template>
 
 <style scoped>
+.logout-button {
+    height: fit-content;
+    border-radius: 0.5em;
+    border: 1px solid light-dark(var(--dark-color), var(--light-color));
+    background-color:var(--secondary-color);
+    color: var(--light-color);
+}
 </style>
