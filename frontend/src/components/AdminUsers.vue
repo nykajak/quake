@@ -2,14 +2,18 @@
     import { api } from '@/api';
     import { ref } from 'vue';
     import { useRoute } from 'vue-router';
+    import Pagination from './Pagination.vue';
 
     const route = useRoute();
     const users = ref([]);
+    const loading = ref(false);
 
     async function fetchUsers(){
         let page = route.query["page"] ?? 1;
         let per_page = route.query["per_page"] ?? 5 ;
+        loading.value = true;
         let res = await api.get(`/admin/users/?page=${page}&per_page=${per_page}`);
+        loading.value = false;
         return res.data.payload
     }
 
@@ -17,22 +21,28 @@
         console.log(data);
         users.value = data;
     })
-
 </script>
 
 <template>
-    <div class="results-div">
-        <h4 class="text-center">HASGDJK</h4>
-        <div class="user-card-div" v-for="u in users">
-            <div class="profile-div">
-
-            </div>
-
-            <div class="info-div">
-                <h3>{{ u.name }}</h3>
-                <div class="email-div">{{u.email}}</div>
+    <div v-if="loading == false">
+        <div class="results-div">
+            <div class="user-card-div" v-for="u in users">
+                <div class="profile-div">
+    
+                </div>
+    
+                <div class="info-div">
+                    <h3>{{ u.name }}</h3>
+                    <div class="email-div">{{u.email}}</div>
+                </div>
             </div>
         </div>
+    
+        <Pagination :interval-start="1" :interval-length="2"/>
+    </div>
+
+    <div v-else>
+        Loading......
     </div>
 </template>
 

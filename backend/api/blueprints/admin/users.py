@@ -13,7 +13,7 @@ def all_users():
     page = int(request.args.get("page",1))
     per_page = int(request.args.get("per_page",5))
 
-    query = User.query.filter().paginate(page=page,per_page=per_page,max_per_page=10)
+    query = User.query.filter(User.is_admin == 0).paginate(page=page,per_page=per_page,max_per_page=10)
     res = [u.serialise() for u in query]
     
     return jsonify(payload=res)

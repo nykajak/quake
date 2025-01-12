@@ -5,7 +5,7 @@ import { RouterView } from 'vue-router';
 
 <template>
     <AdminHeader/>
-    <RouterView/>
+    <RouterView :key="$route.fullPath"/>
 </template>
 
 <style scoped>
