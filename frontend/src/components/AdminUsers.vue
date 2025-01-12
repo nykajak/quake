@@ -3,26 +3,40 @@
     import { ref } from 'vue';
     import { useRoute } from 'vue-router';
     import Pagination from './Pagination.vue';
+    import { useRouter } from 'vue-router';
 
     import { RouterLink } from 'vue-router';
     import UserCard from './UserCard.vue';
 
     const route = useRoute();
+    const router = useRouter();
+
     const users = ref([]);
     const loading = ref(false);
+    const ready = ref(false);
 
     async function fetchUsers(){
-        let page = route.query["page"] ?? 1;
-        let per_page = route.query["per_page"] ?? 5 ;
-        loading.value = true;
-        let res = await api.get(`/admin/users/?page=${page}&per_page=${per_page}`);
-        loading.value = false;
-        return res.data.payload
+        try{
+            let page = route.query["page"] ?? 1;
+            let per_page = route.query["per_page"] ?? 5 ;
+            loading.value = true;
+            let res = await api.get(`/admin/users/?page=${page}&per_page=${per_page}`);
+            loading.value = false;
+            return res.data.payload
+        }
+
+        catch(err){
+            loading.value = false;
+            router.push({"name":"NotFound"})
+            return -1
+        }
     }
 
     fetchUsers().then(data => {
-        console.log(data);
-        users.value = data;
+        if (data != -1){
+            users.value = data;
+            ready.value = true;
+        }
     })
 </script>
 
