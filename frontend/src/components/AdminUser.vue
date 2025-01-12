@@ -1,10 +1,12 @@
 <script setup>
     import { api } from '@/api';
     import { defineProps, ref } from 'vue';
+    import UserCard from './UserCard.vue';
 
     const props = defineProps(['uid']);
-    const user = ref([]);
+    const user = ref(null);
     const loading = ref(false);
+    const ready = ref(false);
 
     async function fetchUsers(){
         loading.value = true;
@@ -12,25 +14,16 @@
         loading.value = false;
         return res.data.payload
     }
-
+    
     fetchUsers().then(data => {
-        console.log(data);
         user.value = data;
+        ready.value = true;
     })
 </script>
 
 <template>
-    <div v-if="loading == false">
-        <div class="user-card-div">
-            <div class="profile-div">
-
-            </div>
-
-            <div class="info-div">
-                <h3>{{ user.name }}</h3>
-                <div class="email-div">{{user.email}}</div>
-            </div>
-        </div>
+    <div v-if="loading == false && ready == true">
+        <UserCard :user="user" :active="false"/>
     </div>
 
     <div v-else>
@@ -39,41 +32,4 @@
 </template>
 
 <style scoped>
-.results-div{
-    margin-top: 3em;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-}
-
-.user-card-div{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    flex-grow: 1;
-    /* border: 1px solid light-dark(var(--dark-color),var(--light-color));
-    border-radius: 0.5em;    */
-    margin: 1em;    
-    padding: 1em;
-}
-
-.profile-div{
-    display: flex;
-    width: 100px;
-    height: 100px;
-    border-radius: 100%;
-    border: 1px solid light-dark(var(--dark-color),var(--light-color));
-    margin-bottom: 1em;
-}
-
-.info-div{
-    display: flex;
-    flex-direction: column;
-    text-align: center;
-    color: var(--secondary-color);
-}
-
-.email-div{
-    color: var(--contrast-color);
-}
 </style>

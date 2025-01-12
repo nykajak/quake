@@ -5,6 +5,7 @@
     import Pagination from './Pagination.vue';
 
     import { RouterLink } from 'vue-router';
+    import UserCard from './UserCard.vue';
 
     const route = useRoute();
     const users = ref([]);
@@ -28,20 +29,9 @@
 <template>
     <div v-if="loading == false">
         <div class="results-div">
-            <div class="user-card-div" v-for="u in users">
-                <div class="profile-div">
-    
-                </div>
-    
-                <div class="info-div">
-                    <h3>
-                        <RouterLink :to="`users/`+u.id">
-                            {{ u.name }}
-                        </RouterLink>
-                    </h3>
-                    <div class="email-div">{{u.email}}</div>
-                </div>
-            </div>
+            <template v-for="user in users">
+                <UserCard :user="user" :active="true"/>
+            </template>
         </div>
     
         <Pagination :interval-start="1" :interval-length="2"/>
@@ -58,36 +48,5 @@
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-}
-
-.user-card-div{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    flex-grow: 1;
-    /* border: 1px solid light-dark(var(--dark-color),var(--light-color));
-    border-radius: 0.5em;    */
-    margin: 1em;    
-    padding: 1em;
-}
-
-.profile-div{
-    display: flex;
-    width: 100px;
-    height: 100px;
-    border-radius: 100%;
-    border: 1px solid light-dark(var(--dark-color),var(--light-color));
-    margin-bottom: 1em;
-}
-
-.info-div{
-    display: flex;
-    flex-direction: column;
-    text-align: center;
-    color: var(--secondary-color);
-}
-
-.email-div{
-    color: var(--contrast-color);
 }
 </style>
