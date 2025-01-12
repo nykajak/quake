@@ -1,8 +1,10 @@
 <script setup>
     import { api } from '@/api';
     import { defineProps, ref } from 'vue';
-    import UserCard from './UserCard.vue';
     import { useRouter } from 'vue-router';
+    
+    import UserCard from './UserCard.vue';
+    import Loader from './Loader.vue';
 
     const props = defineProps(['uid']);
     const user = ref(null);
@@ -39,9 +41,7 @@
         <UserCard :user="user" :active="false"/>
     </div>
 
-    <div v-else>
-        Loading......
-    </div>
+    <Loader v-else/>
 </template>
 
 <style scoped>

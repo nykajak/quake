@@ -5,8 +5,8 @@
     import Pagination from './Pagination.vue';
     import { useRouter } from 'vue-router';
 
-    import { RouterLink } from 'vue-router';
     import UserCard from './UserCard.vue';
+    import Loader from './Loader.vue';
 
     const route = useRoute();
     const router = useRouter();
@@ -51,9 +51,7 @@
         <Pagination :interval-start="1" :interval-length="2"/>
     </div>
 
-    <div v-else>
-        Loading......
-    </div>
+    <Loader v-else/>
 </template>
 
 <style scoped>
