@@ -1,50 +1,36 @@
 <script setup>
     import { api } from '@/api';
-    import { ref } from 'vue';
-    import { useRoute } from 'vue-router';
-    import Pagination from './Pagination.vue';
+    import { defineProps, ref } from 'vue';
 
-    import { RouterLink } from 'vue-router';
-
-    const route = useRoute();
-    const users = ref([]);
+    const props = defineProps(['uid']);
+    const user = ref([]);
     const loading = ref(false);
 
     async function fetchUsers(){
-        let page = route.query["page"] ?? 1;
-        let per_page = route.query["per_page"] ?? 5 ;
         loading.value = true;
-        let res = await api.get(`/admin/users/?page=${page}&per_page=${per_page}`);
+        let res = await api.get(`/admin/users/${props.uid}`);
         loading.value = false;
         return res.data.payload
     }
 
     fetchUsers().then(data => {
         console.log(data);
-        users.value = data;
+        user.value = data;
     })
 </script>
 
 <template>
     <div v-if="loading == false">
-        <div class="results-div">
-            <div class="user-card-div" v-for="u in users">
-                <div class="profile-div">
-    
-                </div>
-    
-                <div class="info-div">
-                    <h3>
-                        <RouterLink :to="`users/`+u.id">
-                            {{ u.name }}
-                        </RouterLink>
-                    </h3>
-                    <div class="email-div">{{u.email}}</div>
-                </div>
+        <div class="user-card-div">
+            <div class="profile-div">
+
+            </div>
+
+            <div class="info-div">
+                <h3>{{ user.name }}</h3>
+                <div class="email-div">{{user.email}}</div>
             </div>
         </div>
-    
-        <Pagination :interval-start="1" :interval-length="2"/>
     </div>
 
     <div v-else>

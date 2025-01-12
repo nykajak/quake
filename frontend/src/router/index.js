@@ -2,10 +2,11 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Login from '@/pages/Login.vue'
 import About from '@/pages/About.vue'
 import Register from '@/pages/Register.vue'
-import AdminDashboard from '@/pages/AdminDashboard.vue'
+import AdminDashboard from '@/pages/admin/AdminDashboard.vue'
 import NotFound from '@/pages/NotFound.vue'
 
 import AdminUsers from '@/components/AdminUsers.vue'
+import AdminUser from '@/components/AdminUser.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -32,7 +33,12 @@ const router = createRouter({
       children: [
         {
           path:"users",
-          component: AdminUsers
+          component: AdminUsers,
+        },
+        {
+          path: "users/:uid",
+          component: AdminUser,
+          props: true,
         }
       ]
     },

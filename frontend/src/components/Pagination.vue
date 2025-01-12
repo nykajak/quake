@@ -17,7 +17,7 @@ const route = useRoute();
                 router.push({path: '/admin/users', query : {
                 'page': intervalStart + n - 1,
             }})
-            }" :class="{current:intervalStart + n - 1 == route.query.page ?? 1}">
+            }" :class="{current:intervalStart + n - 1 == (route.query.page ?? 1)}">
                 {{ intervalStart + n - 1 }}
             </button>
         </div>

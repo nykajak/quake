@@ -22,7 +22,7 @@ def all_users():
 @jwt_required()
 @admin_required
 def specific_users(id):
-    u = User.query.filter(User.id == id).scalar()
+    u = User.query.filter(User.id == id, User.is_admin == 0).scalar()
     if u:
         return jsonify(payload=u.serialise())
     return jsonify(msg="No such user found!"),400
