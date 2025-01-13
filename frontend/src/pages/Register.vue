@@ -1,10 +1,15 @@
 <script setup>
-import { api } from '@/api';
 import { ref } from 'vue';
 import { useRouter, RouterLink } from 'vue-router'
+
+import { api } from '@/api';
+
 import Header from '@/components/Header/Header.vue';
 
 const router = useRouter()
+const RegisterMsg = ref("");
+const RegisterStatus = ref(0);
+
 async function validateForm(e){
     try{
         let res = await api.post("/register",new FormData(e.target));
@@ -18,9 +23,6 @@ async function validateForm(e){
         RegisterStatus.value = 0;
     }
 }
-
-const RegisterMsg = ref("");
-const RegisterStatus = ref(0);
 
 </script>
 

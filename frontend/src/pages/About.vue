@@ -1,21 +1,5 @@
 <script setup>
     import Header from '@/components/Header/Header.vue';
-
-    import { api } from '@/api';
-    async function test(){
-        try{
-            let res = await api.get("/user/");
-            return res.data
-        }
-        catch(err){
-            console.log(err);
-            return 0;
-        }
-    }
-
-    test().then(data => {
-        console.log(data);
-    })
 </script>
 
 <template>
@@ -63,7 +47,7 @@
                     </div>
                 </div>
             </div>
-    </div> 
+        </div> 
     </div>
 </template>
 

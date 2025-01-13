@@ -1,7 +1,8 @@
 <script setup>
-import { RouterLink } from 'vue-router';
-import {useThemeStore} from "@/stores/theme.js"
 import { onMounted } from 'vue';
+import { RouterLink } from 'vue-router';
+
+import {useThemeStore} from "@/stores/theme.js"
 
 import Logout from '../Utility/Logout.vue';
 import ToggleDark from '../Utility/ToggleDark.vue';
@@ -88,6 +89,5 @@ function toggle(){
 .nav-link:hover {
     color: var(--primary-color);
 }
-
 
 </style>

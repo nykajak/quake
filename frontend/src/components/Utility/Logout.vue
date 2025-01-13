@@ -3,20 +3,8 @@ import { useRouter,useRoute } from 'vue-router';
 import { api } from '@/api';
 
 const router = useRouter()
-async function sendReq(){
-    
-    try{
-        let res = await api.get("/");
-        return res.data.msg
-    }
-    catch(err){
-        console.log(err)
-        return "Something went wrong!"
-    }
-}
-
 async function sendLogout(){
-    let res = await api.post("/logout");
+    await api.post("/logout");
     router.push({"name":"login"})
 }
 

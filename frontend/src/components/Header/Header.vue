@@ -1,10 +1,10 @@
 <script setup>
-import { RouterLink } from 'vue-router';
-import {useThemeStore} from "@/stores/theme.js"
 import { onMounted } from 'vue';
+import { RouterLink } from 'vue-router';
+
+import {useThemeStore} from "@/stores/theme.js"
 
 import ToggleDark from '../Utility/ToggleDark.vue';
-
 
 const themeStore = useThemeStore();
 onMounted(() => {

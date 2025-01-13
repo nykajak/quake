@@ -1,17 +1,18 @@
 <script setup>
-    import { api } from '@/api';
     import { defineProps, ref } from 'vue';
     import { useRouter } from 'vue-router';
     
+    import { api } from '@/api';
+
     import UserCard from './UserCard.vue';
     import Loader from '../Utility/Loader.vue';
 
+    const router = useRouter();
     const props = defineProps(['uid']);
+    
     const user = ref(null);
     const loading = ref(false);
     const ready = ref(false);
-
-    const router = useRouter();
 
     async function fetchUsers(){
         try{

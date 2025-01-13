@@ -1,8 +1,8 @@
 <script setup>
-    import { api } from '@/api';
     import { ref } from 'vue';
-    import { useRoute } from 'vue-router';
-    import { useRouter } from 'vue-router';
+    import { useRoute, useRouter } from 'vue-router';
+    
+    import { api } from '@/api';
     
     import Pagination from '../Utility/Pagination.vue';
     import UserCard from './UserCard.vue';
