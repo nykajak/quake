@@ -16,7 +16,7 @@ def all_subjects():
     query = Subject.query.filter().paginate(page=page,per_page=per_page,max_per_page=10)
     res = [s.serialise() for s in query]
     
-    return jsonify(payload=res)
+    return jsonify(payload=res,pages=query.pages)
 
 @admin_subject_routes.get("/<id>")
 @jwt_required()

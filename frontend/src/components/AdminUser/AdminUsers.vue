@@ -12,6 +12,7 @@
     const router = useRouter();
 
     const users = ref([]);
+    const numPages = ref(0);
     const loading = ref(false);
     const ready = ref(false);
 
@@ -21,6 +22,7 @@
             let per_page = route.query["per_page"] ?? 5 ;
             loading.value = true;
             let res = await api.get(`/admin/users/?page=${page}&per_page=${per_page}`);
+            numPages.value = res.data.pages
             loading.value = false;
             return res.data.payload
         }
@@ -48,7 +50,7 @@
             </template>
         </div>
     
-        <Pagination :interval-start="1" :interval-length="2" type="users"/>
+        <Pagination :interval-start="1" :interval-length="numPages" type="users"/>
     </div>
 
     <Loader v-else/>

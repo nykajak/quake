@@ -16,7 +16,7 @@ def all_users():
     query = User.query.filter(User.is_admin == 0).paginate(page=page,per_page=per_page,max_per_page=10)
     res = [u.serialise() for u in query]
     
-    return jsonify(payload=res)
+    return jsonify(payload=res,pages=query.pages)
 
 @admin_user_routes.get("/<id>")
 @jwt_required()

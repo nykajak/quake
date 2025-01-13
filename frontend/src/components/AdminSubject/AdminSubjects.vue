@@ -12,6 +12,7 @@
     const router = useRouter();
     
     const subjects = ref([]);
+    const numPages = ref(0);
     const loading = ref(false);
     const ready = ref(false);
 
@@ -22,6 +23,7 @@
             loading.value = true;
             let res = await api.get(`/admin/subjects/?page=${page}&per_page=${per_page}`);
             loading.value = false;
+            numPages.value = res.data.pages
             return res.data.payload;
         }
 
@@ -49,7 +51,7 @@
             </template>
         </div>
     
-        <Pagination :interval-start="1" :interval-length="6" type="subjects"/>
+        <Pagination :interval-start="1" :interval-length="numPages" type="subjects"/>
     </div>
 
     <Loader v-else/>
