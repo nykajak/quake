@@ -4,7 +4,7 @@
     import { useRouter } from 'vue-router';
     
     import UserCard from './UserCard.vue';
-    import Loader from './Loader.vue';
+    import Loader from '../Utility/Loader.vue';
 
     const props = defineProps(['uid']);
     const user = ref(null);

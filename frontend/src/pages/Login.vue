@@ -2,7 +2,7 @@
 import { api } from '@/api';
 import { ref } from 'vue';
 import { useRouter, RouterLink } from 'vue-router'
-import Header from '@/components/Header.vue';
+import Header from '@/components/Header/Header.vue';
 
 const router = useRouter()
 async function validateForm(e){

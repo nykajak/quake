@@ -2,11 +2,11 @@
     import { api } from '@/api';
     import { ref } from 'vue';
     import { useRoute } from 'vue-router';
-    import Pagination from './Pagination.vue';
     import { useRouter } from 'vue-router';
-
+    
+    import Pagination from '../Utility/Pagination.vue';
     import UserCard from './UserCard.vue';
-    import Loader from './Loader.vue';
+    import Loader from '../Utility/Loader.vue';
 
     const route = useRoute();
     const router = useRouter();

@@ -2,7 +2,8 @@
 import { RouterLink } from 'vue-router';
 import {useThemeStore} from "@/stores/theme.js"
 import { onMounted } from 'vue';
-import ToggleDark from './ToggleDark.vue';
+
+import ToggleDark from '../Utility/ToggleDark.vue';
 
 
 const themeStore = useThemeStore();

@@ -1,5 +1,5 @@
 <script setup>
-import AdminHeader from '@/components/AdminHeader.vue';
+import AdminHeader from '@/components/Header/AdminHeader.vue';
 import { RouterView } from 'vue-router';
 </script>
 
