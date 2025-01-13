@@ -7,6 +7,8 @@ import NotFound from '@/pages/NotFound.vue'
 import AdminDashboard from '@/pages/admin/AdminDashboard.vue'
 import AdminUsers from '@/components/AdminUser/AdminUsers.vue'
 import AdminUser from '@/components/AdminUser/AdminUser.vue'
+import AdminSubjects from '@/components/AdminSubject/AdminSubjects.vue'
+import AdminSubject from '@/components/AdminSubject/AdminSubject.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -38,6 +40,15 @@ const router = createRouter({
         {
           path: "users/:uid",
           component: AdminUser,
+          props: true,
+        },
+        {
+          path:"subjects",
+          component: AdminSubjects,
+        },
+        {
+          path: "subjects/:sid",
+          component: AdminSubject,
           props: true,
         }
       ]

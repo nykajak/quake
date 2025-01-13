@@ -48,7 +48,7 @@
             </template>
         </div>
     
-        <Pagination :interval-start="1" :interval-length="2"/>
+        <Pagination :interval-start="1" :interval-length="2" type="users"/>
     </div>
 
     <Loader v-else/>
