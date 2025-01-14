@@ -6,7 +6,6 @@ const props = defineProps(['intervalStart','intervalLength','type'])
 import { useRouter, useRoute } from 'vue-router';
 const router = useRouter();
 const route = useRoute();
-
 </script>
 
 <template>
@@ -14,7 +13,8 @@ const route = useRoute();
         <div class="p-2" v-for="n in intervalLength">
             <button @click="() => {
                 router.push({path: `/admin/${type}`, query : {
-                'page': intervalStart + n - 1,
+                ...route.query,
+                'page': intervalStart + n - 1
             }})
             }" :class="{current:intervalStart + n - 1 == (route.query.page ?? 1)}">
                 {{ intervalStart + n - 1 }}
