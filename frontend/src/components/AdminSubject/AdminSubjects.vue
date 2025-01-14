@@ -51,12 +51,12 @@
             <div class="d-flex flex-column border w-25 justify-content-center align-items-center">
                 <h3>Querying subjects</h3>
                 <div class="mb-2">
-                    <input type="text" v-model="username" placeholder="Username">
+                    <input type="text" v-model="subjectname" placeholder="Username">
                     <button @click="router.push({
                         'path': 'subjects',
                         'query': {
                             ...route.query,
-                            'q': username,
+                            'q': subjectname,
                             'page': 1
                         }
                     })">Submit</button>
