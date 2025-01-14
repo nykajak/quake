@@ -33,7 +33,7 @@ function toggle(){
                 <RouterLink class="nav-link" to="/admin/users"><strong>Users</strong></RouterLink>
             </div>
             <div class="nav-div">
-                <RouterLink class="nav-link" to="/"><strong>Subjects</strong></RouterLink>
+                <RouterLink class="nav-link" to="/admin/subjects"><strong>Subjects</strong></RouterLink>
             </div>
         </div>
 

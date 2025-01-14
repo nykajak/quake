@@ -43,14 +43,18 @@
 </script>
 
 <template>
-    <div v-if="loading == false">
-        <div class="results-div">
-            <template v-for="user in users">
-                <UserCard :user="user" :active="true"/>
-            </template>
+    <div v-if="loading == false" class="d-flex flex-column flex-grow-1">
+        <div class="d-flex flex-column flex-grow-1">
+            <div class="results-div">
+                <template v-for="user in users">
+                    <UserCard :user="user" :active="true"/>
+                </template>
+            </div>
         </div>
-    
-        <Pagination :interval-start="1" :interval-length="numPages" type="users"/>
+        
+        <div class="d-flex justify-content-center">
+            <Pagination :interval-start="1" :interval-length="numPages" type="users"/>
+        </div>
     </div>
 
     <Loader v-else/>
