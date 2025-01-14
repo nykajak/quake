@@ -12,8 +12,12 @@ admin_subject_routes = Blueprint('admin_subject_routes', __name__, url_prefix="/
 def all_subjects():
     page = int(request.args.get("page",1))
     per_page = int(request.args.get("per_page",5))
+    q = request.args.get("q",None)
 
-    query = Subject.query.filter().paginate(page=page,per_page=per_page,max_per_page=10)
+    if not q:
+        query = Subject.query.filter().paginate(page=page,per_page=per_page,max_per_page=10)
+    else:
+        query = Subject.query.filter(Subject.name.startswith(q)).paginate(page=page,per_page=per_page,max_per_page=10)
     res = [s.serialise() for s in query]
     
     return jsonify(payload=res,pages=query.pages)
