@@ -15,6 +15,7 @@
     const numPages = ref(0);
     const loading = ref(false);
     const ready = ref(false);
+    const subjectname = ref(route.query.q ?? '');
 
     async function fetchSubjects(){
         try{
@@ -46,16 +47,33 @@
 
 <template>
     <div v-if="loading == false" class="d-flex flex-column flex-grow-1">
-        <div class="d-flex flex-column flex-grow-1">
-            <div class="results-div">
-                <template v-for="subject in subjects">
-                    <SubjectCard :subject="subject" :active="true"/>
-                </template>
+        <div class="d-flex flex-row h-100">
+            <div class="d-flex flex-column border w-25 justify-content-center align-items-center">
+                <h3>Querying subjects</h3>
+                <div class="mb-2">
+                    <input type="text" v-model="username" placeholder="Username">
+                    <button @click="router.push({
+                        'path': 'subjects',
+                        'query': {
+                            ...route.query,
+                            'q': username,
+                            'page': 1
+                        }
+                    })">Submit</button>
+                </div>
             </div>
-        </div>
-
-        <div class="d-flex justify-content-center">
-            <Pagination :interval-start="1" :interval-length="numPages" type="subjects"/>
+            <div class="d-flex flex-column w-75">
+                <div class="d-flex flex-column flex-grow-1 justify-content-center">
+                    <div class="results-div">
+                        <template v-for="subject in subjects">
+                            <SubjectCard :subject="subject" :active="true"/>
+                        </template>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-center">
+                    <Pagination :interval-start="1" :interval-length="numPages" type="subjects"/>
+                </div>
+            </div>
         </div>
     </div>
 
