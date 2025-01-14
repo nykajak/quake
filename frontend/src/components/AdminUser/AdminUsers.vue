@@ -20,8 +20,9 @@
         try{
             let page = route.query["page"] ?? 1;
             let per_page = route.query["per_page"] ?? 5 ;
+            let q = route.query["q"] ?? "";
             loading.value = true;
-            let res = await api.get(`/admin/users/?page=${page}&per_page=${per_page}`);
+            let res = await api.get(`/admin/users/?page=${page}&per_page=${per_page}&q=${q}`);
             numPages.value = res.data.pages
             loading.value = false;
             return res.data.payload
