@@ -41,8 +41,9 @@
     <div v-if="loading == false && ready == true" class="d-flex flex-column flex-grow-1">
         <SubjectCard :subject="subject" :active="false"/>
         <div class="d-flex flex-column align-items-center mt-3 flex-grow-1">
+            <h1>Chapters</h1>
             <div class="d-flex flex-column align-items-center" v-for="chapter in subject.chapters">
-                <h4>{{ chapter.name }}</h4>
+                <h6>{{ chapter.name }}</h6>
                 <p>{{ chapter.description ?? 'No description given!' }}</p>
             </div>
         </div>

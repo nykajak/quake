@@ -41,8 +41,9 @@
     <div v-if="loading == false && ready == true" class="d-flex flex-column flex-grow-1">
         <UserCard :user="user" :active="false"/>
         <div class="d-flex flex-column align-items-center mt-3 flex-grow-1">
+            <h2>Subjects</h2>
             <div class="d-flex flex-column align-items-center" v-for="subject in user.subjects">
-                <h4>{{ subject.name }}</h4>
+                <h6>{{ subject.name }}</h6>
             </div>
         </div>
     </div>
