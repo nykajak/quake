@@ -38,8 +38,14 @@
 </script>
 
 <template>
-    <div v-if="loading == false && ready == true">
+    <div v-if="loading == false && ready == true" class="d-flex flex-column flex-grow-1">
         <SubjectCard :subject="subject" :active="false"/>
+        <div class="d-flex flex-column align-items-center mt-3 flex-grow-1 border">
+            <div class="d-flex flex-column align-items-center" v-for="chapter in subject.chapters">
+                <h4>{{ chapter.name }}</h4>
+                <p>{{ chapter.description ?? 'No description given!' }}</p>
+            </div>
+        </div>
     </div>
 
     <Loader v-else/>

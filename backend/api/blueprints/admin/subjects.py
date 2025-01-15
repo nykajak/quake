@@ -28,7 +28,7 @@ def all_subjects():
 def specific_subjects(id):
     s = Subject.query.filter(Subject.id == id).scalar()
     if s:
-        return jsonify(payload=s.serialise())
+        return jsonify(payload=s.serialise(required=['chapters']))
     
     return jsonify(msg="No such subject found!"),400
 
