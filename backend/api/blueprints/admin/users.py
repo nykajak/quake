@@ -28,7 +28,7 @@ def all_users():
 def specific_users(id):
     u = User.query.filter(User.id == id, User.is_admin == 0).scalar()
     if u:
-        return jsonify(payload=u.serialise())
+        return jsonify(payload=u.serialise(required=['subjects']))
     return jsonify(msg="No such user found!"),400
 
 @admin_user_routes.get("/<id>/subjects")
