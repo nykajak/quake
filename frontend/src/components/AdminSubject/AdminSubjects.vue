@@ -48,11 +48,11 @@
 <template>
     <div v-if="loading == false" class="d-flex flex-column flex-grow-1">
         <div class="d-flex flex-row h-100">
-            <div class="d-flex flex-column border w-25 justify-content-center align-items-center">
+            <div class="subject-sidebar d-flex flex-column w-25 justify-content-center align-items-center">
                 <h3>Querying subjects</h3>
                 <div class="mb-2">
-                    <input type="text" v-model="subjectname" placeholder="Username">
-                    <button @click="router.push({
+                    <input type="text" v-model="subjectname" placeholder="Subject">
+                    <button class="query-button" @click="router.push({
                         'path': 'subjects',
                         'query': {
                             ...route.query,
@@ -86,5 +86,19 @@
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
+}
+
+.subject-sidebar{
+    border-right: 1px solid light-dark(var(--dark-color),var(--light-color));
+}
+
+.query-button{
+    border: 1px solid light-dark(var(--dark-color),var(--light-color));
+    background-color: var(--secondary-color);
+    color: var(--light-color);
+}
+
+input {
+    padding-left: 0.5em;
 }
 </style>
