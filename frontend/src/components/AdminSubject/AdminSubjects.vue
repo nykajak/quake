@@ -71,7 +71,7 @@
                     </div>
                 </div>
                 <div class="d-flex justify-content-center">
-                    <Pagination :interval-start="1" :interval-length="numPages" type="subjects"/>
+                    <Pagination :pages="numPages" type="subjects"/>
                 </div>
             </div>
         </div>
