@@ -38,12 +38,22 @@
 </script>
 
 <template>
-    <div v-if="loading == false && ready == true" class="d-flex flex-column flex-grow-1">
-        <UserCard :user="user" :active="false"/>
-        <div class="d-flex flex-column align-items-center mt-3 flex-grow-1">
+    <div v-if="loading == false && ready == true" class="d-flex flex-row flex-grow-1 mt-4">
+        <div class="d-flex flex-column border w-25">
+            <UserCard :user="user" :active="false" class="border"/>
+        </div>
+
+        <div class="d-flex flex-column align-items-center w-75 border">
             <h2>Subjects</h2>
-            <div class="d-flex flex-column align-items-center" v-for="subject in user.subjects">
-                <h6>{{ subject.name }}</h6>
+            <div class="d-flex w-100">
+                <div class="d-flex flex-row align-items-center w-100 border p-3" v-for="subject in user.subjects">
+                    <div class="d-flex justify-content-center flex-grow-1">
+                        <h5>{{ subject.name }}</h5>
+                    </div>
+                    <div class="d-flex h-100">
+                        <button>v</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
