@@ -38,7 +38,7 @@
 </script>
 
 <template>
-    <div v-if="loading == false && ready == true" class="d-flex flex-column flex-grow-1">
+    <div v-if="loading == false && ready == true" class="d-flex flex-column flex-grow-1 mt-2">
         <SubjectCard :subject="subject" :active="false"/>
         <div class="d-flex flex-column align-items-center mt-3 flex-grow-1">
             <h1>Chapters</h1>
