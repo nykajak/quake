@@ -40,18 +40,22 @@
 <template>
     <div v-if="loading == false && ready == true" class="d-flex flex-row flex-grow-1 mt-4">
         <div class="d-flex flex-column border w-25">
-            <UserCard :user="user" :active="false" class="border"/>
+            <UserCard :user="user" :active="false"/>
         </div>
 
-        <div class="d-flex flex-column align-items-center w-75 border">
-            <h2>Subjects</h2>
-            <div class="d-flex w-100">
-                <div class="d-flex flex-row align-items-center w-100 border p-3" v-for="subject in user.subjects">
-                    <div class="d-flex justify-content-center flex-grow-1">
-                        <h5>{{ subject.name }}</h5>
+        <div class="d-flex flex-column align-items-center w-75 border pt-3">
+            <h2 class="heading">Subjects</h2>
+            <div class="d-flex w-100 justify-content-center">
+                <div class="d-flex flex-row align-items-center p-3 w-100 justify-content-center border" v-for="subject in user.subjects">
+                    <div>
+                        <h5 class="subject-heading">{{ subject.name }}</h5>
                     </div>
-                    <div class="d-flex h-100">
-                        <button>v</button>
+                    <div>
+                        <h5>
+                            <button class="dropdown">	
+                                &#9656;
+                            </button>
+                        </h5>
                     </div>
                 </div>
             </div>
@@ -62,4 +66,18 @@
 </template>
 
 <style scoped>
+.subject-heading{
+    font-size: 2em;
+    padding-right: 0.3em;
+}
+.heading{
+    color: var(--secondary-color);
+}
+.dropdown{
+    display: flex;
+    color: var(--secondary-color);
+    background-color: light-dark(var(--light-color),var(--dark-color));
+    border: none;
+    font-size: 2em;
+}
 </style>
