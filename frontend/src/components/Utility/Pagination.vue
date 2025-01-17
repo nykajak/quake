@@ -52,4 +52,10 @@ if (route.query.page){
     color: var(--light-color);
     background-color: var(--secondary-color);
 }
+
+button {
+    border-radius: 5px;
+    padding-left: 0.7em;
+    padding-right: 0.7em;
+}
 </style>
