@@ -42,8 +42,8 @@
         <SubjectCard :subject="subject" :active="false"/>
         <div class="d-flex flex-column align-items-center mt-3 flex-grow-1">
             <h1>Chapters</h1>
-            <div class="d-flex flex-column align-items-center" v-for="chapter in subject.chapters">
-                <h6>{{ chapter.name }}</h6>
+            <div class="d-flex flex-column align-items-center m-2" v-for="chapter in subject.chapters">
+                <h1>{{ chapter.name }}</h1>
                 <p>{{ chapter.description ?? 'No description given!' }}</p>
             </div>
         </div>
