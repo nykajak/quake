@@ -32,6 +32,16 @@ def specific_subjects(id):
     
     return jsonify(msg="No such subject found!"),400
 
+@admin_subject_routes.get("/<id>/enrolled")
+@jwt_required()
+@admin_required
+def see_enrolled(id):
+    s = Subject.query.filter(Subject.id == id).scalar()
+    if s:
+        return jsonify(payload=s.serialise(required=['users']))
+    
+    return jsonify(msg="No such subject found!"),400
+
 @admin_subject_routes.post("/")
 @jwt_required()
 @admin_required
