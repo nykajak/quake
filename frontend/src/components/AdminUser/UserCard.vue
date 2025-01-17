@@ -12,14 +12,14 @@ const props = defineProps(['user','active']);
             </div>
     
             <div class="info-div">
-                <h3 v-if="active == true">
+                <h1 v-if="active == true">
                     <RouterLink :to="'users/'+user.id">
                         {{ props.user.name }}
                     </RouterLink>
-                </h3>
-                <h3 v-else>
+                </h1>
+                <h1 v-else>
                     {{ props.user.name }}
-                </h3>
+                </h1>
                 <div class="email-div">{{props.user.email}}</div>
             </div>
         </div>
@@ -51,5 +51,6 @@ const props = defineProps(['user','active']);
 
 .email-div{
     color: var(--contrast-color);
+    font-size: 1.5em;
 }
 </style>

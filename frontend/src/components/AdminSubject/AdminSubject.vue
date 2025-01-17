@@ -40,11 +40,10 @@
 <template>
     <div v-if="loading == false && ready == true" class="d-flex flex-column flex-grow-1 mt-2">
         <SubjectCard :subject="subject" :active="false"/>
-        <div class="d-flex flex-column align-items-center mt-3 flex-grow-1">
-            <h1>Chapters</h1>
+        <div class="chapters">
+            <h1 class="heading">Chapters</h1>
             <div class="d-flex flex-column align-items-center m-2" v-for="chapter in subject.chapters">
-                <h1>{{ chapter.name }}</h1>
-                <p>{{ chapter.description ?? 'No description given!' }}</p>
+                <h1 class="chapter-heading">{{ chapter.name }}</h1>
             </div>
         </div>
     </div>
@@ -53,4 +52,22 @@
 </template>
 
 <style scoped>
+
+.chapters{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 1em;
+    flex-grow: 1;
+    border-top: 1px solid light-dark(var(--dark-color),var(--light-color));
+}
+
+.heading{
+    color: var(--secondary-color);
+    font-size: 3em;
+}
+
+.chapter-heading{
+    font-size: 2.5em;
+}
 </style>

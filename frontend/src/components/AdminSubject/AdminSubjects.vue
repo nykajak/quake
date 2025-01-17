@@ -47,10 +47,10 @@
 
 <template>
     <div v-if="loading == false" class="d-flex flex-column flex-grow-1">
-        <div class="d-flex flex-row h-100">
-            <div class="subject-sidebar d-flex flex-column w-25 justify-content-center align-items-center">
+        <div class="d-flex flex-column align-items-center">
+            <div class="subject-sidebar d-flex flex-column w-25 text-center justify-content-center align-items-center">
                 <h3>Querying subjects</h3>
-                <div class="mb-2">
+                <div class="d-flex mb-2">
                     <input type="text" v-model="subjectname" placeholder="Subject">
                     <button class="query-button" @click="router.push({
                         'path': 'subjects',
@@ -65,9 +65,9 @@
             <div class="d-flex flex-column w-75">
                 <div class="d-flex flex-column flex-grow-1 justify-content-center">
                     <div class="results-div">
-                        <template v-for="subject in subjects">
+                        <div v-for="subject in subjects" class="mb-2">
                             <SubjectCard :subject="subject" :active="true"/>
-                        </template>
+                        </div>
                     </div>
                 </div>
                 <div class="d-flex justify-content-center">
@@ -89,7 +89,7 @@
 }
 
 .subject-sidebar{
-    border-right: 1px solid light-dark(var(--dark-color),var(--light-color));
+    margin-top: 1em;
 }
 
 .query-button{

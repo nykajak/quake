@@ -6,14 +6,14 @@
 
 <template>
     <div class="d-flex flex-column justify-content-center align-items-center text-center">
-        <h3 v-if="active == true">
+        <h1 v-if="active == true">
                 <RouterLink :to="'subjects/'+subject.id">
                     {{ props.subject.name }}
                 </RouterLink>
-        </h3>
-        <h3 v-else>
+        </h1>
+        <h1 v-else>
             {{ props.subject.name }}
-        </h3>
+        </h1>
         <p v-if="props.subject.description">
             {{ props.subject.description }}
         </p>
@@ -24,4 +24,10 @@
 </template>
 
 <style scoped>
+h1{
+    color: var(--secondary-color);
+}
+p{
+    font-size: 1.5em;
+}
 </style>

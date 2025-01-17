@@ -46,10 +46,10 @@
 
 <template>
     <div v-if="loading == false" class="d-flex flex-column flex-grow-1">
-        <div class="d-flex flex-row h-100">
-            <div class="d-flex flex-column user-sidebar w-25 justify-content-center align-items-center">
+        <div class="d-flex flex-column align-items-center">
+            <div class="d-flex flex-column user-sidebar w-25 justify-content-start align-items-center text-center">
                 <h3>Querying users</h3>
-                <div class="mb-2">
+                <div class="d-flex mb-2">
                     <input type="text" v-model="username" placeholder="Username">
                     <button class="query-button" @click="router.push({
                         'path': 'users',
@@ -89,7 +89,7 @@
     justify-content: center;
 }
 .user-sidebar{
-    border-right: 1px solid light-dark(var(--dark-color),var(--light-color));
+    margin-top: 1em;
 }
 
 .query-button{
