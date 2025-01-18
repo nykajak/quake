@@ -248,11 +248,35 @@ def specific_question(sid,cid,qid):
 def add_question(sid,cid):
     """
         Add new question.
-        POST http://localhost:5000/admin/subjects/:sid/chapters/:cid/questions/:qid
+        POST http://localhost:5000/admin/subjects/:sid/chapters/:cid/questions
 
         Expected on success: Question creation
     """
-    pass
+    
+    description = request.form.get("description", None)
+    correct = int(request.form.get("correct", -1))
+    marks = request.form.get("marks",None)
+    
+    options = []
+    for i in range(4):
+        o = request.form.get(f"options[{i}]", None)
+        if o is None:
+            return jsonify(msg="Malformed request!"),400
+        
+        options.append(o)
+
+    if description is None or correct == -1 or marks is None:
+        return jsonify(msg="Malformed request!"),400
+
+    c = Chapter.query.filter(Chapter.id == cid, Chapter.subject_id == sid)
+    if c is None:
+        return jsonify(msg="Subject or chapter not found!"),400
+    
+    q = Question(description=description,options="#".join(options),correct = correct, marks = marks, chapter_id = cid)
+    db.session.add(q)
+    db.session.commit()
+
+    return jsonify(msg="Question created successfully!"),200
 
 
     
