@@ -6,10 +6,21 @@ from sqlalchemy.exc import IntegrityError
 
 admin_subject_routes = Blueprint('admin_subject_routes', __name__, url_prefix="/subjects")
 
+
 @admin_subject_routes.get("/")
 @jwt_required()
 @admin_required
 def all_subjects():
+    """
+        LIVE
+        See all subjects.
+        GET http://localhost:5000/admin/subjects/
+
+        Query string args: page, per_page and q (for filtering)
+
+        Expected on success: List of all subjects according to query.
+    """
+    
     page = int(request.args.get("page",1))
     per_page = int(request.args.get("per_page",5))
     q = request.args.get("q",None)
@@ -26,19 +37,16 @@ def all_subjects():
 @jwt_required()
 @admin_required
 def specific_subjects(id):
+    """
+        LIVE
+        See specific subject.
+        GET http://localhost:5000/admin/subjects/:id
+
+        Expected on success: Specific subject details with chapter information
+    """
     s = Subject.query.filter(Subject.id == id).scalar()
     if s:
         return jsonify(payload=s.serialise(required=['chapters']))
-    
-    return jsonify(msg="No such subject found!"),400
-
-@admin_subject_routes.get("/<id>/enrolled")
-@jwt_required()
-@admin_required
-def see_enrolled(id):
-    s = Subject.query.filter(Subject.id == id).scalar()
-    if s:
-        return jsonify(payload=s.serialise(required=['users']))
     
     return jsonify(msg="No such subject found!"),400
 
@@ -46,6 +54,14 @@ def see_enrolled(id):
 @jwt_required()
 @admin_required
 def add_subject():
+    """
+        Add new subject.
+        POST http://localhost:5000/admin/subjects
+
+        Request body: name,description,credits
+
+        Expected on success: Creation of new Subject in db
+    """
     name = request.form.get("name",None)
     description = request.form.get("description",None)
     credits = int(request.form.get("credits",0))
@@ -62,11 +78,20 @@ def add_subject():
     except IntegrityError as e:
         return jsonify(msg="Name is not unique!"),400
     
-@admin_subject_routes.get("/<id>/chapters")
+
+
+
+@admin_subject_routes.get("/<sid>/chapters")
 @jwt_required()
 @admin_required
-def all_chapters(id):
-    s = Subject.query.filter(Subject.id == id).scalar()
+def all_chapters(sid):
+    """
+        See chapters of a particular subject.
+        GET http://localhost:5000/admin/subjects/:sid/chapters
+
+        Expected on success: Subject details along with list of chapters
+    """
+    s = Subject.query.filter(Subject.id == sid).scalar()
     if s:
         return jsonify(payload = s.serialise(required=("chapters")))
     
@@ -76,11 +101,15 @@ def all_chapters(id):
 @jwt_required()
 @admin_required
 def specific_chapter(sid,cid):
-    s = Subject.query.filter(Subject.id == sid).scalar()
-    c = Chapter.query.filter(Chapter.id == cid).scalar()
-    if s and c:
-        if c in s.chapters:
-            return jsonify(payload = c.serialise())
+    """
+        See particular chapter information.
+        GET http://localhost:5000/admin/subjects/:sid/chapters/:cid
+
+        Expected on success: Chapter details
+    """
+    c = Chapter.query.filter(Chapter.id == cid, Chapter.subject_id == sid).scalar()
+    if c:
+        return jsonify(payload = c.serialise())
     
     return jsonify(msg="Subject or chapter not found!"),400
 
@@ -88,9 +117,14 @@ def specific_chapter(sid,cid):
 @jwt_required()
 @admin_required
 def add_chapter(sid):
-    s = Subject.query.filter(Subject.id == sid).scalar()
-    if s is None:
-        return jsonify(msg="Subject not found!"),400
+    """
+        Add chapter.
+        POST http://localhost:5000/admin/subjects/:sid/chapters
+
+        Request body: name, description
+
+        Expected on success: Chapter creation
+    """
     
     name = request.form.get("name",None)
     description = request.form.get("description",None)
@@ -98,31 +132,68 @@ def add_chapter(sid):
     if name is None:
         return jsonify(msg="Malformed request!"),400
     
+    s = Subject.query.filter(Subject.id == sid).scalar()
+    if s is None:
+        return jsonify(msg="Subject not found!"),400
+    
     c = Chapter(name = name, description = description, subject_id = sid)
     db.session.add(c)
     db.session.commit()
     
     return jsonify(msg="Chapter created!"),200
 
+
+
+
 @admin_subject_routes.get("/<sid>/chapters/<cid>/quizes")
 @jwt_required()
 @admin_required
 def all_quizes(sid,cid):
-    s = Subject.query.filter(Subject.id == sid).scalar()
-    c = Chapter.query.filter(Chapter.id == cid).scalar()
-    if s and c:
-        if c in s.chapters:
-            return jsonify(payload = c.serialise(required=("quizes")))
+    """
+        See quizes of a particular chapter.
+        GET http://localhost:5000/admin/subjects/:sid/chapters/:cid/quizes
+
+        Expected on success: Chapter details along with list of quizes
+    """
+
+    c = Chapter.query.filter(Chapter.id == cid, Chapter.subject_id == sid).scalar()
+    if c:
+        return jsonify(payload = c.serialise(required=("quizes")))
     
     return jsonify(msg="Subject or chapter not found!"),400
+
+@admin_subject_routes.get("/<sid>/chapters/<cid>/quizes/<qid>")
+@jwt_required()
+@admin_required
+def specific_quiz(sid,cid,qid):
+    """
+        See specific quiz details.
+        GET http://localhost:5000/admin/subjects/:sid/chapters/:cid/quizes/:qid
+
+        Expected on success: Specific quiz details
+    """
+    q = Quiz.query.filter(Quiz.id == qid, Quiz.chapter_id == cid).scalar()
+
+    if q and q.chapter.subject_id == sid:
+        return jsonify(payload = q.serialise())
+    
+    return jsonify(msg="Subject, chapter or quiz not found!"),400
 
 @admin_subject_routes.post("/<sid>/chapters/<cid>/quizes")
 @jwt_required()
 @admin_required
 def add_quiz(sid,cid):
-    s = Subject.query.filter(Subject.id == sid).scalar()
-    c = Chapter.query.filter(Chapter.id == cid).scalar()
-    if s and c:
+    """
+        Add new quiz.
+        POST http://localhost:5000/admin/subjects/:sid/chapters/:cid/quizes
+
+        Request Body: dated, duration, description
+
+        Expected on success: Quiz object created in db
+    """
+
+    c = Chapter.query.filter(Chapter.id == cid, Chapter.subject_id == sid).scalar()
+    if c:
         dated = request.form.get("dated",None)
         duration = request.form.get("duration",None)
         description = request.form.get("description",None)
@@ -135,16 +206,70 @@ def add_quiz(sid,cid):
     
     return jsonify(msg="Subject or chapter not found!"),400
 
-@admin_subject_routes.get("/<sid>/chapters/<cid>/quizes/<qid>")
+
+
+
+@admin_subject_routes.get("/<sid>/chapters/<cid>/questions")
 @jwt_required()
 @admin_required
-def specific_quiz(sid,cid,qid):
-    s = Subject.query.filter(Subject.id == sid).scalar()
-    c = Chapter.query.filter(Chapter.id == cid).scalar()
-    q = Quiz.query.filter(Quiz.id == qid).scalar()
+def see_questions(sid,cid):
+    """
+        See all questions for a chapter.
+        GET http://localhost:5000/admin/subjects/:sid/chapters/:cid/questions
 
-    if s and c:
-        if c in s.chapters and q in c.quizes:
+        Expected on success: Chapter information with list of all questions
+    """
+    c = Chapter.query.filter(Chapter.id == cid, Chapter.subject_id == sid).scalar()
+    if c:
+        return jsonify(payload = c.serialise(required=("questions")))
+    
+    return jsonify(msg="Subject or chapter not found!"),400
+
+@admin_subject_routes.get("/<sid>/chapters/<cid>/questions/<qid>")
+@jwt_required()
+@admin_required
+def specific_question(sid,cid,qid):
+    """
+        See specific question.
+        GET http://localhost:5000/admin/subjects/:sid/chapters/:cid/questions/:qid
+
+        Expected on success: Question information
+    """
+    q = Question.query.filter(Question.id == qid, Question.chapter_id == cid).scalar()
+    if q:
+        if q.chapter.subject_id == sid:
             return jsonify(payload = q.serialise())
     
     return jsonify(msg="Subject, chapter or quiz not found!"),400
+
+@admin_subject_routes.post("/<sid>/chapters/<cid>/questions")
+@jwt_required()
+@admin_required
+def add_question(sid,cid):
+    """
+        Add new question.
+        POST http://localhost:5000/admin/subjects/:sid/chapters/:cid/questions/:qid
+
+        Expected on success: Question creation
+    """
+    pass
+
+
+    
+@admin_subject_routes.get("/<sid>/enrolled")
+@jwt_required()
+@admin_required
+def see_enrolled(sid):
+    """
+        Add new question.
+        POST http://localhost:5000/admin/subjects/:sid/enrolled
+
+        Expected on success: Question creation
+    """
+    s = Subject.query.filter(Subject.id == sid).scalar()
+    if s:
+        return jsonify(payload=s.serialise(required=['users']))
+    
+    return jsonify(msg="No such subject found!"),400
+
+  
