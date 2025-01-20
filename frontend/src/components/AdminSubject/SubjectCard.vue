@@ -7,7 +7,7 @@
 <template>
     <div class="d-flex flex-column justify-content-center align-items-center text-center">
         <h1 v-if="active == true">
-                <RouterLink :to="'subjects/'+subject.id">
+                <RouterLink :to="'/admin/subjects/'+subject.id">
                     {{ props.subject.name }}
                 </RouterLink>
         </h1>

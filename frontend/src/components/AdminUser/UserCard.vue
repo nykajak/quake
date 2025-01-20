@@ -13,7 +13,7 @@ const props = defineProps(['user','active']);
     
             <div class="info-div">
                 <h1 v-if="active == true">
-                    <RouterLink :to="'users/'+user.id">
+                    <RouterLink :to="'/admin/users/'+user.id">
                         {{ props.user.name }}
                     </RouterLink>
                 </h1>
