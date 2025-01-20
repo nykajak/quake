@@ -102,11 +102,9 @@ class Chapter(db.Model):
             "order": self.order
         }
 
+        res["subject"] = self.subject.serialise()
         if len(required) == 0:
             return res
-
-        if "subject" in required:
-            res["subject"] = self.subject.serialise()
 
         if "quizes" in required:
             res["quizes"] = [quiz.serialise() for quiz in self.quizes]

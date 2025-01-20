@@ -9,6 +9,7 @@ import AdminUsers from '@/components/AdminUser/AdminUsers.vue'
 import AdminUser from '@/components/AdminUser/AdminUser.vue'
 import AdminSubjects from '@/components/AdminSubject/AdminSubjects.vue'
 import AdminSubject from '@/components/AdminSubject/AdminSubject.vue'
+import ChapterCard from '@/components/AdminChapter/ChapterCard.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -49,7 +50,7 @@ const router = createRouter({
         {
           path: "subjects/:sid",
           component: AdminSubject,
-          props: true,
+          props: true
         }
       ]
     },

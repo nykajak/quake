@@ -5,6 +5,7 @@
     import { api } from '@/api';
 
     import SubjectCard from './SubjectCard.vue';
+    import ChapterCard from '../AdminChapter/ChapterCard.vue';
     import Loader from '../Utility/Loader.vue';
 
     const router = useRouter();
@@ -43,7 +44,7 @@
         <div class="chapters">
             <h1 class="heading">Chapters</h1>
             <div class="d-flex flex-column align-items-center m-2" v-for="chapter in subject.chapters">
-                <h1 class="chapter-heading">{{ chapter.name }}</h1>
+                <ChapterCard :chapter="chapter" :active="1"></ChapterCard>
             </div>
         </div>
     </div>
