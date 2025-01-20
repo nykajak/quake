@@ -79,29 +79,12 @@ def add_subject():
         return jsonify(msg="Name is not unique!"),400
     
 
-
-
-@admin_subject_routes.get("/<sid>/chapters")
-@jwt_required()
-@admin_required
-def all_chapters(sid):
-    """
-        See chapters of a particular subject.
-        GET http://localhost:5000/admin/subjects/:sid/chapters
-
-        Expected on success: Subject details along with list of chapters
-    """
-    s = Subject.query.filter(Subject.id == sid).scalar()
-    if s:
-        return jsonify(payload = s.serialise(required=("chapters")))
-    
-    return jsonify(msg="Subject not found!"),400
-
 @admin_subject_routes.get("/<sid>/chapters/<cid>")
 @jwt_required()
 @admin_required
 def specific_chapter(sid,cid):
     """
+        LIVE
         See particular chapter information.
         GET http://localhost:5000/admin/subjects/:sid/chapters/:cid
 
@@ -285,10 +268,11 @@ def add_question(sid,cid):
 @admin_required
 def see_enrolled(sid):
     """
-        Add new question.
+        LIVE
+        See all students enrolled for subject.
         POST http://localhost:5000/admin/subjects/:sid/enrolled
 
-        Expected on success: Question creation
+        Expected on success: List of users enrolled for subject
     """
     s = Subject.query.filter(Subject.id == sid).scalar()
     if s:
