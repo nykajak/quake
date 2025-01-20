@@ -10,6 +10,15 @@ admin_user_routes = Blueprint('admin_user_routes', __name__, url_prefix="/users"
 @jwt_required()
 @admin_required
 def all_users():
+    """
+        LIVE
+        See all users.
+        GET http://localhost:5000/admin/users/
+
+        Query string args: page, per_page and q (for filtering)
+
+        Expected on success: List of all users according to query.
+    """
     page = int(request.args.get("page",1))
     per_page = int(request.args.get("per_page",5))
     q = request.args.get("q",None)
@@ -26,24 +35,31 @@ def all_users():
 @jwt_required()
 @admin_required
 def specific_users(id):
+    """
+        LIVE
+        See specific user.
+        GET http://localhost:5000/admin/users/:id
+
+        Expected on success: Specific user details with subject information
+    """
     u = User.query.filter(User.id == id, User.is_admin == 0).scalar()
     if u:
         return jsonify(payload=u.serialise(required=['subjects']))
     return jsonify(msg="No such user found!"),400
 
-@admin_user_routes.get("/<id>/subjects")
-@jwt_required()
-@admin_required
-def specific_users_subjects(id):
-    u = User.query.filter(User.id == id).scalar()
-    if u:
-        return jsonify(payload=u.serialise(required = ("subjects")))
-    return jsonify(msg="No such user found!"),400
+
+
 
 @admin_user_routes.post("/<uid>/subjects/<sid>")
 @jwt_required()
 @admin_required
 def add_user_to_subject(uid,sid):
+    """
+        Enroll user in subject.
+        POST http://localhost:5000/admin/users/:id/subjects/:sid
+
+        Expected on success: User gains access to subject
+    """
     u = User.query.filter(User.id == uid).scalar()
     s = Subject.query.filter(Subject.id == sid).scalar()
     if u and s:
@@ -60,6 +76,12 @@ def add_user_to_subject(uid,sid):
 @jwt_required()
 @admin_required
 def remove_user_from_subject(uid,sid):
+    """
+        Un-enroll user in subject.
+        DELETE http://localhost:5000/admin/users/:id/subjects/:sid
+
+        Expected on success: User loses access to subject
+    """
     u = User.query.filter(User.id == uid).scalar()
     s = Subject.query.filter(Subject.id == sid).scalar()
     if u and s:
@@ -73,19 +95,36 @@ def remove_user_from_subject(uid,sid):
     return jsonify(msg="No such user or subject found!"),400
 
 
+
+
 @admin_user_routes.get("/<id>/scores")
 @jwt_required()
 @admin_required
 def specific_users_scores(id):
+    """
+        Retreive user scores.
+        GET http://localhost:5000/admin/users/:id/scores
+
+        Expected on success: Summary of user scores
+    """
     u = User.query.filter(User.id == id).scalar()
     if u:
         return jsonify(payload=u.serialise(required = ("scores")))
     return jsonify(msg="No such user found!"),400
 
+
+
+
 @admin_user_routes.get("/<id>/responses")
 @jwt_required()
 @admin_required
 def specific_users_responses(id):
+    """
+        Retreive user responses.
+        GET http://localhost:5000/admin/users/:id/responses
+
+        Expected on success: User details and list of user responses
+    """
     u = User.query.filter(User.id == id).scalar()
     if u:
         return jsonify(payload=u.serialise(required = ("responses")))
