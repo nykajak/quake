@@ -6,6 +6,7 @@ import { useRouter } from 'vue-router';
 
 import Loader from '../Utility/Loader.vue';
 import ChapterCard from './ChapterCard.vue';
+import { RouterLink } from 'vue-router';
 
 const router = useRouter();
 const props = defineProps(['sid','cid']);
@@ -39,6 +40,11 @@ fetchChapter().then(data => {
 
 <template>
     <div v-if="loading == false && ready == true" class="d-flex flex-column flex-grow-1 mt-2">
+        <div class="d-flex flex-row justify-content-center">
+            <RouterLink :to="'/admin/subjects/'+chapter.subject.id">
+                <h2>{{ chapter.subject.name }}</h2>
+            </RouterLink>
+        </div>
         <ChapterCard :chapter="chapter" :active="0"/>
     </div>
     <Loader v-else/>
