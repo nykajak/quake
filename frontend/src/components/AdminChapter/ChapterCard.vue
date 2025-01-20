@@ -3,16 +3,17 @@ import { defineProps } from 'vue';
 import { RouterLink } from 'vue-router';
 
 const props = defineProps(['chapter','active'])
-
 </script>
 
 <template>
-    <h1 v-if="active == 0" class="chapter-heading">{{ chapter.name }}</h1>
-    <h1 v-else class="chapter-heading"><RouterLink :to="'/admin/subjects/'+chapter.subject.id+'/chapter/'+chapter.id">{{ chapter.name }}</RouterLink></h1>
-
-    <p class="description">
-        {{ chapter.description ?? "No description given!" }}
-    </p>
+    <div class="d-flex flex-column justify-content-center align-items-center text-center">
+        <h1 v-if="active == 0" class="chapter-heading">{{ props.chapter.name }}</h1>
+        <h1 v-else class="chapter-heading"><RouterLink :to="'/admin/subjects/'+props.chapter.subject.id+'/chapters/'+props.chapter.id">{{ props.chapter.name }}</RouterLink></h1>
+    
+        <p class="description">
+            {{ props.chapter.description ?? "No description given!" }}
+        </p>
+    </div>
 </template>
 
 <style scoped>
