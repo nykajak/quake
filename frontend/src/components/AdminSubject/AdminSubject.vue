@@ -1,6 +1,7 @@
 <script setup>
     import { defineProps, ref } from 'vue';
     import { useRouter } from 'vue-router';
+    import { RouterLink } from 'vue-router';
     
     import { api } from '@/api';
 
@@ -41,6 +42,9 @@
 <template>
     <div v-if="loading == false && ready == true" class="d-flex flex-column flex-grow-1 mt-2">
         <SubjectCard :subject="subject" :active="false"/>
+        <div class="d-flex justify-content-center">
+            <RouterLink :to="'/admin/subjects/'+subject.id+'/enrolled'">See Enrolled</RouterLink>
+        </div>
         <div class="chapters">
             <h1 class="heading">Chapters</h1>
             <div class="d-flex flex-column align-items-center m-2" v-for="chapter in subject.chapters">
