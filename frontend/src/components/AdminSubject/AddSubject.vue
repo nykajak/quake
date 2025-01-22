@@ -28,7 +28,7 @@ async function validateForm(e){
             <form @submit.prevent="validateForm" class="w-100">
                 <input type="hidden">
                 <div class="form-div">
-                    <input type="text" name="name" placeholder="Title">
+                    <input type="text" name="name" placeholder="Title" required>
                 </div>
     
                 <div class="form-div">
@@ -36,7 +36,7 @@ async function validateForm(e){
                 </div>
     
                 <div class="form-div">
-                    <input type="number" name="credits" placeholder="Credits">
+                    <input type="number" name="credits" placeholder="Credits" required>
                 </div>
     
                 <div class="form-div">

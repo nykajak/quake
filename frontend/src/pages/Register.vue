@@ -46,19 +46,19 @@ async function validateForm(e){
                 </div>
         
                 <div :class="{'form-div':true, 'form-error-div':RegisterStatus === 0 && RegisterMsg !== '', 'form-success-div':RegisterStatus === 1}">
-                    <input type="text" name="username" placeholder="Username">
+                    <input type="text" name="username" placeholder="Username" required>
                 </div>
         
                 <div :class="{'form-div':true, 'form-error-div':RegisterStatus === 0 && RegisterMsg !== '', 'form-success-div':RegisterStatus === 1}">
-                    <input type="email" name="email" placeholder="Email">
+                    <input type="email" name="email" placeholder="Email" required>
                 </div>
         
                 <div :class="{'form-div':true, 'form-error-div':RegisterStatus === 0 && RegisterMsg !== '', 'form-success-div':RegisterStatus === 1}">
-                    <input type="password" name="password" placeholder="Password">
+                    <input type="password" name="password" placeholder="Password" required>
                 </div>
         
                 <div :class="{'form-div':true, 'form-error-div':RegisterStatus === 0 && RegisterMsg !== '', 'form-success-div':RegisterStatus === 1}">
-                    <input type="password" name="confirm" placeholder="Confirm password">
+                    <input type="password" name="confirm" placeholder="Confirm password" required>
                 </div>
         
                 <div v-if="RegisterMsg!==''" :class="['form-div',RegisterStatus == 0 ? 'error-div' : 'success-div']">

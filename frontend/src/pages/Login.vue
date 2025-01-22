@@ -43,11 +43,11 @@ async function validateForm(e){
                         </p>
                     </div>
                     <div :class="{'form-div':true, 'form-error-div':LoginStatus === 0 && LoginMsg !== '', 'form-success-div':LoginStatus === 1}">
-                        <input type="text" name="username" placeholder="Username">
+                        <input type="text" name="username" placeholder="Username" required>
                     </div>
             
                     <div :class="{'form-div':true, 'form-error-div':LoginStatus === 0 && LoginMsg !== '', 'form-success-div':LoginStatus === 1}">
-                        <input type="password" name="password" placeholder="Password">
+                        <input type="password" name="password" placeholder="Password" required>
                     </div>
                 
                     <div v-if="LoginMsg!==''" :class="['form-div',LoginStatus == 0 ? 'error-div' : 'success-div']">
