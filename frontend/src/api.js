@@ -2,5 +2,9 @@ import axios from 'axios'
 
 export let api = axios.create({
     withCredentials: true,
-    baseURL: "http://localhost:5000/"
+    baseURL: "http://localhost:5000/",
  });
+
+ api.defaults.headers.common = {
+    'X-CSRF-TOKEN': document.cookie.slice("csrf_access_token".length + 1)
+  };
