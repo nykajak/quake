@@ -64,7 +64,12 @@ def add_subject():
     """
     name = request.form.get("name",None)
     description = request.form.get("description",None)
-    credits = int(request.form.get("credits",0))
+    
+    credits = request.form.get("credits",0)
+    try:
+        credits = int(credits)
+    except:
+        return jsonify(msg="Malformed request: Check if all fields included"),400
 
     if credits == 0 or name is None:
         return jsonify(msg="Malformed request: Check if all fields included"),400
@@ -73,7 +78,7 @@ def add_subject():
     try:
         db.session.add(s)
         db.session.commit()
-        return jsonify(msg="Subject creation successful"),200
+        return jsonify(msg="Subject creation successful",payload=s.serialise()),200
     
     except IntegrityError as e:
         return jsonify(msg="Name is not unique!"),400

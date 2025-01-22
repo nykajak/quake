@@ -1,12 +1,15 @@
 <script setup>
 
 import { api } from '@/api';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
 
 async function validateForm(e){
     try {
         let res = await api.post("/admin/subjects/", new FormData(e.target))
-        console.log(res);
-        return res;
+        router.push({"path":`/admin/subjects/${res.data.payload.id}`})
+        return;
     }
     catch(err){
         console.log(err);
