@@ -1,15 +1,11 @@
 <script setup>
-import { api } from '@/api';
-async function fetchUser(){
-    let res = await api.get("/user/");
-    console.log(res.data)
-    return res.data
-}
-fetchUser().then()
+import UserHeader from '@/components/Header/UserHeader.vue';
+import { RouterView } from 'vue-router';
 </script>
 
 <template>
-    Testing
+    <UserHeader/>
+    <RouterView :key="$route.fullPath"/>
 </template>
 
 <style scoped>
