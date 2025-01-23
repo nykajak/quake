@@ -4,12 +4,13 @@ import About from '@/pages/About.vue'
 import Register from '@/pages/Register.vue'
 import NotFound from '@/pages/NotFound.vue'
 
+import UserDashboard from '@/pages/user/UserDashboard.vue'
+
 import AdminDashboard from '@/pages/admin/AdminDashboard.vue'
 import AdminUsers from '@/components/AdminUser/AdminUsers.vue'
 import AdminUser from '@/components/AdminUser/AdminUser.vue'
 import AdminSubjects from '@/components/AdminSubject/AdminSubjects.vue'
 import AdminSubject from '@/components/AdminSubject/AdminSubject.vue'
-import ChapterCard from '@/components/AdminChapter/ChapterCard.vue'
 import AdminChapter from '@/components/AdminChapter/AdminChapter.vue'
 import AdminEnrolled from '@/components/AdminEnrolled/AdminEnrolled.vue'
 import AddSubject from '@/components/AdminSubject/AddSubject.vue'
@@ -31,6 +32,11 @@ const router = createRouter({
       name: "register",
       path: "/register",
       component: Register
+    },
+    {
+      name:"userDash",
+      path: "/user",
+      component: UserDashboard
     },
     {
       name: "adminDash",

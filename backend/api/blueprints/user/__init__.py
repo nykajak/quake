@@ -14,5 +14,8 @@ def user_required(fun):
     return inner
 
 @user_routes.get("/")
+@jwt_required()
+@user_required
 def profile():
-    return  jsonify(msg="Here")
+    u = get_current_user()
+    return jsonify(payload=u.serialise()),200
