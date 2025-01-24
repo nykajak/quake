@@ -5,6 +5,7 @@ import { useRouter, RouterLink } from 'vue-router'
 import { api } from '@/api';
 
 import Header from '@/components/Header/Header.vue';
+import BrandImageDiv from './anon/BrandImageDiv.vue';
 
 const router = useRouter()
 const RegisterMsg = ref("");
@@ -30,9 +31,7 @@ async function validateForm(e){
     <Header></Header>
 
     <div class="content-container">
-        <div class="img-div">
-    
-        </div>
+        <BrandImageDiv/>
 
         <div class="register-div d-flex">
             <form @submit.prevent="validateForm">
