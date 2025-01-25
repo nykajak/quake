@@ -7,6 +7,7 @@
     import Pagination from '../Utility/Pagination.vue';
     import UserCard from './UserCard.vue';
     import Loader from '../Utility/Loader.vue';
+    import PerPage from '../Utility/PerPage.vue';
 
     const route = useRoute();
     const router = useRouter();
@@ -50,6 +51,7 @@
             <div class="d-flex flex-column user-sidebar w-25 justify-content-start align-items-center text-center">
                 <h3>Querying users</h3>
                 <div class="d-flex mb-2">
+                    <PerPage/>
                     <input type="text" v-model="username" placeholder="Username">
                     <button class="query-button" @click="router.push({
                         'path': 'users',

@@ -8,6 +8,7 @@
     import Pagination from '../Utility/Pagination.vue';
     import SubjectCard from './SubjectCard.vue';
     import Loader from '../Utility/Loader.vue';
+    import PerPage from '../Utility/PerPage.vue';
 
     const route = useRoute();
     const router = useRouter();
@@ -55,6 +56,7 @@
             <div class="subject-sidebar d-flex flex-column w-25 text-center justify-content-center align-items-center">
                 <h3>Querying subjects</h3>
                 <div class="d-flex mb-2">
+                    <PerPage/>
                     <input type="text" v-model="subjectname" placeholder="Subject">
                     <button class="query-button" @click="router.push({
                         'path': 'subjects',
