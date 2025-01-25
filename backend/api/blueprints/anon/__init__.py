@@ -15,11 +15,17 @@ def login():
         return jsonify(msg="Malformed request: Check if both username and passowrd included"),401
     
     res = User.query.filter(User.name == username).scalar()
+    flag = True if res and res.is_admin == 1 else 0
+
     if res:
         res = bcrypt.check_password_hash(res.password,password)
 
     if res:
-        response = jsonify(msg="Authentication success")
+        if flag:    
+            response = jsonify(msg="Authentication success",payload='admin')
+        else:
+            response = jsonify(msg="Authentication success",payload='user')
+            
         access_token = create_access_token(identity=username)
         set_access_cookies(response,access_token)
         return response,200

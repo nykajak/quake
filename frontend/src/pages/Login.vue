@@ -16,7 +16,13 @@ async function validateForm(e){
         let res = await api.post("/login",new FormData(e.target));
         LoginMsg.value = res.data.msg;
         LoginStatus.value = 1;
-        router.push({"name":"home"})
+
+        if (res.data.payload == 'admin'){
+            router.push({"path":"/admin"})
+        }
+        else if (res.data.payload == 'user'){
+            router.push({"path":"/user"})
+        }
     }
     catch(err){
         LoginMsg.value = err.response.data.msg;
