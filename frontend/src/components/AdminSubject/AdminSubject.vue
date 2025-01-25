@@ -41,6 +41,9 @@
 
 <template>
     <div v-if="loading == false && ready == true" class="d-flex flex-column flex-grow-1 mt-2">
+        <div class="d-flex flex-column align-items-center">
+            <RouterLink :to="`/admin/subjects/${subject.id}/chapters/add`">Add Chapter</RouterLink>
+        </div>
         <SubjectCard :subject="subject" :active="false"/>
         <div class="d-flex justify-content-center">
             <RouterLink :to="'/admin/subjects/'+subject.id+'/enrolled'">See Enrolled</RouterLink>
