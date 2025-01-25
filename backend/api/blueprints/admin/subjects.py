@@ -128,7 +128,7 @@ def add_chapter(sid):
     db.session.add(c)
     db.session.commit()
     
-    return jsonify(msg="Chapter created!"),200
+    return jsonify(msg="Chapter created!",payload=c.serialise()),200
 
 
 

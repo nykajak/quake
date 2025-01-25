@@ -16,6 +16,7 @@ import AdminEnrolled from '@/components/AdminEnrolled/AdminEnrolled.vue'
 import AddSubject from '@/components/AdminSubject/AddSubject.vue'
 import UserSubjects from '@/components/UserSubject/UserSubjects.vue'
 import UserSubject from '@/components/UserSubject/UserSubject.vue'
+import AddChapter from '@/components/AdminSubject/AddChapter.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -85,10 +86,16 @@ const router = createRouter({
           props: true,
         },
         {
+          path: "subjects/:sid/chapters/add",
+          component: AddChapter,
+          props: true
+        },
+        {
           path: "subjects/:sid/chapters/:cid",
           component: AdminChapter,
           props: true
-        }
+        },
+
       ]
     },
     { 
