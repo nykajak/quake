@@ -1,6 +1,7 @@
 <script setup>
     import { ref } from 'vue';
     import { useRoute, useRouter } from 'vue-router';
+    import { RouterLink } from 'vue-router';
 
     import { api } from '@/api';
 
@@ -47,6 +48,9 @@
 
 <template>
     <div v-if="loading == false" class="d-flex flex-column flex-grow-1">
+        <div class="d-flex flex-column align-items-center">
+            <RouterLink :to="`/admin/subjects/add`">Add Subject</RouterLink>
+        </div>
         <div class="d-flex flex-column align-items-center">
             <div class="subject-sidebar d-flex flex-column w-25 text-center justify-content-center align-items-center">
                 <h3>Querying subjects</h3>
