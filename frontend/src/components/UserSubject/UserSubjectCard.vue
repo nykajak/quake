@@ -6,11 +6,12 @@ const props = defineProps(['subject']);
 </script>
 
 <template>
-    {{ props.subject.id }}
-    <br>
-    {{ props.subject.name }}
-    <br>
-    {{ props.subject.description }}
+    <div class="d-flex flex-column align-items-center">
+        <h3>{{ props.subject.name }}</h3>
+        <p>
+            {{ props.subject.description }}
+        </p>
+    </div>
 </template>
 
 <style scoped>
