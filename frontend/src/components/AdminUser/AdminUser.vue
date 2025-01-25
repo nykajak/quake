@@ -45,7 +45,7 @@
 
         <div class="user-info">
             <h2 class="heading">Subjects</h2>
-            <div class="d-flex w-100 justify-content-center">
+            <div class="d-flex flex-column w-100 align-items-center">
                 <div class="subject-info" v-for="subject in user.subjects">
                     <div>
                         <h5 class="subject-heading">{{ subject.name }}</h5>
@@ -69,7 +69,7 @@
 .user-card{
     display: flex;
     flex-direction: column;
-    width: 25%;
+    min-width: 25%;
     border-top: 1px solid light-dark(var(--dark-color),var(--light-color));
     border-right: 1px solid light-dark(var(--dark-color),var(--light-color));
 }
