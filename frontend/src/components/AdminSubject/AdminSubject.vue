@@ -41,12 +41,21 @@
 
 <template>
     <div v-if="loading == false && ready == true" class="d-flex flex-column flex-grow-1 mt-2">
-        <div class="d-flex flex-column align-items-center">
-            <RouterLink :to="`/admin/subjects/${subject.id}/chapters/add`">Add Chapter</RouterLink>
-        </div>
         <SubjectCard :subject="subject" :active="false"/>
-        <div class="d-flex justify-content-center">
-            <RouterLink :to="'/admin/subjects/'+subject.id+'/enrolled'">See Enrolled</RouterLink>
+        <div class="d-flex justify-content-center mb-2">
+            <button class="option-button" id="add-button" @click="router.push({
+                path:`/admin/subjects/${subject.id}/chapters/add`
+            })">
+                Add chapter
+            </button>
+            <button class="option-button" id="enroll-button" @click="router.push({
+                path:`/admin/subjects/${subject.id}/enrolled`
+            })">
+                See enrolled
+            </button>
+            <button class="option-button" id="edit-button">
+                Edit subject
+            </button>
         </div>
         <div class="chapters">
             <h1 class="heading">Chapters</h1>
@@ -60,6 +69,25 @@
 </template>
 
 <style scoped>
+
+.option-button{
+    display: flex;
+    border: none;
+    padding: 0.5em;
+    color: var(--light-color);
+}
+
+#edit-button{
+    background-color: var(--error-color);
+}
+
+#add-button{
+    background-color: var(--tertiary-color);
+}
+
+#enroll-button{
+    background-color: var(--secondary-color);
+}
 
 .chapters{
     display: flex;
