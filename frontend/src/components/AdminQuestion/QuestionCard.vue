@@ -10,9 +10,7 @@
                 </div>
             </div>
             <div class="question-statement-div">
-                Consider the following sample of numbers:
-                9, 18, 11, 14, 15, 17, 10, 69, 11, 13.
-                The median of the sample is?
+                It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).
             </div>
         </div>
         
@@ -74,7 +72,7 @@
 .question-no-div{
     display: flex;
     flex-direction: row;
-    align-items: center;
+    height: 100%;
     margin: 0.33em;
     padding: 0.33em;
 }
@@ -92,8 +90,8 @@
 .question-statement-div{
     display: flex;
     justify-content: center;
+    flex-grow: 1;
     text-align: center;
-    width: 85%;
 }
 
 .option-container{
