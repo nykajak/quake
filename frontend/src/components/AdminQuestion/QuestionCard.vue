@@ -1,4 +1,7 @@
 <script setup>
+import { ref } from 'vue';
+
+const answer = ref(-1);
 </script>
 
 <template>
@@ -16,8 +19,8 @@
         
         <div class="option-container">
             <div class="d-flex flex-row justify-content-center flex-wrap w-100">
-                <button class="option-button">
-                    <div class="rounded-div">
+                <button class="option-button"  @click="answer = 1">
+                    <div :class="{'rounded-div':true, 'selected-option':answer == 1}">
                         A
                     </div>
                     <div class="option-text">
@@ -25,8 +28,8 @@
                     </div>
                 </button>
     
-                <button class="option-button">
-                    <div class="rounded-div">
+                <button class="option-button"  @click="answer = 2">
+                    <div :class="{'rounded-div':true, 'selected-option':answer == 2}">
                         B
                     </div>
                     <div class="option-text">
@@ -34,8 +37,8 @@
                     </div>
                 </button>
     
-                <button class="option-button">
-                    <div class="rounded-div">
+                <button class="option-button"  @click="answer = 3">
+                    <div :class="{'rounded-div':true, 'selected-option':answer == 3}">
                         C
                     </div>
                     <div class="option-text">
@@ -43,8 +46,8 @@
                     </div>
                 </button>
     
-                <button class="option-button">
-                    <div class="rounded-div">
+                <button class="option-button"  @click="answer = 4">
+                    <div :class="{'rounded-div':true, 'selected-option':answer == 4}">
                         D
                     </div>
                     <div class="option-text">
@@ -58,6 +61,19 @@
 </template>
 
 <style scoped>
+
+.option-button:has(.selected-option){
+    input{
+        background-color: green !important;
+        border-color: green !important;    
+        transition: none;
+    }
+    background-color: green !important;
+}
+
+.selected-option{
+    background-color: green !important;
+}
 
 .question-container{
     display: flex;
