@@ -63,7 +63,7 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    border: 1px solid light-dark(var(--dark-color),var(--light-color));
+    border: 1px solid var(--light-color);
     padding: 0.33em;
     color: var(--light-color);
     background-color: var(--secondary-color);
@@ -131,6 +131,7 @@
     width: 1.5em;
     height: 1.5em;
     display: flex;
+    flex-shrink: 0;
     justify-content: center;
     align-items: center;
     margin: 0.33em;

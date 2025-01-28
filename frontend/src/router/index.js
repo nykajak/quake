@@ -18,6 +18,7 @@ import UserSubjects from '@/components/UserSubject/UserSubjects.vue'
 import UserSubject from '@/components/UserSubject/UserSubject.vue'
 import AddChapter from '@/components/AdminSubject/AddChapter.vue'
 import QuestionCard from '@/components/AdminQuestion/QuestionCard.vue'
+import QuestionAdd from '@/components/AdminQuestion/QuestionAdd.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -95,6 +96,11 @@ const router = createRouter({
           path: "subjects/:sid/chapters/:cid",
           component: AdminChapter,
           props: true
+        },
+        {
+          path: "subjects/:sid/chapters/:cid/questions/add",
+          component: QuestionAdd,
+          props:true
         },
         {
           path: "subjects/:sid/chapters/:cid/questions",
