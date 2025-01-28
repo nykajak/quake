@@ -49,11 +49,9 @@
 
 <template>
     <div v-if="loading == false" class="d-flex flex-column flex-grow-1">
+        
         <div class="d-flex flex-column align-items-center">
-            <RouterLink :to="`/admin/subjects/add`">Add Subject</RouterLink>
-        </div>
-        <div class="d-flex flex-column align-items-center">
-            <div class="subject-sidebar d-flex flex-column w-25 text-center justify-content-center align-items-center">
+            <div class="subject-sidebar d-flex flex-column text-center justify-content-center align-items-center">
                 <h3>Querying subjects</h3>
                 <div class="d-flex mb-2">
                     <PerPage/>
@@ -67,11 +65,18 @@
                         }
                     })">Submit</button>
                 </div>
+                <div class="d-flex flex-column align-items-center">
+                    <button class="mt-2" id="add_button" @click="router.push({
+                        path: '/admin/subjects/add'
+                    })">
+                        Add Subject
+                    </button>
+                </div>
             </div>
-            <div class="d-flex flex-column w-75">
+            <div class="d-flex flex-column">
                 <div class="d-flex flex-column flex-grow-1 justify-content-center">
                     <div class="results-div">
-                        <div v-for="subject in subjects" class="mb-2">
+                        <div v-for="subject in subjects" class="pl-2 pr-2 mb-2">
                             <SubjectCard :subject="subject" :active="true"/>
                         </div>
                     </div>
@@ -87,6 +92,12 @@
 </template>
 
 <style scoped>
+#add_button{
+    border: 1px solid var(--light-color);
+    color: var(--light-color);
+    background-color: var(--tertiary-color);
+}
+
 .results-div{
     margin-top: 3em;
     display: flex;

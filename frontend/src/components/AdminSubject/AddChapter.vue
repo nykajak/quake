@@ -20,9 +20,9 @@ async function validateForm(e){
 
 <template>
     <div class="d-flex flex-row flex-grow-1 justify-content-center pt-5">
-        <div class="d-flex flex-column align-items-center w-50">
+        <div class="d-flex flex-column align-items-center w-75">
             <div class="form-div justify-content-center">
-                    <h3>
+                    <h3 class="form-header">
                         Add Chapter
                     </h3>
                 </div>
@@ -37,7 +37,7 @@ async function validateForm(e){
                 </div>
     
                 <div class="form-div">
-                    <input type="submit">
+                    <input type="submit" id="form-submit-button">
                 </div>
                 
             </form>
@@ -46,6 +46,16 @@ async function validateForm(e){
 </template>
 
 <style scoped>
+.form-header{
+    color: var(--secondary-color)
+}
+
+#form-submit-button{
+    border: 1px solid var(--light-color);
+    background-color: var(--secondary-color);
+    color: var(--light-color);
+}
+
 .form-div {
     display: flex;
     margin: 0.75rem;
