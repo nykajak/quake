@@ -1,13 +1,29 @@
 <script setup>
-
+import { api } from '@/api';
 import { ref } from 'vue';
 
-const question = ref(`It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).`);
-const optionA = ref('OPtion a');
-const optionB = ref('option b');
-const optionC = ref('OPtiOn c');
-const optionD = ref('Option D');
-const correctOption = ref(2);
+const props = defineProps(['sid','cid','qid'])
+
+async function fetchQuestion(){
+    let res = await api.get(`/admin/subjects/${props.sid}/chapters/${props.cid}/questions/${props.qid}`)
+    return res.data.payload;
+}
+
+const question = ref("");
+const optionA = ref("");
+const optionB = ref("");
+const optionC = ref("");
+const optionD = ref("");
+const correctOption = ref(-1);
+
+fetchQuestion().then((data)=>{
+    question.value = data.description;
+    optionA.value = data.options[0];
+    optionB.value = data.options[1];
+    optionC.value = data.options[2];
+    optionD.value = data.options[3];
+    correctOption.value = data.correct;
+})
 
 function fun(e){
     const entries = new FormData(e.target).entries();
@@ -35,7 +51,7 @@ function fun(e){
             <div class="option-container">
                 <div class="d-flex flex-row justify-content-center flex-wrap w-100">
                     <div class="option-button">
-                        <button :class="{'rounded-div':true,'selected-option':correctOption === 1}" @click.prevent="() => {correctOption = 1}">
+                        <button :class="{'rounded-div':true,'selected-option':correctOption === 0}" @click.prevent="() => {correctOption = 1}">
                             A
                         </button>
                         <div class="option-text">
@@ -44,7 +60,7 @@ function fun(e){
                     </div>
         
                     <div class="option-button">
-                        <button :class="{'rounded-div':true,'selected-option':correctOption === 2}" @click.prevent="() => {correctOption = 2}">
+                        <button :class="{'rounded-div':true,'selected-option':correctOption === 1}" @click.prevent="() => {correctOption = 2}">
                             B
                         </button>
                         <div class="option-text">
@@ -53,7 +69,7 @@ function fun(e){
                     </div>
         
                     <div class="option-button">
-                        <button :class="{'rounded-div':true,'selected-option':correctOption === 3}" @click.prevent="() => {correctOption = 3}">
+                        <button :class="{'rounded-div':true,'selected-option':correctOption === 2}" @click.prevent="() => {correctOption = 3}">
                             C
                         </button>
                         <div class="option-text">
@@ -62,7 +78,7 @@ function fun(e){
                     </div>
         
                     <div class="option-button">
-                        <button :class="{'rounded-div':true,'selected-option':correctOption === 4}" @click.prevent="() => {correctOption = 4}">
+                        <button :class="{'rounded-div':true,'selected-option':correctOption === 3}" @click.prevent="() => {correctOption = 4}">
                             D
                         </button>
                         <div class="option-text">

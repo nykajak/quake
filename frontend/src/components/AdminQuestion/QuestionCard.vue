@@ -1,7 +1,22 @@
 <script setup>
+import { api } from '@/api';
 import { ref } from 'vue';
 
-const answer = ref(-1);
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+
+const question = ref(null);
+const props = defineProps(['sid','cid','qid'])
+
+async function fetchQuestion(){
+    let res = await api.get(`/admin/subjects/${props.sid}/chapters/${props.cid}/questions/${props.qid}`)
+    return res.data.payload;
+}
+
+fetchQuestion().then((data)=>{
+    question.value = data;
+})
 </script>
 
 <template>
@@ -9,51 +24,60 @@ const answer = ref(-1);
         <div class="question-container">
             <div class="question-no-div">
                 <div>
-                    Q9
+                    Q{{ question.id }}
                 </div>
             </div>
             <div class="question-statement-div">
-                It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).
+                {{ question.description }}
+            </div>
+            <div>
+                <button id="edit-button" @click="router.push(
+                    {
+                        'path': `/admin/subjects/${props.sid}/chapters/${props.cid}/questions/${props.qid}/edit`
+                    }
+                )">
+                    Edit
+                </button>
             </div>
         </div>
         
         <div class="option-container">
             <div class="d-flex flex-row justify-content-center flex-wrap w-100">
-                <button class="option-button"  @click="answer = 1">
-                    <div :class="{'rounded-div':true, 'selected-option':answer == 1}">
+                <div class="option-button">
+                    <div :class="{'rounded-div':true, 'selected-option':question.correct == 0}">
                         A
                     </div>
                     <div class="option-text">
-                        Option A
+                        {{ question.options[0] }}
                     </div>
-                </button>
+                </div>
     
-                <button class="option-button"  @click="answer = 2">
-                    <div :class="{'rounded-div':true, 'selected-option':answer == 2}">
+                <div class="option-button">
+                    <div :class="{'rounded-div':true, 'selected-option':question.correct == 1}">
                         B
                     </div>
                     <div class="option-text">
-                        Option B
+                        {{ question.options[1] }}
                     </div>
-                </button>
+                </div>
     
-                <button class="option-button"  @click="answer = 3">
-                    <div :class="{'rounded-div':true, 'selected-option':answer == 3}">
+                <div class="option-button">
+                    <div :class="{'rounded-div':true, 'selected-option':question.correct == 2}">
                         C
                     </div>
                     <div class="option-text">
-                        Option C
+                        {{ question.options[2] }}
                     </div>
-                </button>
+                </div>
     
-                <button class="option-button"  @click="answer = 4">
-                    <div :class="{'rounded-div':true, 'selected-option':answer == 4}">
+                <div class="option-button">
+                    <div :class="{'rounded-div':true, 'selected-option':question.correct == 3}">
                         D
                     </div>
                     <div class="option-text">
-                        Option D
+                        {{ question.options[3] }}
                     </div>
-                </button>
+                </div>
             </div>
         </div>
     </div>
@@ -61,6 +85,13 @@ const answer = ref(-1);
 </template>
 
 <style scoped>
+
+#edit-button{
+    display: flex;
+    border: none;
+    color: var(--light-color);
+    background-color: var(--error-color);
+}
 
 .option-button:has(.selected-option){
     input{
@@ -135,10 +166,6 @@ const answer = ref(-1);
     border: 1px solid var(--light-color);
     background-color: var(--secondary-color);
     border-radius: 1em;
-}
-
-.option-button:hover{
-    background-color: var(--primary-color);
 }
 
 .rounded-div{
