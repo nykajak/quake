@@ -8,6 +8,8 @@ const subjects = ref([]);
 
 async function fetchSubjects(){
     let res = await api.get("/user/subjects");
+    
+    console.log(res.data)
     return res.data.payload.subjects
 }
 
@@ -19,7 +21,7 @@ fetchSubjects().then((data)=>{
 
 <template>
     <template v-for="subject in subjects">
-        <UserSubjectCard :subject="subject"/>
+        <UserSubjectCard :subject="subject" :active="1"/>
     </template>
 </template>
 
