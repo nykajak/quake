@@ -18,7 +18,7 @@ fetchQuestion().then((data)=>{
 </script>
 
 <template>
-    <div class="d-flex flex-column flex-grow-1 border pt-4">
+    <div class="d-flex flex-column flex-grow-1 pt-4">
         <div class="d-flex flex-column align-items-center gap-4">
             <div class="question-div" v-for="question in questions">
                 <div class="question-div-layout">
@@ -46,10 +46,10 @@ fetchQuestion().then((data)=>{
 
 .question-div-layout{
     display: flex;
-    border: 1px solid gold;
     width: 50em;
     overflow:clip;
     gap: 1em;
+    border: 1px solid var(--secondary-color);
 }
 
 .question-div-decoration{
