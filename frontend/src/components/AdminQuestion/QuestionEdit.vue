@@ -56,7 +56,7 @@ function fun(e){
             <div class="option-container">
                 <div class="d-flex flex-row justify-content-center flex-wrap w-100">
                     <div class="option-button">
-                        <button :class="{'rounded-div':true,'selected-option':correctOption === 1}" @click.prevent="() => {correctOption = 1}">
+                        <button :class="{'rounded-div':true,'selected-option':correctOption === 0}" @click.prevent="() => {correctOption = 0}">
                             A
                         </button>
                         <div class="option-text">
@@ -65,7 +65,7 @@ function fun(e){
                     </div>
         
                     <div class="option-button">
-                        <button :class="{'rounded-div':true,'selected-option':correctOption === 2}" @click.prevent="() => {correctOption = 2}">
+                        <button :class="{'rounded-div':true,'selected-option':correctOption === 1}" @click.prevent="() => {correctOption = 1}">
                             B
                         </button>
                         <div class="option-text">
@@ -74,7 +74,7 @@ function fun(e){
                     </div>
         
                     <div class="option-button">
-                        <button :class="{'rounded-div':true,'selected-option':correctOption === 3}" @click.prevent="() => {correctOption = 3}">
+                        <button :class="{'rounded-div':true,'selected-option':correctOption === 2}" @click.prevent="() => {correctOption = 2}">
                             C
                         </button>
                         <div class="option-text">
@@ -83,7 +83,7 @@ function fun(e){
                     </div>
         
                     <div class="option-button">
-                        <button :class="{'rounded-div':true,'selected-option':correctOption === 4}" @click.prevent="() => {correctOption = 4}">
+                        <button :class="{'rounded-div':true,'selected-option':correctOption === 3}" @click.prevent="() => {correctOption = 3}">
                             D
                         </button>
                         <div class="option-text">
