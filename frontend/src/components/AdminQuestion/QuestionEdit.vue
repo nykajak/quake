@@ -9,6 +9,7 @@ async function fetchQuestion(){
     return res.data.payload;
 }
 
+const qid = ref("")
 const question = ref("");
 const optionA = ref("");
 const optionB = ref("");
@@ -23,10 +24,12 @@ fetchQuestion().then((data)=>{
     optionC.value = data.options[2];
     optionD.value = data.options[3];
     correctOption.value = data.correct;
+    qid.value = data.id;
 })
 
 function fun(e){
     const entries = new FormData(e.target).entries();
+    console.log(document.getElementById("question-statement").innerText)
     for (let entry of entries){
         console.log(entry)
     }
@@ -40,18 +43,20 @@ function fun(e){
             <div class="question-container">
                 <div class="question-no-div">
                     <div>
-                        Q
+                        Q{{ qid }}
                     </div>
                 </div>
                 <div class="question-statement-div">
-                    <textarea type="text" class="question-input" placeholder="Question Text" name="question" v-model="question"></textarea>
+                    <div id="question-statement" contenteditable="true">
+                        {{question}}
+                    </div>
                 </div>
             </div>
             
             <div class="option-container">
                 <div class="d-flex flex-row justify-content-center flex-wrap w-100">
                     <div class="option-button">
-                        <button :class="{'rounded-div':true,'selected-option':correctOption === 0}" @click.prevent="() => {correctOption = 1}">
+                        <button :class="{'rounded-div':true,'selected-option':correctOption === 1}" @click.prevent="() => {correctOption = 1}">
                             A
                         </button>
                         <div class="option-text">
@@ -60,7 +65,7 @@ function fun(e){
                     </div>
         
                     <div class="option-button">
-                        <button :class="{'rounded-div':true,'selected-option':correctOption === 1}" @click.prevent="() => {correctOption = 2}">
+                        <button :class="{'rounded-div':true,'selected-option':correctOption === 2}" @click.prevent="() => {correctOption = 2}">
                             B
                         </button>
                         <div class="option-text">
@@ -69,7 +74,7 @@ function fun(e){
                     </div>
         
                     <div class="option-button">
-                        <button :class="{'rounded-div':true,'selected-option':correctOption === 2}" @click.prevent="() => {correctOption = 3}">
+                        <button :class="{'rounded-div':true,'selected-option':correctOption === 3}" @click.prevent="() => {correctOption = 3}">
                             C
                         </button>
                         <div class="option-text">
@@ -78,7 +83,7 @@ function fun(e){
                     </div>
         
                     <div class="option-button">
-                        <button :class="{'rounded-div':true,'selected-option':correctOption === 3}" @click.prevent="() => {correctOption = 4}">
+                        <button :class="{'rounded-div':true,'selected-option':correctOption === 4}" @click.prevent="() => {correctOption = 4}">
                             D
                         </button>
                         <div class="option-text">
@@ -97,6 +102,12 @@ function fun(e){
 </template>
 
 <style scoped>
+
+#question-statement{
+    display: flex;
+    flex-wrap: wrap;
+    outline: none;
+}
 
 .option-button:has(.selected-option){
     input{
@@ -123,16 +134,6 @@ textarea:focus, input:focus{
     outline: none;
 }
 
-
-.question-input{
-    display: flex;
-    width: 100%;
-    background-color: var(--secondary-color);
-    border: 1px solid var(--secondary-color);
-    color: var(--light-color);
-    min-height: 2em;
-}
-
 .question-input::placeholder{
     color: var(--light-color);
     opacity: 60%;
@@ -146,6 +147,7 @@ textarea:focus, input:focus{
     border: 1px solid var(--secondary-color);
     color: var(--light-color);
     min-height: 2em;
+    text-align: center;
 }
 
 .question-container{
@@ -193,6 +195,7 @@ textarea:focus, input:focus{
 
 .option-text{
     justify-content: center;
+    text-align: center;
     display: flex;
     flex-grow: 1;
 }
