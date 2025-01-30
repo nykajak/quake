@@ -30,15 +30,6 @@ fetchQuestion().then((data)=>{
             <div class="question-statement-div">
                 {{ question.description }}
             </div>
-            <div>
-                <button id="edit-button" @click="router.push(
-                    {
-                        'path': `/admin/subjects/${props.sid}/chapters/${props.cid}/questions/${props.qid}/edit`
-                    }
-                )">
-                    Edit
-                </button>
-            </div>
         </div>
         
         <div class="option-container">
@@ -80,6 +71,16 @@ fetchQuestion().then((data)=>{
                 </div>
             </div>
         </div>
+
+        <div class="d-flex justify-content-center mt-4">
+            <button id="edit-button" @click="router.push(
+                {
+                    'path': `/admin/subjects/${props.sid}/chapters/${props.cid}/questions/${props.qid}/edit`
+                }
+            )">
+                Edit?
+            </button>
+        </div>
     </div>
 
 </template>
@@ -87,10 +88,11 @@ fetchQuestion().then((data)=>{
 <style scoped>
 
 #edit-button{
-    display: flex;
-    border: none;
+    border: 1px solid var(--light-color);
     color: var(--light-color);
-    background-color: var(--error-color);
+    background-color: var(--tertiary-color);
+    padding: 0.5em;
+    border-radius: 10px;
 }
 
 .option-button:has(.selected-option){

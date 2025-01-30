@@ -94,7 +94,7 @@ function fun(e){
             </div>
     
             <div class="d-flex justify-content-center mt-3">
-                <input type="submit" id="submit-button" value="Edit Question">
+                <input type="submit" id="submit-button" value="Confirm Edit?">
             </div>
         </form>
     </div>
