@@ -10,12 +10,14 @@ import UserSubject from '@/pages/user/subject/UserSubject.vue'
 
 import AdminDashboard from '@/pages/admin/AdminDashboard.vue'
 
-import AdminUsers from '@/components/AdminUser/AdminUsers.vue'
-import AdminUser from '@/components/AdminUser/AdminUser.vue'
+import AdminEnrolled from '@/pages/admin/enrolled/AdminEnrolled.vue'
+
+import AdminUsers from '@/pages/admin/user/AdminUsers.vue'
+import AdminUser from '@/pages/admin/user/AdminUser.vue'
+
 import AdminSubjects from '@/components/AdminSubject/AdminSubjects.vue'
 import AdminSubject from '@/components/AdminSubject/AdminSubject.vue'
 import AdminChapter from '@/components/AdminChapter/AdminChapter.vue'
-import AdminEnrolled from '@/components/AdminEnrolled/AdminEnrolled.vue'
 import AddSubject from '@/components/AdminSubject/AddSubject.vue'
 import AddChapter from '@/components/AdminSubject/AddChapter.vue'
 import QuestionCard from '@/components/AdminQuestion/QuestionCard.vue'

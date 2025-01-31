@@ -3,8 +3,8 @@ import { api } from '@/api';
 import { defineProps, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import UserCard from '../AdminUser/UserCard.vue';
-import Loader from '../Utility/Loader.vue';
+import UserCard from '../user/UserCard.vue';
+import Loader from '@/components/Utility/Loader.vue';
 
 const props = defineProps(['sid']);
 
