@@ -162,7 +162,7 @@ def specific_quiz(sid,cid,qid):
     """
     q = Quiz.query.filter(Quiz.id == qid, Quiz.chapter_id == cid).scalar()
 
-    if q and q.chapter.subject_id == sid:
+    if q and q.chapter.subject_id == int(sid):
         return jsonify(payload = q.serialise())
     
     return jsonify(msg="Subject, chapter or quiz not found!"),400

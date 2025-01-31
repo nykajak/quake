@@ -22,6 +22,7 @@ import QuestionAdd from '@/components/AdminQuestion/QuestionAdd.vue'
 import QuestionEdit from '@/components/AdminQuestion/QuestionEdit.vue'
 import AllQuestion from '@/components/AdminQuestion/AllQuestion.vue'
 import AdminQuizes from '@/components/AdminQuiz/AdminQuizes.vue'
+import AdminQuiz from '@/components/AdminQuiz/AdminQuiz.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -103,6 +104,11 @@ const router = createRouter({
         {
           path: "subjects/:sid/chapters/:cid/quizes",
           component: AdminQuizes,
+          props: true
+        },
+        {
+          path: "subjects/:sid/chapters/:cid/quizes/:qid",
+          component: AdminQuiz,
           props: true
         },
         {
