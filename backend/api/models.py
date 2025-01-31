@@ -133,7 +133,13 @@ class Quiz(db.Model):
     def serialise(self,required = ()):
         res = {
             "id": self.id,
-            "dated": self.dated,
+            "dated": {
+                "day":f"{self.dated.day}",
+                "month":f"{self.dated.month}",
+                "year":f"{self.dated.year}",
+                "hour":f"{self.dated.hour:0>2}",
+                "minute":f"{self.dated.minute:0>2}",
+            },
             "duration": self.duration,
             "description": self.description
         }
