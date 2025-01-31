@@ -41,22 +41,16 @@
 
 <template>
     <div v-if="loading == false && ready == true" class="d-flex flex-column flex-grow-1 mt-2">
-        <SubjectCard :subject="subject" :active="false"/>
+        <div class="d-flex flex-column justify-content-center align-items-center text-center">
+            <input id="edit-title" type="text" :value="subject.name">
+            <div id="edit-description" contenteditable="true">
+                {{ subject.description }}
+            </div>
+        </div>
+
         <div class="d-flex justify-content-center mb-2">
-            <button class="option-button" id="add-button" @click="router.push({
-                path:`/admin/subjects/${subject.id}/chapters/add`
-            })">
-                Add chapter
-            </button>
-            <button class="option-button" id="enroll-button" @click="router.push({
-                path:`/admin/subjects/${subject.id}/enrolled`
-            })">
-                See enrolled
-            </button>
-            <button class="option-button" id="edit-button" @click="router.push({
-                path:`/admin/subjects/${subject.id}/edit`
-            })">
-                Edit subject
+            <button class="option-button" id="edit-button">
+                Confirm Edits?
             </button>
         </div>
         <div class="chapters">
@@ -71,6 +65,22 @@
 </template>
 
 <style scoped>
+
+#edit-title{
+    display: flex;
+    text-align: center;
+    background-color: light-dark(var(--light-color),var(--dark-color));
+    color: var(--secondary-color);
+    outline: none;
+    border: none;
+    font-size: 2.5em;
+}
+
+#edit-description{
+    font-size: 1.5em;
+    margin-bottom: 0.75em;
+    outline: none;
+}
 
 .option-button{
     display: flex;

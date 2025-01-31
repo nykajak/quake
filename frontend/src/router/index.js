@@ -29,6 +29,7 @@ import AdminQuizAdd from '@/pages/admin/quiz/AdminQuizAdd.vue'
 import AdminSubject from '@/pages/admin/subject/AdminSubject.vue'
 import AdminSubjects from '@/pages/admin/subject/AdminSubjects.vue'
 import AdminSubjectAdd from '@/pages/admin/subject/AdminSubjectAdd.vue'
+import AdminSubjectEdit from '@/pages/admin/subject/AdminSubjectEdit.vue'
 
 import AdminUser from '@/pages/admin/user/AdminUser.vue'
 import AdminUsers from '@/pages/admin/user/AdminUsers.vue'
@@ -93,6 +94,11 @@ const router = createRouter({
         {
           path: "subjects/:sid",
           component: AdminSubject,
+          props: true,
+        },
+        {
+          path: "subjects/:sid/edit",
+          component: AdminSubjectEdit,
           props: true,
         },
         {
