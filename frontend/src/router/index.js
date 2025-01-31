@@ -14,6 +14,7 @@ import AdminDashboard from '@/pages/admin/AdminDashboard.vue'
 
 import AdminChapter from '@/pages/admin/chapter/AdminChapter.vue'
 import AdminChapterAdd from '@/pages/admin/chapter/AdminChapterAdd.vue'
+import AdminChapterEdit from '@/pages/admin/chapter/AdminChapterEdit.vue'
 
 import AdminEnrolled from '@/pages/admin/enrolled/AdminEnrolled.vue'
 
@@ -114,6 +115,11 @@ const router = createRouter({
         {
           path: "subjects/:sid/chapters/:cid",
           component: AdminChapter,
+          props: true
+        },
+        {
+          path: "subjects/:sid/chapters/:cid/edit",
+          component: AdminChapterEdit,
           props: true
         },
         {
