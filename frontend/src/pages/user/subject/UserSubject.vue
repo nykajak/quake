@@ -2,7 +2,7 @@
 import { api } from '@/api';
 import { defineProps, ref } from 'vue';
 
-import UserSubjectCard from './UserSubjectCard.vue';
+import UserSubjectCard from './components/UserSubjectCard.vue';
 
 const props = defineProps(['sid']);
 const subject = ref(null);
