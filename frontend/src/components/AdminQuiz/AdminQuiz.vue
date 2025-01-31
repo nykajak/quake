@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from 'vue';
 import { api } from '@/api';
+import AdminQuizQuestions from './AdminQuizQuestions.vue';
 
 const props = defineProps(['sid','cid','qid'])
 const quiz = ref(null);
@@ -26,8 +27,8 @@ fetchQuiz().then((data)=>{
             <br>
             Quiz duration: {{ quiz.duration  }} minutes
         </p>
+        <AdminQuizQuestions :sid="props.sid" :cid="props.cid" :qid="props.qid"/>
     </div>
-    {{ quiz }}
 </template>
 
 <style scoped>

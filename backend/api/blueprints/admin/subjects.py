@@ -167,6 +167,16 @@ def specific_quiz(sid,cid,qid):
     
     return jsonify(msg="Subject, chapter or quiz not found!"),400
 
+@admin_subject_routes.get("/<sid>/chapters/<cid>/quizes/<qid>/questions")
+@jwt_required()
+@admin_required
+def specific_quiz_questions(sid,cid,qid):
+    q = Quiz.query.filter(Quiz.id == qid, Quiz.chapter_id == cid).scalar()
+    if q and q.chapter.subject_id == int(sid):
+        return jsonify(payload=[x.serialise() for x in q.questions])
+    
+    return jsonify(msg="Subject, chapter or quiz not found!"),400
+
 @admin_subject_routes.post("/<sid>/chapters/<cid>/quizes")
 @jwt_required()
 @admin_required
