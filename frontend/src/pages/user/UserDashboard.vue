@@ -1,5 +1,5 @@
 <script setup>
-import UserHeader from '@/components/Header/UserHeader.vue';
+import UserHeader from './components/UserHeader.vue';
 import { RouterView } from 'vue-router';
 </script>
 
