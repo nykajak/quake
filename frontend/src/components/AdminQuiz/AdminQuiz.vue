@@ -17,7 +17,7 @@ fetchQuiz().then((data)=>{
 </script>
 
 <template>
-    <div class="d-flex flex-column flex-grow-1 align-items-center mt-3">
+    <div v-if="quiz" class="d-flex flex-column flex-grow-1 align-items-center mt-3">
         <h3>
             On {{ quiz.dated.day }}-{{ quiz.dated.month }}-{{ quiz.dated.year }}, at {{ quiz.dated.hour }}:{{ quiz.dated.minute }}
         </h3>

@@ -2,11 +2,11 @@
 import { api } from '@/api';
 import { ref } from 'vue';
 
-const props = defineProps(['sid','cid']);
+const props = defineProps(['sid','cid','qid']);
 const questions = ref([]);
 
 async function fetchQuestions(){
-    let res = await api.get(`/admin/subjects/${props.sid}/chapters/${props.cid}/questions`);
+    let res = await api.get(`/admin/subjects/${props.sid}/chapters/${props.cid}/quiz/${props.qid}/questions`);
     return res.data.payload.questions
 }
 
