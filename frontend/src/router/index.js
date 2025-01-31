@@ -1,8 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Login from '@/pages/Login.vue'
-import About from '@/pages/About.vue'
-import Register from '@/pages/Register.vue'
-import NotFound from '@/pages/NotFound.vue'
+import Login from '@/pages/anon/Login.vue'
+import About from '@/pages/anon/About.vue'
+import Register from '@/pages/anon/Register.vue'
+import NotFound from '@/pages/anon/NotFound.vue'
 
 import UserDashboard from '@/pages/user/UserDashboard.vue'
 

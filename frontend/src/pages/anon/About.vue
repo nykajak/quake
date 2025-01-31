@@ -1,9 +1,9 @@
 <script setup>
-    import Header from '@/components/Header/Header.vue';
+    import AnonHeader from './components/AnonHeader.vue';
 </script>
 
 <template>
-    <Header></Header>
+    <AnonHeader></AnonHeader>
     <div class="content">
         <div class="jumbotron jumbotron-fluid">
             <div class="container-fluid marketing text-center">

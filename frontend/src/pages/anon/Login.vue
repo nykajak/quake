@@ -4,8 +4,8 @@ import { useRouter, RouterLink } from 'vue-router'
 
 import { api } from '@/api';
 
-import Header from '@/components/Header/Header.vue';
-import BrandImageDiv from './anon/BrandImageDiv.vue';
+import AnonHeader from './components/AnonHeader.vue';
+import BrandImageDiv from './components/BrandImageDiv.vue';
 
 const router = useRouter()
 const LoginMsg = ref("");
@@ -33,7 +33,7 @@ async function validateForm(e){
 </script>
 
 <template>
-    <Header></Header>
+    <AnonHeader></AnonHeader>
     
     <div class="content">
         <div class="content-container">
