@@ -4,8 +4,8 @@ import { ref } from 'vue';
 import { defineProps } from 'vue';
 import { useRouter } from 'vue-router';
 
-import Loader from '../Utility/Loader.vue';
-import ChapterCard from './ChapterCard.vue';
+import Loader from '@/components/Loader.vue';
+import ChapterCard from './components/ChapterCard.vue';
 import { RouterLink } from 'vue-router';
 
 const router = useRouter();

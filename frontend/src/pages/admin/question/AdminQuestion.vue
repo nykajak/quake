@@ -20,7 +20,7 @@ fetchQuestion().then((data)=>{
 </script>
 
 <template>
-    <div class="d-flex w-100 flex-column align-self-center m-1 p-1">
+    <div v-if="question" class="d-flex w-100 flex-column align-self-center m-1 p-1">
         <div class="question-container">
             <div class="question-no-div">
                 <div>

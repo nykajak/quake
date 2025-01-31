@@ -4,8 +4,8 @@ import { RouterLink } from 'vue-router';
 
 import {useThemeStore} from "@/stores/theme.js"
 
-import Logout from '@/components/Utility/Logout.vue';
-import ToggleDark from '@/components/Utility/ToggleDark.vue';
+import Logout from '@/components/Logout.vue';
+import ToggleDark from '@/components/ToggleDark.vue';
 
 const themeStore = useThemeStore();
 onMounted(() => {

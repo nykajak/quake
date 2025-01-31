@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue';
 import { api } from '@/api';
-import AdminQuizQuestions from './AdminQuizQuestions.vue';
+import AdminQuizQuestions from './components/AdminQuizQuestions.vue';
 
 const props = defineProps(['sid','cid','qid'])
 const quiz = ref(null);

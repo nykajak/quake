@@ -5,9 +5,9 @@
     
     import { api } from '@/api';
 
-    import SubjectCard from './SubjectCard.vue';
-    import ChapterCard from '../AdminChapter/ChapterCard.vue';
-    import Loader from '../Utility/Loader.vue';
+    import SubjectCard from './components/SubjectCard.vue';
+    import ChapterCard from '../chapter/components/ChapterCard.vue';
+    import Loader from '@/components/Loader.vue';
 
     const router = useRouter();
     const props = defineProps(['sid']);

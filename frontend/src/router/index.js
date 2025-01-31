@@ -1,8 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router'
+
+import NotFound from '@/pages/anon/NotFound.vue'
+
 import Login from '@/pages/anon/Login.vue'
 import About from '@/pages/anon/About.vue'
 import Register from '@/pages/anon/Register.vue'
-import NotFound from '@/pages/anon/NotFound.vue'
 
 import UserDashboard from '@/pages/user/UserDashboard.vue'
 import UserSubjects from '@/pages/user/subject/UserSubjects.vue'
@@ -10,22 +12,26 @@ import UserSubject from '@/pages/user/subject/UserSubject.vue'
 
 import AdminDashboard from '@/pages/admin/AdminDashboard.vue'
 
+import AdminChapter from '@/pages/admin/chapter/AdminChapter.vue'
+import AdminChapterAdd from '@/pages/admin/chapter/AdminChapterAdd.vue'
+
 import AdminEnrolled from '@/pages/admin/enrolled/AdminEnrolled.vue'
 
-import AdminUsers from '@/pages/admin/user/AdminUsers.vue'
-import AdminUser from '@/pages/admin/user/AdminUser.vue'
+import AdminQuestion from '@/pages/admin/question/AdminQuestion.vue'
+import AdminQuestions from '@/pages/admin/question/AdminQuestions.vue'
+import AdminQuestionAdd from '@/pages/admin/question/AdminQuestionAdd.vue'
+import AdminQuestionEdit from '@/pages/admin/question/AdminQuestionEdit.vue'
 
-import AdminSubjects from '@/components/AdminSubject/AdminSubjects.vue'
-import AdminSubject from '@/components/AdminSubject/AdminSubject.vue'
-import AdminChapter from '@/components/AdminChapter/AdminChapter.vue'
-import AddSubject from '@/components/AdminSubject/AddSubject.vue'
-import AddChapter from '@/components/AdminSubject/AddChapter.vue'
-import QuestionCard from '@/components/AdminQuestion/QuestionCard.vue'
-import QuestionAdd from '@/components/AdminQuestion/QuestionAdd.vue'
-import QuestionEdit from '@/components/AdminQuestion/QuestionEdit.vue'
-import AllQuestion from '@/components/AdminQuestion/AllQuestion.vue'
-import AdminQuizes from '@/components/AdminQuiz/AdminQuizes.vue'
-import AdminQuiz from '@/components/AdminQuiz/AdminQuiz.vue'
+import AdminQuiz from '@/pages/admin/quiz/AdminQuiz.vue'
+import AdminQuizes from '@/pages/admin/quiz/AdminQuizes.vue'
+import AdminQuizAdd from '@/pages/admin/quiz/AdminQuizAdd.vue'
+
+import AdminSubject from '@/pages/admin/subject/AdminSubject.vue'
+import AdminSubjects from '@/pages/admin/subject/AdminSubjects.vue'
+import AdminSubjectAdd from '@/pages/admin/subject/AdminSubjectAdd.vue'
+
+import AdminUser from '@/pages/admin/user/AdminUser.vue'
+import AdminUsers from '@/pages/admin/user/AdminUsers.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -81,7 +87,7 @@ const router = createRouter({
         },
         {
           path: "subjects/add",
-          component: AddSubject,
+          component: AdminSubjectAdd,
           props: true,
         },
         {
@@ -96,7 +102,7 @@ const router = createRouter({
         },
         {
           path: "subjects/:sid/chapters/add",
-          component: AddChapter,
+          component: AdminChapterAdd,
           props: true
         },
         {
@@ -110,28 +116,33 @@ const router = createRouter({
           props: true
         },
         {
+          path: "subjects/:sid/chapters/:cid/quizes/add",
+          component: AdminQuizAdd,
+          props: true
+        },
+        {
           path: "subjects/:sid/chapters/:cid/quizes/:qid",
           component: AdminQuiz,
           props: true
         },
         {
           path: "subjects/:sid/chapters/:cid/questions/add",
-          component: QuestionAdd,
+          component: AdminQuestionAdd,
           props:true
         },
         {
           path: "subjects/:sid/chapters/:cid/questions/:qid",
-          component: QuestionCard,
+          component: AdminQuestion,
           props:true
         },
         {
           path: "subjects/:sid/chapters/:cid/questions/:qid/edit",
-          component: QuestionEdit,
+          component: AdminQuestionEdit,
           props:true
         },
         {
           path: "subjects/:sid/chapters/:cid/questions",
-          component: AllQuestion,
+          component: AdminQuestions,
           props:true
         }
 

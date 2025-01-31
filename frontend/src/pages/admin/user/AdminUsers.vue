@@ -4,10 +4,10 @@
     
     import { api } from '@/api';
     
-    import UserCard from './UserCard.vue';
-    import Pagination from '@/components/Utility/Pagination.vue';
-    import Loader from '@/components/Utility/Loader.vue';
-    import PerPage from '@/components/Utility/PerPage.vue';
+    import UserCard from './components/UserCard.vue';
+    import Pagination from '@/components/Pagination.vue';
+    import Loader from '@/components/Loader.vue';
+    import PerPage from '@/components/PerPage.vue';
 
     const route = useRoute();
     const router = useRouter();

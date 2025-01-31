@@ -5,10 +5,10 @@
 
     import { api } from '@/api';
 
-    import Pagination from '../Utility/Pagination.vue';
-    import SubjectCard from './SubjectCard.vue';
-    import Loader from '../Utility/Loader.vue';
-    import PerPage from '../Utility/PerPage.vue';
+    import Pagination from '@/components/Pagination.vue';
+    import Loader from '@/components/Loader.vue';
+    import PerPage from '@/components/PerPage.vue';
+    import SubjectCard from './components/SubjectCard.vue';
 
     const route = useRoute();
     const router = useRouter();

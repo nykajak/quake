@@ -4,8 +4,8 @@
     
     import { api } from '@/api';
 
-    import UserCard from './UserCard.vue';
-    import Loader from '@/components/Utility/Loader.vue';
+    import UserCard from './components/UserCard.vue';
+    import Loader from '@/components/Loader.vue';
 
     const router = useRouter();
     const props = defineProps(['uid']);
