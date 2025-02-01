@@ -4,6 +4,8 @@ from api.models import *
 from api.blueprints.admin import admin_required
 from sqlalchemy.exc import IntegrityError
 
+from datetime import datetime
+
 admin_subject_routes = Blueprint('admin_subject_routes', __name__, url_prefix="/subjects")
 
 
@@ -199,7 +201,10 @@ def add_quiz(sid,cid):
         if dated is None or duration is None:
             return jsonify(msg="Malformed request!"),400    
 
-        q = Quiz(chapter_id = cid, dated = dated, duration = duration, description = description)
+        x = datetime(year=int(dated[:4]),month=int(dated[5:7]),day=int(dated[8:10]),hour=int(dated[11:13]),minute=int(dated[14:16]))
+        q = Quiz(chapter_id = cid, dated = x, duration = int(duration), description = description)
+        db.session.add(q)
+        db.session.commit()
         return jsonify(msg="Quiz added!"),200
     
     return jsonify(msg="Subject or chapter not found!"),400

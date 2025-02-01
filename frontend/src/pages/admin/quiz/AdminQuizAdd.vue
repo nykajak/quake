@@ -5,10 +5,9 @@ import { api } from '@/api';
 const props = defineProps(['sid','cid'])
 
 async function createQuiz(e){
-    let f = new FormData(e.target);
-    for (let x of f){
-        console.log(x);
-    }
+    let res = await api.post(`/admin/subjects/${props.sid}/chapters/${props.cid}/quizes`,new FormData(e.target));
+    console.log(res.data)
+    return res.data
 }
 
 </script>
