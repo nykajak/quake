@@ -46,9 +46,27 @@ fetchChapter().then(data => {
             </RouterLink>
         </div>
         <ChapterCard :chapter="chapter" :active="0"/>
+
+        <div class="d-flex flex-row justify-content-center">
+            <button class="option-button" id="edit-button" @click="router.push({
+                path:`/admin/subjects/${props.sid}/chapters/${props.cid}/edit`
+            })">
+                Edit chapter
+            </button>
+        </div>
     </div>
     <Loader v-else/>
 </template>
 
 <style scoped>
+.option-button{
+    display: flex;
+    border: none;
+    padding: 0.5em;
+    color: var(--light-color);
+}
+
+#edit-button{
+    background-color: var(--error-color);
+}
 </style>
