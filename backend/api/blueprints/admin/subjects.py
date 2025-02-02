@@ -154,7 +154,7 @@ def edit_chapter(sid,cid):
             c.description = description
         
         db.session.commit()
-        return jsonify(msg="Chapter edit success!"),400
+        return jsonify(msg="Chapter edit success!"),200
 
     return jsonify(msg="Subject or chapter not found!"),400
 

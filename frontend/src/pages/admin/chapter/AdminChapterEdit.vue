@@ -5,7 +5,6 @@ import { defineProps } from 'vue';
 import { useRouter } from 'vue-router';
 
 import Loader from '@/components/Loader.vue';
-import ChapterCard from './components/ChapterCard.vue';
 import { RouterLink } from 'vue-router';
 
 const router = useRouter();
@@ -29,6 +28,16 @@ async function fetchChapter(){
     }
 }
 
+async function editChapter(){
+    const f = new FormData();
+    f.append("name",document.getElementById("edit-name").value)
+    f.append("description",document.getElementById("edit-description").innerText)
+
+    let res = await api.put(`/admin/subjects/${props.sid}/chapters/${props.cid}`,f)
+    console.log(res.data)
+    return res.data
+}
+
 fetchChapter().then(data => {
     if (data != -1){
         chapter.value = data;
@@ -50,6 +59,8 @@ fetchChapter().then(data => {
             <div contenteditable="true" id="edit-description" type="text">
                 {{ chapter.description }}
             </div>
+
+            <input type="submit" @click="editChapter">
         </div>
     </div>
     <Loader v-else/>
