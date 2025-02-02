@@ -343,7 +343,7 @@ def edit_question(sid,cid,qid):
 
             if correct:
                 try:
-                    if 0 <= int(correct) < 3:
+                    if 0 <= int(correct) <= 3:
                         q.correct = int(correct)
                 
                 except Exception as e:

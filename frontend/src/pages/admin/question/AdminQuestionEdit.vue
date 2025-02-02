@@ -27,18 +27,26 @@ fetchQuestion().then((data)=>{
     qid.value = data.id;
 })
 
-function fun(e){
-    const entries = new FormData(e.target).entries();
-    console.log(document.getElementById("question-statement").innerText)
-    for (let entry of entries){
-        console.log(entry)
-    }
+async function editQuestion(e){
+    const entries = new FormData(e.target);
+
+    const f = new FormData();
+    f.append("description",document.getElementById("question-statement").innerText)
+    f.append("correct",entries.get("correct"))
+    f.append("options[0]",entries.get("option-a"))
+    f.append("options[1]",entries.get("option-b"))
+    f.append("options[2]",entries.get("option-c"))
+    f.append("options[3]",entries.get("option-d"))
+
+    let res = await api.put(`/admin/subjects/${props.sid}/chapters/${props.cid}/questions/${props.qid}`,f);
+    console.log(res.data)
+    return res.data
 }
 </script>
 
 <template>
     <div class="d-flex w-100 flex-column align-self-center m-1 p-1">
-        <form @submit.prevent="fun">
+        <form @submit.prevent="editQuestion">
             <input type="hidden" name="correct" :value="correctOption">
             <div class="question-container">
                 <div class="question-no-div">
