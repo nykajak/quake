@@ -31,12 +31,23 @@
         }
     }
     
+    async function editSubject(e){
+        const f = new FormData();
+        f.append("name",document.getElementById("edit-title").value)
+        f.append("description",document.getElementById("edit-description").innerText)
+
+        let res = await api.put(`/admin/subjects/${props.sid}`,f)
+        console.log(res.data)
+        return res.data
+    }
+
     fetchSubject().then(data => {
         if (data != -1){
             subject.value = data;
             ready.value = true;
         }
     })
+
 </script>
 
 <template>
@@ -49,9 +60,7 @@
         </div>
 
         <div class="d-flex justify-content-center mb-2">
-            <button class="option-button" id="edit-button">
-                Confirm Edits?
-            </button>
+            <input type="submit" class="option-button" id="edit-button" @click="editSubject" value="Confirm Edits?" />
         </div>
         <div class="chapters">
             <h1 class="heading">Chapters</h1>
