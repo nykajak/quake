@@ -38,7 +38,7 @@ def all_subjects():
 @admin_subject_routes.get("/<id>")
 @jwt_required()
 @admin_required
-def specific_subjects(id):
+def specific_subject(id):
     """
         LIVE
         See specific subject.
@@ -49,6 +49,41 @@ def specific_subjects(id):
     s = Subject.query.filter(Subject.id == id).scalar()
     if s:
         return jsonify(payload=s.serialise(required=['chapters']))
+    
+    return jsonify(msg="No such subject found!"),400
+
+@admin_subject_routes.put("/<id>")
+@jwt_required()
+@admin_required
+def edit_subject(id):
+    name = request.form.get("name", None)
+    description = request.form.get("description", None)
+    credits = request.form.get("credits", None)
+
+    s = Subject.query.filter(Subject.id == id).scalar()
+    if s:
+        try:
+            if name and len(name) > 0:
+                s.name = name
+            
+            if description:
+                s.description = description
+
+            if credits:
+                try:
+                    credits = int(credits)
+                    s.credits = credits
+                except Exception as e:
+                    print(type(e))
+                    pass
+            
+            db.session.commit()
+
+        except Exception as e:
+            print(type(e))
+            return jsonify(msg="Edit subject failure"),400
+
+        return jsonify(msg="Edit subject success"),200
     
     return jsonify(msg="No such subject found!"),400
 
@@ -103,6 +138,27 @@ def specific_chapter(sid,cid):
     
     return jsonify(msg="Subject or chapter not found!"),400
 
+@admin_subject_routes.put("/<sid>/chapters/<cid>")
+@jwt_required()
+@admin_required
+def edit_chapter(sid,cid):
+    name = request.form.get("name",None)
+    description = request.form.get("description",None)
+
+    c = Chapter.query.filter(Chapter.id == cid, Chapter.subject_id == sid).scalar()
+    if c:
+        if name and len(name) > 0:
+            c.name = name
+
+        if description:
+            c.description = description
+        
+        db.session.commit()
+        return jsonify(msg="Chapter edit success!"),400
+
+    return jsonify(msg="Subject or chapter not found!"),400
+
+
 @admin_subject_routes.post("/<sid>/chapters")
 @jwt_required()
 @admin_required
@@ -151,6 +207,38 @@ def all_quizes(sid,cid):
         return jsonify(payload = c.serialise(required=("quizes")))
     
     return jsonify(msg="Subject or chapter not found!"),400
+
+@admin_subject_routes.put("/<sid>/chapters/<cid>/quizes/<qid>")
+@jwt_required()
+@admin_required
+def edit_quiz(sid,cid,qid):
+    dated = request.form.get("dated",None)
+    duration = request.form.get("duration",None)
+    description = request.form.get("description",None)
+
+    q = Quiz.query.filter(Quiz.id == qid, Quiz.chapter_id == cid).scalar()
+
+    if q and q.chapter.subject_id == int(sid):
+        if dated:
+            x = datetime(year=int(dated[:4]),month=int(dated[5:7]),day=int(dated[8:10]),hour=int(dated[11:13]),minute=int(dated[14:16]))
+            q.dated = x
+        
+        if duration:
+            try:
+                q.duration = int(duration)
+
+            except Exception as e:
+                print(type(e))
+                pass
+
+        if description:
+            q.description = description
+
+        db.session.commit()
+        return jsonify(msg="Quiz editing success!"),200
+    
+    return jsonify(msg="Subject, chapter or quiz not found!"),400
+
 
 @admin_subject_routes.get("/<sid>/chapters/<cid>/quizes/<qid>")
 @jwt_required()
@@ -227,6 +315,54 @@ def see_questions(sid,cid):
         return jsonify(payload = c.serialise(required=("questions")))
     
     return jsonify(msg="Subject or chapter not found!"),400
+
+@admin_subject_routes.put("/<sid>/chapters/<cid>/questions/<qid>")
+@jwt_required()
+@admin_required
+def edit_question(sid,cid,qid):
+    description = request.form.get("description",None)
+    correct = request.form.get("correct",None)
+    marks = request.form.get("marks",None)
+    options = [request.form.get(f"options[{i}]",None) for i in range(0,4)]
+
+    q = Question.query.filter(Question.id == qid, Question.chapter_id == cid).scalar()
+
+    if q:
+        if int(q.chapter.subject_id) == int(sid):
+            if description and len(description) > 0:
+                q.description = description
+            
+            if marks:
+                try:
+                    if int(marks) > 0:
+                        q.marks = marks
+                
+                except Exception as e:
+                    print(type(e))
+                    pass
+
+            if correct:
+                try:
+                    if 0 <= int(correct) < 3:
+                        q.correct = int(correct)
+                
+                except Exception as e:
+                    print(type(e))
+                    pass
+            
+            x = q.options.split("#")
+
+            for i in range(4):
+                if options[i] and len(options[i]) > 0:
+                    x[i] = options[i]
+
+            q.options = "#".join(x)
+
+            db.session.commit()
+
+            return jsonify(msg="Question edit success")
+    
+    return jsonify(msg="Subject, chapter or quiz not found!"),400
 
 @admin_subject_routes.get("/<sid>/chapters/<cid>/questions/<qid>")
 @jwt_required()
