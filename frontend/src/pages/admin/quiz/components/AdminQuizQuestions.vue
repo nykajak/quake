@@ -22,22 +22,42 @@ fetchQuestions().then((data)=>{
     <div class="d-flex flex-column align-items-center">
         <div class="d-flex flex-column align-items-center">
             <h3>Questions</h3>
-            <div v-for="question in questions">
-                <div class="d-flex justify-content-center">
-                    <RouterLink :to="`/admin/subjects/${props.sid}/chapters/${props.cid}/questions/${question.id}`">
-                        {{ question.description }}
-                    </RouterLink>
-                </div>
-            </div>
-        </div>
 
-        <div class="d-flex flex-column mt-3">
-            <div>
-                Search: <input type="text">
+            <div class="results-div">
+                <div v-for="question in questions" class="question-div">
+                    <div class="d-flex flex-grow-1">
+                        <RouterLink :to="`/admin/subjects/${props.sid}/chapters/${props.cid}/questions/${question.id}`">
+                            {{ question.description.length < 80 ? question.description : question.description.slice(0,75) + "..." }}
+                        </RouterLink>
+                    </div>
+    
+                    <div>
+                        <button class="delete-button">
+                            Remove
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </template>
 
 <style scoped>
+.delete-button{
+    background-color: var(--error-color);
+    color: var(--light-color);
+    border: none
+}
+
+.question-div{
+    display: flex;
+    width: 40em;
+    padding: 0.5em;
+}
+
+.results-div{
+    display: flex;
+    flex-direction: column;
+    gap:0.5em;
+}
 </style>
