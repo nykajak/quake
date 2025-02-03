@@ -27,6 +27,7 @@ import AdminQuiz from '@/pages/admin/quiz/AdminQuiz.vue'
 import AdminQuizes from '@/pages/admin/quiz/AdminQuizes.vue'
 import AdminQuizAdd from '@/pages/admin/quiz/AdminQuizAdd.vue'
 import AdminQuizEdit from '@/pages/admin/quiz/AdminQuizEdit.vue'
+import AdminQuizSearch from '@/pages/admin/quiz/AdminQuizSearch.vue'
 
 import AdminSubject from '@/pages/admin/subject/AdminSubject.vue'
 import AdminSubjects from '@/pages/admin/subject/AdminSubjects.vue'
@@ -141,6 +142,11 @@ const router = createRouter({
         {
           path: "subjects/:sid/chapters/:cid/quizes/:qid",
           component: AdminQuiz,
+          props: true
+        },
+        {
+          path: "subjects/:sid/chapters/:cid/quizes/:qid/search",
+          component: AdminQuizSearch,
           props: true
         },
         {
