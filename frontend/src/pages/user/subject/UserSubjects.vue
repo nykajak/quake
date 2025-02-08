@@ -20,9 +20,11 @@ fetchSubjects().then((data)=>{
 </script>
 
 <template>
-    <template v-for="subject in subjects">
-        <UserSubjectCard :subject="subject" :active="1"/>
-    </template>
+    <div class="mt-3">
+        <template v-for="subject in subjects">
+            <UserSubjectCard :subject="subject" :active="1"/>
+        </template>
+    </div>
 </template>
 
 <style scoped>

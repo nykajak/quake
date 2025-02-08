@@ -16,7 +16,7 @@ const props = defineProps(['subject','active']);
 
         <h3 v-else>{{ props.subject.name }}</h3>
         <p>
-            {{ props.subject.description }}
+            {{ props.subject.description ? props.subject.description : "No description yet!" }}
         </p>
     </div>
 </template>
