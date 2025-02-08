@@ -4,7 +4,7 @@
 
 <template>
   <div class="container-div">
-    <RouterView/>
+    <RouterView :key="$route.fullPath"/>
   </div>
 </template>
 
