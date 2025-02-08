@@ -52,8 +52,15 @@
         
         <div class="d-flex flex-column align-items-center">
             <div class="subject-sidebar d-flex flex-column text-center justify-content-center align-items-center">
-                <h3>Querying subjects</h3>
-                <div class="d-flex mb-2">
+                <div class="d-flex gap-2">
+                    <h3 class="heading">
+                        Querying subjects
+                    </h3>
+                </div>
+                <div class="d-flex border mb-2">
+                    <button id="add_button" @click="router.push({
+                        path: '/admin/subjects/add'
+                    })">+</button>
                     <PerPage/>
                     <input type="text" v-model="subjectname" placeholder="Subject">
                     <button class="query-button" @click="router.push({
@@ -64,13 +71,6 @@
                             'page': 1
                         }
                     })">Submit</button>
-                </div>
-                <div class="d-flex flex-column align-items-center">
-                    <button class="mt-2" id="add_button" @click="router.push({
-                        path: '/admin/subjects/add'
-                    })">
-                        Add Subject
-                    </button>
                 </div>
             </div>
             <div class="d-flex flex-column">
@@ -92,10 +92,16 @@
 </template>
 
 <style scoped>
+.heading{
+    font: 10em;
+}
+
 #add_button{
-    border: 1px solid var(--light-color);
+    border: 1px solid light-dark(var(--dark-color),var(--light-color));
     color: var(--light-color);
     background-color: var(--tertiary-color);
+    padding-left: 0.7em;
+    padding-right: 0.7em;
 }
 
 .results-div{

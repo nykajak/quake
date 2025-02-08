@@ -22,7 +22,7 @@ console.log(route.query)
 </script>
 
 <template>
-    <div>
+    <div class="d-flex">
         <select v-model="selected" class="w-100 p-1">
             <option>1</option>
             <option>3</option>
