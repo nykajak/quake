@@ -69,7 +69,7 @@
 .user-card{
     display: flex;
     flex-direction: column;
-    min-width: 25%;
+    min-width: max(25%,fit-content);
     border-top: 1px solid light-dark(var(--dark-color),var(--light-color));
     border-right: 1px solid light-dark(var(--dark-color),var(--light-color));
 }
@@ -81,7 +81,8 @@
     justify-content: center;
     padding: 1em;
     width: 90%;
-    border: 1px solid light-dark(var(--dark-color),var(--light-color));
+    border-bottom: 1px solid light-dark(var(--dark-color),var(--light-color));
+    border-top: 1px solid light-dark(var(--dark-color),var(--light-color));
 }
 
 .user-info{
