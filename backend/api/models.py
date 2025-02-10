@@ -22,9 +22,9 @@ class User(db.Model):
     password = db.Column(db.String(128), nullable = False)
     is_admin = db.Column(db.Integer, default = 0, nullable = False)
 
-    subjects = db.relationship('Subject', secondary = registered, backref = 'users')
-    responses = db.relationship('Response', backref="user")
-    scores = db.relationship('Score', backref = 'user')
+    subjects = db.relationship('Subject', secondary = registered, backref = 'users', lazy='dynamic')
+    responses = db.relationship('Response', backref="user", lazy='dynamic')
+    scores = db.relationship('Score', backref = 'user', lazy='dynamic')
 
     def serialise(self,required = ()):
         res = {
@@ -58,7 +58,7 @@ class Subject(db.Model):
     description = db.Column(db.String(128))
     credits = db.Column(db.Integer, nullable = False)
 
-    chapters = db.relationship('Chapter', backref='subject')
+    chapters = db.relationship('Chapter', backref='subject', lazy='dynamic')
 
     def serialise(self,required = ()):
         res = {
@@ -91,8 +91,8 @@ class Chapter(db.Model):
     description = db.Column(db.String(128))
     order = db.Column(db.Integer)
 
-    quizes = db.relationship('Quiz', backref = "chapter")
-    questions = db.relationship("Question", backref = "chapter")
+    quizes = db.relationship('Quiz', backref = "chapter", lazy='dynamic')
+    questions = db.relationship("Question", backref = "chapter", lazy='dynamic')
 
     def serialise(self,required = ()):
         res = {
@@ -126,9 +126,9 @@ class Quiz(db.Model):
     duration = db.Column(db.Integer, nullable = False)
     description = db.Column(db.String(128))
 
-    questions = db.relationship('Question', secondary = problem, backref = 'quizes')
-    responses = db.relationship('Response', backref='quiz')
-    scores = db.relationship('Score', backref = 'quiz')
+    questions = db.relationship('Question', secondary = problem, backref = 'quizes', lazy='dynamic')
+    responses = db.relationship('Response', backref='quiz', lazy='dynamic')
+    scores = db.relationship('Score', backref = 'quiz', lazy='dynamic')
 
     def serialise(self,required = ()):
         res = {
@@ -174,7 +174,7 @@ class Question(db.Model):
     correct = db.Column(db.Integer, nullable = False)
     marks = db.Column(db.Integer, nullable = False)
 
-    responses = db.relationship('Response', backref='question')
+    responses = db.relationship('Response', backref='question', lazy='dynamic')
 
     def serialise(self,required = ()):
         res = {
