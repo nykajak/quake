@@ -1,23 +1,32 @@
 <script setup>
-    import { RouterLink } from 'vue-router';
+    import { RouterLink, useRoute, useRouter } from 'vue-router';
     import { ref } from 'vue';
     import { api } from '@/api';
 
     const props = defineProps(['sid','cid','qid'])
-    
+    const router = useRouter();
+    const route = useRoute();
+
+    let q = route.query.q ?? ''
+    let filter = route.query.filter ?? 'all'
+
     const questions = ref([]);
 
     async function fetchResults(e){
         const f = new FormData(e.target);
-        const q = f.get("q")
-        const filter = f.get("filter")
-
-        let res = await api.get(`/admin/subjects/${props.sid}/chapters/${props.cid}/quizes/${props.qid}/questions?q=${q}&filter=${filter}`);
-        questions.value = res.data.payload;
+        q = f.get("q")
+        filter = f.get("filter")
+        router.push({
+            "path": route.path,
+            "query": {
+                "q": q,
+                "filter": filter
+            }
+        })
     }
 
     async function initialFetch(){
-        let res = await api.get(`/admin/subjects/${props.sid}/chapters/${props.cid}/quizes/${props.qid}/questions`);
+        let res = await api.get(`/admin/subjects/${props.sid}/chapters/${props.cid}/quizes/${props.qid}/questions?q=${q}&filter=${filter}`);
         questions.value = res.data.payload;
     }
 
@@ -30,16 +39,16 @@
         <form @submit.prevent="fetchResults" class="d-flex flex-column w-100 align-items-center mt-1">
             <div class="form-div">
                 <label for="q" class="form-div-label">Search term: </label>
-                <input type="text" class="form-div-input" name="q">
+                <input type="text" class="form-div-input" name="q" :value="route.query.q ?? ''">
             </div>
             <div class="form-options-div-container">
                 <div class="form-options-div">
                     <label for="added-search">Search all questions</label>
-                    <input type="radio" name="filter" id="added-search" value="all" checked>
+                    <input type="radio" name="filter" id="added-search" value="all" :checked="route.query.filter ? route.query.filter == 'all': true">
                     <label for="added-search">Search present questions</label>
-                    <input type="radio" name="filter" id="added-search" value="present">
+                    <input type="radio" name="filter" id="added-search" value="present" :checked="route.query.filter ? route.query.filter == 'present' : false">
                     <label for="all-search">Search absent questions</label>
-                    <input type="radio" name="filter" id="all-search" value="absent">
+                    <input type="radio" name="filter" id="all-search" value="absent" :checked="route.query.filter ? route.query.filter == 'absent' : false">
                 </div>
             </div>
 
