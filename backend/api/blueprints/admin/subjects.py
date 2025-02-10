@@ -262,7 +262,7 @@ def specific_quiz(sid,cid,qid):
 @admin_required
 def specific_quiz_questions(sid,cid,qid):
     query_str = request.args.get("q","")
-    filter = request.args.get("filter","none")
+    filter = request.args.get("filter","all")
     
     q = Quiz.query.filter(Quiz.id == qid, Quiz.chapter_id == cid).scalar()
 
@@ -283,7 +283,7 @@ def specific_quiz_questions(sid,cid,qid):
          else:
             return jsonify(payload=[x.serialise() for x in Question.query.filter(Question.chapter_id == int(cid), Question.description.contains(query_str)).all() if x not in q.questions])
     
-    elif filter == "none":
+    elif filter == "all":
          if len(query_str) == 0:
             return jsonify(payload=[x.serialise() for x in Question.query.filter(Question.chapter_id == int(cid)).all()])
          

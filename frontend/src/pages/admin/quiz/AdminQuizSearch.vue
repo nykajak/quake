@@ -1,28 +1,27 @@
 <script setup>
     import { RouterLink } from 'vue-router';
+    import { ref } from 'vue';
+    import { api } from '@/api';
 
     const props = defineProps(['sid','cid','qid'])
     
-    const questions = [
-        {
-            "description": "What is 1 + 1?",
-            "id": 1,
-        },
-        {
-            "description": "What is 54 + 54?",
-            "id": 2,
-        },
-        {
-            "description": "What is 23 + 11?",
-            "id": 3,
-        }
-    ]
+    const questions = ref([]);
+
     async function fetchResults(e){
         const f = new FormData(e.target);
-        for (let e of f.entries()){
-            console.log(e);
-        }
+        const q = f.get("q")
+        const filter = f.get("filter")
+
+        let res = await api.get(`/admin/subjects/${props.sid}/chapters/${props.cid}/quizes/${props.qid}/questions?q=${q}&filter=${filter}`);
+        questions.value = res.data.payload;
     }
+
+    async function initialFetch(){
+        let res = await api.get(`/admin/subjects/${props.sid}/chapters/${props.cid}/quizes/${props.qid}/questions`);
+        questions.value = res.data.payload;
+    }
+
+    initialFetch()
 </script>
 
 <template>
@@ -35,17 +34,12 @@
             </div>
             <div class="form-options-div-container">
                 <div class="form-options-div">
-                    <label for="description-search">Search by description</label>
-                    <input type="radio" name="type" id="description-search" value="description" checked>
-                    <label for="option-search">Search by option</label>
-                    <input type="radio" name="type" id="option-search" value="option">
-                </div>
-    
-                <div class="form-options-div">
-                    <label for="added-search">Search added only</label>
-                    <input type="radio" name="space" id="added-search" value="description" checked>
-                    <label for="all-search">Search not added</label>
-                    <input type="radio" name="space" id="all-search" value="option">
+                    <label for="added-search">Search all questions</label>
+                    <input type="radio" name="filter" id="added-search" value="all" checked>
+                    <label for="added-search">Search present questions</label>
+                    <input type="radio" name="filter" id="added-search" value="present">
+                    <label for="all-search">Search absent questions</label>
+                    <input type="radio" name="filter" id="all-search" value="absent">
                 </div>
             </div>
 
