@@ -292,6 +292,54 @@ def specific_quiz_questions(sid,cid,qid):
     
     else:
         return jsonify(msg="Invalid filter provided!"),400
+    
+@admin_subject_routes.post("/<sid>/chapters/<cid>/quizes/<qid>/questions")
+@jwt_required()
+@admin_required
+def add_question_to_quiz(sid,cid,qid):
+    question_id = request.form.get("question_id",None)
+
+    if question_id is None:
+        return jsonify(msg="Malformed request!"),400
+    
+    try:
+        question_id = int(question_id)
+    except ValueError as e:
+        return jsonify(msg="Malformed request!"),400
+
+    question = Question.query.filter(Question.id == question_id).scalar()
+    quiz = Quiz.query.filter(Quiz.id == qid)
+
+    if question.chapter.id != quiz.chapter.id:
+        return jsonify(msg="Cannot add question from different chapter!"),400
+
+    quiz.questions.append(question)
+    db.session.commit()
+    return jsonify(msg="Question successfully added!"),200
+
+@admin_subject_routes.delete("/<sid>/chapters/<cid>/quizes/<qid>/questions")
+@jwt_required()
+@admin_required
+def remove_question_from_quiz(sid,cid,qid):
+    question_id = request.form.get("question_id",None)
+
+    if question_id is None:
+        return jsonify(msg="Malformed request!"),400
+    
+    try:
+        question_id = int(question_id)
+    except ValueError as e:
+        return jsonify(msg="Malformed request!"),400
+
+    question = Question.query.filter(Question.id == question_id).scalar()
+    quiz = Quiz.query.filter(Quiz.id == qid)
+
+    if question.chapter.id != quiz.chapter.id:
+        return jsonify(msg="Cannot perform operation on question from different chapter!"),400
+
+    quiz.questions.remove(question)
+    db.session.commit()
+    return jsonify(msg="Question successfully removed!"),200
 
 @admin_subject_routes.post("/<sid>/chapters/<cid>/quizes")
 @jwt_required()
