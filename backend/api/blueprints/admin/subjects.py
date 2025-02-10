@@ -261,11 +261,37 @@ def specific_quiz(sid,cid,qid):
 @jwt_required()
 @admin_required
 def specific_quiz_questions(sid,cid,qid):
-    q = Quiz.query.filter(Quiz.id == qid, Quiz.chapter_id == cid).scalar()
-    if q and q.chapter.subject_id == int(sid):
-        return jsonify(payload=[x.serialise() for x in q.questions])
+    query_str = request.args.get("q","")
+    filter = request.args.get("filter","none")
     
-    return jsonify(msg="Subject, chapter or quiz not found!"),400
+    q = Quiz.query.filter(Quiz.id == qid, Quiz.chapter_id == cid).scalar()
+
+    if not (q and q.chapter.subject_id == int(sid)):
+        return jsonify(msg="Subject, chapter or quiz not found!"),400
+
+    if filter == "present":
+        if len(query_str) == 0:
+            return jsonify(payload=[x.serialise() for x in q.questions])
+        
+        else:
+            return jsonify(payload=[x.serialise() for x in q.questions.filter(Question.description.contains(query_str))])
+
+    elif filter == "absent":
+         if len(query_str) == 0:
+            return jsonify(payload=[x.serialise() for x in Question.query.filter(Question.chapter_id == int(cid)).all() if x not in q.questions])
+         
+         else:
+            return jsonify(payload=[x.serialise() for x in Question.query.filter(Question.chapter_id == int(cid), Question.description.contains(query_str)).all() if x not in q.questions])
+    
+    elif filter == "none":
+         if len(query_str) == 0:
+            return jsonify(payload=[x.serialise() for x in Question.query.filter(Question.chapter_id == int(cid)).all()])
+         
+         else:
+            return jsonify(payload=[x.serialise() for x in Question.query.filter(Question.chapter_id == int(cid), Question.description.contains(query_str)).all()])
+    
+    else:
+        return jsonify(msg="Invalid filter provided!"),400
 
 @admin_subject_routes.post("/<sid>/chapters/<cid>/quizes")
 @jwt_required()
