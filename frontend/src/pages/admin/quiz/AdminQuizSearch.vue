@@ -30,6 +30,18 @@
         questions.value = res.data.payload;
     }
 
+    async function addQuestion(id){
+        const formData = new FormData();
+        formData.append('question_id',id);
+        let res = await api.post(`/admin/subjects/${props.sid}/chapters/${props.cid}/quizes/${props.qid}/questions/add`, formData)
+    }
+
+    async function removeQuestion(id){
+        const formData = new FormData();
+        formData.append('question_id',id);
+        let res = await api.post(`/admin/subjects/${props.sid}/chapters/${props.cid}/quizes/${props.qid}/questions/remove`, formData)
+    }
+
     initialFetch()
 </script>
 
@@ -64,8 +76,13 @@
                 </div>
                 <div class="d-flex flex-grow-1">
                     <RouterLink :to="`/admin/subjects/${props.sid}/chapters/${props.cid}/questions/${question.id}`">
-                        {{ question.description.length < 90 ? question.description : question.description.slice(0,85) + "..." }}
+                        {{ question.description.length < 80 ? question.description : question.description.slice(0,75) + "..." }}
                     </RouterLink>
+                </div>
+                <div>
+                    <button id="add-button" class="manage-button" v-if="route.query.filter == 'absent' || ((route.query.filter ? route.query.filter == 'all': true) && question.present == false)" @click="()=>addQuestion(question.id)">+</button>
+                    
+                    <button id="remove-button" class="manage-button" v-if="route.query.filter == 'present' || ((route.query.filter ? route.query.filter == 'all': true) && question.present == true)" @click="()=>removeQuestion(question.id)">x</button>
                 </div>
             </div>
         </div>
@@ -74,6 +91,24 @@
 </template>
 
 <style scoped>
+
+#add-button{
+    background-color: var(--secondary-color);
+}
+
+#remove-button{
+    background-color: var(--error-color);
+}
+
+.manage-button{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 1.5em;
+    height: 1.5em;
+    border: none;
+    color: var(--light-color);
+}
 
 .results-div{
     display: flex;

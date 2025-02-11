@@ -285,15 +285,33 @@ def specific_quiz_questions(sid,cid,qid):
     
     elif filter == "all":
          if len(query_str) == 0:
-            return jsonify(payload=[x.serialise() for x in Question.query.filter(Question.chapter_id == int(cid)).all()])
+            l = []
+            for x in Question.query.filter(Question.chapter_id == int(cid)).all():
+                obj = x.serialise()
+                if x in q.questions:
+                    obj["present"] = True
+                else:
+                    obj["present"] = False
+                l.append(obj)
+
+            return jsonify(payload=l)
          
          else:
-            return jsonify(payload=[x.serialise() for x in Question.query.filter(Question.chapter_id == int(cid), Question.description.contains(query_str)).all()])
+            l = []
+            for x in Question.query.filter(Question.chapter_id == int(cid), Question.description.contains(query_str)).all():
+                obj = x.serialise()
+                if x in q.questions:
+                    obj["present"] = True
+                else:
+                    obj["present"] = False
+                l.append(obj)
+
+            return jsonify(payload=l)
     
     else:
         return jsonify(msg="Invalid filter provided!"),400
     
-@admin_subject_routes.post("/<sid>/chapters/<cid>/quizes/<qid>/questions")
+@admin_subject_routes.post("/<sid>/chapters/<cid>/quizes/<qid>/questions/add")
 @jwt_required()
 @admin_required
 def add_question_to_quiz(sid,cid,qid):
@@ -308,7 +326,7 @@ def add_question_to_quiz(sid,cid,qid):
         return jsonify(msg="Malformed request!"),400
 
     question = Question.query.filter(Question.id == question_id).scalar()
-    quiz = Quiz.query.filter(Quiz.id == qid)
+    quiz = Quiz.query.filter(Quiz.id == qid).scalar()
 
     if question.chapter.id != quiz.chapter.id:
         return jsonify(msg="Cannot add question from different chapter!"),400
@@ -317,11 +335,12 @@ def add_question_to_quiz(sid,cid,qid):
     db.session.commit()
     return jsonify(msg="Question successfully added!"),200
 
-@admin_subject_routes.delete("/<sid>/chapters/<cid>/quizes/<qid>/questions")
+@admin_subject_routes.post("/<sid>/chapters/<cid>/quizes/<qid>/questions/remove")
 @jwt_required()
 @admin_required
 def remove_question_from_quiz(sid,cid,qid):
     question_id = request.form.get("question_id",None)
+    print(request.data)
 
     if question_id is None:
         return jsonify(msg="Malformed request!"),400
@@ -332,7 +351,7 @@ def remove_question_from_quiz(sid,cid,qid):
         return jsonify(msg="Malformed request!"),400
 
     question = Question.query.filter(Question.id == question_id).scalar()
-    quiz = Quiz.query.filter(Quiz.id == qid)
+    quiz = Quiz.query.filter(Quiz.id == qid).scalar()
 
     if question.chapter.id != quiz.chapter.id:
         return jsonify(msg="Cannot perform operation on question from different chapter!"),400
