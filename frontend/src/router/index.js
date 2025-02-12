@@ -9,6 +9,7 @@ import Register from '@/pages/anon/Register.vue'
 import UserDashboard from '@/pages/user/UserDashboard.vue'
 import UserSubjects from '@/pages/user/subject/UserSubjects.vue'
 import UserSubject from '@/pages/user/subject/UserSubject.vue'
+import UserChapter from '@/pages/user/chapter/UserChapter.vue'
 
 import AdminDashboard from '@/pages/admin/AdminDashboard.vue'
 
@@ -67,6 +68,11 @@ const router = createRouter({
         {
           path:"subjects/:sid",
           component: UserSubject,
+          props: true
+        },
+        {
+          path:"subjects/:sid/chapters/:cid",
+          component: UserChapter,
           props: true
         },
       ]
