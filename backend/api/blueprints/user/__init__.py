@@ -56,4 +56,4 @@ def user_specific_chapter(sid,cid):
     if c.subject not in u.subjects:
         return jsonify(msg = "User not registered for subject!"),400
 
-    return jsonify(payload=c.serialise()),200
+    return jsonify(payload=c.serialise(required = "quizes")),200

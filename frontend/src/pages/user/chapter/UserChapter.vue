@@ -3,11 +3,16 @@
     import { api } from '@/api';
     
     const props = defineProps(['sid','cid'])
+    const chapter = ref({
+        "name": "Chapter"
+    });
     const quizes = ref([]);
 
     async function fetchQuizes(){
-        let res = await api.get(`/user/subjects/${props.sid}/chapters/${props.cid}/quizes`);
-        quizes.value = res.data.payload;
+        let res = await api.get(`/user/subjects/${props.sid}/chapters/${props.cid}`);
+        console.log(res.data.payload)
+        quizes.value = res.data.payload.quizes;
+        chapter.value = res.data.payload;
     }
     
     fetchQuizes();
@@ -18,12 +23,12 @@
         <div class="d-flex flex-column align-items-center">
             <div>
                 <h3>
-                    Linear Algebra
+                    {{chapter.subject.name}}
                 </h3>
             </div>
             <div>
                 <h1>
-                    Logic Gates
+                    {{chapter.name}}
                 </h1>
             </div>
         </div>
@@ -35,11 +40,11 @@
                     </h4>
                 </div>
                 <div class="d-flex flex-column align-items-center">
-                    <p>
-                        Start time: {{quiz.dated}}
+                    <p class="text-center">
+                        Start time: {{ quiz.dated.day }}-{{ quiz.dated.month }}-{{ quiz.dated.year }}, at {{ quiz.dated.hour }}:{{ quiz.dated.minute }}
                         <br>
-                        Duration: {{quiz.duration}}
-                    </p>    
+                        Duration: {{quiz.duration}} minutes
+                    </p>
                 </div>
             </div>
         </div>
