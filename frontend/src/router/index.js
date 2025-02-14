@@ -38,6 +38,7 @@ import AdminSubjectEdit from '@/pages/admin/subject/AdminSubjectEdit.vue'
 import AdminUser from '@/pages/admin/user/AdminUser.vue'
 import AdminUsers from '@/pages/admin/user/AdminUsers.vue'
 import QuizQuestion from '@/pages/user/quiz/QuizQuestion.vue'
+import QuizQuestions from '@/pages/user/quiz/QuizQuestions.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -77,8 +78,8 @@ const router = createRouter({
           props: true
         },
         {
-          path:"subjects/:sid/chapters/:cid/quizes/:qid/question",
-          component: QuizQuestion,
+          path:"subjects/:sid/chapters/:cid/quizes/:quiz_id/questions/:question_id",
+          component: QuizQuestions,
           props: true
         },
       ]

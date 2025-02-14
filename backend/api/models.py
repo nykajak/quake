@@ -181,12 +181,15 @@ class Question(db.Model):
             "id": self.id,
             "description": self.description,
             "options": self.options.split("#"),
-            "correct": self.correct,
-            "marks": self.marks
+            "marks": self.marks,
+            "correct": self.correct
         }
 
         if len(required) == 0:
             return res
+        
+        if "unsafe" in required:
+            del res["correct"]
 
         if "chapter" in required:
             res["chapter"] = self.chapter.serialise()

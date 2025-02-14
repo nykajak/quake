@@ -57,3 +57,10 @@ def user_specific_chapter(sid,cid):
         return jsonify(msg = "User not registered for subject!"),400
 
     return jsonify(payload=c.serialise(required = "quizes")),200
+
+@user_routes.get("/subjects/<sid>/chapters/<cid>/quizes/<qid>")
+@jwt_required()
+@user_required
+def user_questions(sid,cid,qid):
+    res = Quiz.query.filter(Quiz.id == qid).scalar().questions
+    return jsonify(payload = [x.serialise("unsafe") for x in res])

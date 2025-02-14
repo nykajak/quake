@@ -1,8 +1,9 @@
 <script setup>
 
+import router from '@/router';
 import { ref } from 'vue';
 
-const props = defineProps(['question']);
+const props = defineProps(['question', 'index', 'length']);
 let correct = ref(-1);
 </script>
 
@@ -65,8 +66,16 @@ let correct = ref(-1);
             </div>
 
             <div class="d-flex mt-3 justify-content-between">
-                <button class="nav-button">Save and prev</button>
-                <button class="nav-button">Save and next</button>
+                <button class="nav-button" @click="router.push({
+                    'path': `/user/subjects/${props.question.sid}/chapters/${props.question.cid}/quizes/${props.question.quiz_id}/questions/${Number(props.index) - 1}`
+                })" :disabled="props.index == props.length">
+                    Save and prev
+                </button>
+                <button class="nav-button" @click="router.push({
+                    'path': `/user/subjects/${props.question.sid}/chapters/${props.question.cid}/quizes/${props.question.quiz_id}/questions/${Number(props.index) + 1}`
+                })" :disabled="props.index == props.length">
+                    Save and next
+                </button>
             </div>
         </div>
     </div>
