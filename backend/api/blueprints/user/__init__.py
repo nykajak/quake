@@ -1,6 +1,7 @@
 from functools import wraps
-from flask import jsonify,Blueprint
+from flask import jsonify, Blueprint, request
 from flask_jwt_extended import get_current_user, jwt_required
+from datetime import datetime
 from api.models import *
 
 user_routes = Blueprint('user_routes', __name__)
@@ -64,3 +65,38 @@ def user_specific_chapter(sid,cid):
 def user_questions(sid,cid,qid):
     res = Quiz.query.filter(Quiz.id == qid).scalar().questions
     return jsonify(payload = [x.serialise("unsafe") for x in res])
+
+@user_routes.post("/subjects/<sid>/chapters/<cid>/quizes/<quiz_id>/questions/<question_id>")
+@jwt_required()
+@user_required
+def user_answer_question(sid,cid,quiz_id,question_id):
+    user = get_current_user()
+    marked = request.form.get("marked",-1)
+    
+    try:
+        marked = int(marked)
+    except ValueError:
+        return jsonify(msg = "Invalid option selected!"), 400
+
+    r = Response.query.filter(Response.user_id == user.id, Response.question_id == question_id, Response.quiz_id == quiz_id).scalar()
+    if marked == -1:
+        if r:
+            db.session.delete(r)
+            db.session.commit()
+        return jsonify(msg = "Response deleted!"), 200
+
+    elif 0 <= marked < 4:
+        if r is None:
+            r = Response(user_id = user.id, quiz_id = quiz_id, question_id = question_id, marked = marked, answered_at = datetime.now())
+            db.session.add(r)
+            db.session.commit()
+            return jsonify(msg = "Response created!"), 200
+
+        else:
+            r.marked = marked
+            r.answered_at = datetime.now()
+            db.session.commit()
+            return jsonify(msg = "Response modified!"), 200
+
+    else:
+        return jsonify(msg = "Invalid option selected!"),400

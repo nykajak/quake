@@ -2,9 +2,18 @@
 
 import router from '@/router';
 import { ref } from 'vue';
+import { api } from '@/api';
 
 const props = defineProps(['question', 'index', 'length']);
 let correct = ref(-1);
+
+async function submitResponse(){
+    let f = new FormData();
+    f.append("marked",correct.value)
+    let res = await api.post(`/user/subjects/${props.question.sid}/chapters/${props.question.cid}/quizes/${props.question.quiz_id}/questions/${props.question.id}`, f);
+    console.log(res.data)
+}
+
 </script>
 
 <template>
@@ -66,12 +75,16 @@ let correct = ref(-1);
             </div>
 
             <div class="d-flex mt-3 justify-content-between">
-                <button class="nav-button" @click="router.push({
+                <button class="nav-button" @click="
+                submitResponse();
+                router.push({
                     'path': `/user/subjects/${props.question.sid}/chapters/${props.question.cid}/quizes/${props.question.quiz_id}/questions/${Number(props.index) - 1}`
-                })" :disabled="props.index == props.length">
+                })" :disabled="props.index == 1">
                     Save and prev
                 </button>
-                <button class="nav-button" @click="router.push({
+                <button class="nav-button" @click="
+                submitResponse();
+                router.push({
                     'path': `/user/subjects/${props.question.sid}/chapters/${props.question.cid}/quizes/${props.question.quiz_id}/questions/${Number(props.index) + 1}`
                 })" :disabled="props.index == props.length">
                     Save and next
