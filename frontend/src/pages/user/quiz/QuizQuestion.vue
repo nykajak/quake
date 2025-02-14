@@ -1,7 +1,7 @@
 <script setup>
 
 import router from '@/router';
-import { ref } from 'vue';
+import { ref, onUpdated } from 'vue';
 import { api } from '@/api';
 
 const props = defineProps(['question', 'index', 'length']);
@@ -14,6 +14,12 @@ async function submitResponse(){
     console.log(res.data)
 }
 
+// async function fetchResponse(){
+//     console.log(props.question)
+//     let res = await api.get(`/user/subjects/${props.question.sid}/chapters/${props.question.cid}/quizes/${props.question.quiz_id}/questions/${props.question.id}`);
+//     correct.value = res.data.payload
+// }
+
 </script>
 
 <template>
@@ -21,7 +27,7 @@ async function submitResponse(){
         <div class="question-container">
             <div class="question-no-div">
                 <div>
-                    Q{{ props.question.id }}
+                    Q{{ props.index }}
                 </div>
             </div>
             <div class="question-statement-div">

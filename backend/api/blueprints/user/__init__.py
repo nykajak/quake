@@ -66,6 +66,17 @@ def user_questions(sid,cid,qid):
     res = Quiz.query.filter(Quiz.id == qid).scalar().questions
     return jsonify(payload = [x.serialise("unsafe") for x in res])
 
+@user_routes.get("/subjects/<sid>/chapters/<cid>/quizes/<quiz_id>/questions/<question_id>")
+@jwt_required()
+@user_required
+def user_fetch_response(sid,cid,quiz_id,question_id):
+    user = get_current_user()
+
+    r = Response.query.filter(Response.user_id == user.id, Response.question_id == question_id, Response.quiz_id == quiz_id).scalar()
+    if r:
+        return jsonify(payload = r.marked), 200
+    return jsonify(payload = -1), 200
+
 @user_routes.post("/subjects/<sid>/chapters/<cid>/quizes/<quiz_id>/questions/<question_id>")
 @jwt_required()
 @user_required
