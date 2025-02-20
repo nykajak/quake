@@ -39,7 +39,6 @@ async function editQuestion(e){
     f.append("options[3]",entries.get("option-d"))
 
     let res = await api.put(`/admin/subjects/${props.sid}/chapters/${props.cid}/questions/${props.qid}`,f);
-    console.log(res.data)
     return res.data
 }
 </script>

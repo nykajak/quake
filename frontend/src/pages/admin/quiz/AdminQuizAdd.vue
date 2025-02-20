@@ -6,7 +6,6 @@ const props = defineProps(['sid','cid'])
 
 async function createQuiz(e){
     let res = await api.post(`/admin/subjects/${props.sid}/chapters/${props.cid}/quizes`,new FormData(e.target));
-    console.log(res.data)
     return res.data
 }
 

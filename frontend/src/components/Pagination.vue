@@ -25,11 +25,11 @@ if (route.query.page){
 </script>
 
 <template>
-    <div class="d-flex flex-row">
-        <div class="d-flex align-items-center" v-if="startPage > 1">
+    <div class="d-flex flex-row flex-grow-1 justify-content-center">
+        <div class="p-2 d-flex align-items-center" v-if="startPage > 1">
             ---
         </div>
-            <div class="p-2" v-for="n in 5">
+            <div class="p-2" v-for="n in Math.min(5,props.pages)">
                 <template v-if="startPage + n - 1 <= props.pages && 1 <= startPage + n - 1">
                     <button @click="() => {
                         router.push({path: `/admin/${type}`, query : {
@@ -41,7 +41,7 @@ if (route.query.page){
                     </button>
                 </template>
             </div>
-        <div class="d-flex align-items-center" v-if="startPage < props.pages - 4">
+        <div class="p-2 d-flex align-items-center" v-if="startPage < props.pages - 4">
             ---
         </div>
     </div>  

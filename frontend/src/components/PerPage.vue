@@ -18,7 +18,6 @@ watch(selected, (old,_new) => {
     })
 })
 
-console.log(route.query)
 </script>
 
 <template>

@@ -37,7 +37,6 @@
         f.append("description",document.getElementById("edit-description").innerText)
 
         let res = await api.put(`/admin/subjects/${props.sid}`,f)
-        console.log(res.data)
         return res.data
     }
 

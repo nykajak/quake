@@ -84,7 +84,6 @@ fetchResponse();
             <div class="d-flex mt-3 justify-content-between">
                 <button class="nav-button" @click="async ()=>{
                     await submitResponse();
-                    console.log(Number(props.index) - 1)
                     router.push({
                         'path': `/user/subjects/${props.question.sid}/chapters/${props.question.cid}/quizes/${props.question.quiz_id}/questions/${Number(props.index) - 1}`
                     })}" :disabled="props.index == 1">
