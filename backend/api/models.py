@@ -1,10 +1,12 @@
 from api.database import db
 
+# Registed relation to check if user registered for a particular course.
 registered = db.Table("registered",
     db.Column("user_id",db.Integer,db.ForeignKey('users.id'), primary_key = True),
     db.Column("subject_id",db.Integer,db.ForeignKey('subjects.id'), primary_key = True),
 )
 
+# Problem relation to check if quiz contains some specific question.
 problem = db.Table("problem",
     db.Column("question_id",db.Integer,db.ForeignKey('questions.id'), primary_key = True),
     db.Column("quiz_id",db.Integer,db.ForeignKey('quizes.id'), primary_key = True),
