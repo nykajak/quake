@@ -11,7 +11,7 @@ def login():
     username = request.form.get("username",None)
     password = request.form.get("password",None)
 
-    if not username or not password:
+    if username is None or password is None:
         return jsonify(msg="Malformed request: Check if both username and passowrd included"),401
     
     res = User.query.filter(User.name == username).scalar()
@@ -45,18 +45,18 @@ def register():
     password = request.form.get("password",None)
     confirm_password = request.form.get("confirm",None)
 
-    if not username or not password or not email or not confirm_password:
+    if username is None or password is None or email is None or confirm_password is None:
         return jsonify(msg="Malformed request: Check if all fields included"),401
     
     if password != confirm_password:
-        return jsonify(msg="Password and confirm pasword does not match"),400
+        return jsonify(msg="Password and confirm pasword does not match!"),400
 
     password = bcrypt.generate_password_hash(password)
     u = User(name = username, email = email, password = password)
     try:
         db.session.add(u)
         db.session.commit()
-        return jsonify(msg="Account creation successful"),200
+        return jsonify(msg="Account creation successful!"),201
 
     except IntegrityError as e:
-        return jsonify(msg="Email or username already exists"),400
+        return jsonify(msg="Email or username already in use!"),400
