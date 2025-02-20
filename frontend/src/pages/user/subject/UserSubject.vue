@@ -4,6 +4,7 @@ import { defineProps, ref } from 'vue';
 
 import { RouterLink } from 'vue-router';
 import UserSubjectCard from './components/UserSubjectCard.vue';
+import Loader from '@/components/Loader.vue';
 
 const props = defineProps(['sid']);
 const subject = ref(null);
@@ -20,7 +21,7 @@ fetchSubject().then((data)=>{
 </script>
 
 <template>
-    <div class="mt-3">
+    <div v-if="subject" class="mt-3">
         <template v-if="subject">
             <UserSubjectCard :subject="subject"/>
         </template>
@@ -36,6 +37,7 @@ fetchSubject().then((data)=>{
             </p>
         </div>
     </div>
+    <Loader v-else/>
 </template>
 
 <style scoped>

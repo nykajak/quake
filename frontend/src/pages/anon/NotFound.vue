@@ -14,7 +14,7 @@
         </h4>
 
         <p>
-            Check if URL has been mispelled!
+            Check if the URL has been mispelled!
         </p>
 
         <RouterLink to="/">

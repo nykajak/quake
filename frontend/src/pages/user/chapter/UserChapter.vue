@@ -1,6 +1,8 @@
 <script setup>
     import { ref } from 'vue';
     import { api } from '@/api';
+
+    import Loader from '@/components/Loader.vue';
     
     const props = defineProps(['sid','cid'])
     const chapter = ref({
@@ -10,7 +12,6 @@
 
     async function fetchQuizes(){
         let res = await api.get(`/user/subjects/${props.sid}/chapters/${props.cid}`);
-        console.log(res.data.payload)
         quizes.value = res.data.payload.quizes;
         chapter.value = res.data.payload;
     }
@@ -19,7 +20,7 @@
 </script>
 
 <template>
-    <div class="d-flex flex-column flex-grow-1 mt-3">
+    <div v-if="chapter && chapter.subject" class="d-flex flex-column flex-grow-1 mt-3">
         <div class="d-flex flex-column align-items-center">
             <div>
                 <h3>
@@ -49,6 +50,8 @@
             </div>
         </div>
     </div>
+
+    <Loader v-else/>
 </template>
 
 <style scoped>
