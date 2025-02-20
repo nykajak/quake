@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { api } from '@/api'
 
 import NotFound from '@/pages/anon/NotFound.vue'
 
@@ -37,7 +38,6 @@ import AdminSubjectEdit from '@/pages/admin/subject/AdminSubjectEdit.vue'
 
 import AdminUser from '@/pages/admin/user/AdminUser.vue'
 import AdminUsers from '@/pages/admin/user/AdminUsers.vue'
-import QuizQuestion from '@/pages/user/quiz/QuizQuestion.vue'
 import QuizQuestions from '@/pages/user/quiz/QuizQuestions.vue'
 
 const router = createRouter({
@@ -62,6 +62,16 @@ const router = createRouter({
       name:"userDash",
       path: "/user",
       component: UserDashboard,
+      beforeEnter: async (to,from) => {
+        let res = await api.get("/");
+        if (res.data.role == "user"){
+          return true;
+        }
+        else if (res.data.role == "admin"){
+          return {"path": "/admin"};
+        }
+        return {"name" : "login"};
+      },
       children: [
         {
           path:"subjects",
@@ -88,6 +98,16 @@ const router = createRouter({
       name: "adminDash",
       path: "/admin",
       component: AdminDashboard,
+      beforeEnter: async (to,from) => {
+        let res = await api.get("/");
+        if (res.data.role == "admin"){
+          return true;
+        }
+        else if (res.data.role == "user"){
+          return {"path": "/user"};
+        }
+        return {"name" : "login"};
+      },
       children: [
         {
           path:"users",
