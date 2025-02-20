@@ -2,9 +2,10 @@
     import { api } from '@/api';
     import { ref } from 'vue';
     import QuizQuestion from './QuizQuestion.vue';
+    import { useRoute } from 'vue-router';
 
     const props = defineProps(['sid','cid','quiz_id','question_id'])
-
+    const route = useRoute();
     let questions = ref([]);
 
     async function fetchQuestions(){
@@ -15,11 +16,11 @@
         });
     }
 
-    fetchQuestions();
+    fetchQuestions()
 </script>
 
 <template>
-    <QuizQuestion :question="questions[props.question_id - 1]" :index="props.question_id" :length="questions.length"/>
+    <QuizQuestion v-if="questions[props.question_id - 1]" :question="questions[props.question_id - 1]" :index="props.question_id" :length="questions.length"/>
 </template>
 
 <style scoped>

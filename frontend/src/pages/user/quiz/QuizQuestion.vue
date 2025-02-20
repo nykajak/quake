@@ -1,29 +1,30 @@
 <script setup>
 
 import router from '@/router';
-import { ref, onUpdated } from 'vue';
+import { ref, onMounted } from 'vue';
 import { api } from '@/api';
+import { useRoute } from 'vue-router';
 
 const props = defineProps(['question', 'index', 'length']);
-let correct = ref(-1);
+const route = useRoute();
+let correct = ref(-2);
 
 async function submitResponse(){
     let f = new FormData();
     f.append("marked",correct.value)
     let res = await api.post(`/user/subjects/${props.question.sid}/chapters/${props.question.cid}/quizes/${props.question.quiz_id}/questions/${props.question.id}`, f);
-    console.log(res.data)
 }
 
-// async function fetchResponse(){
-//     console.log(props.question)
-//     let res = await api.get(`/user/subjects/${props.question.sid}/chapters/${props.question.cid}/quizes/${props.question.quiz_id}/questions/${props.question.id}`);
-//     correct.value = res.data.payload
-// }
+async function fetchResponse(){
+    let res = await api.get(`/user/subjects/${route.params.sid}/chapters/${route.params.cid}/quizes/${route.params.quiz_id}/questions/${props.question.id}`);
+    correct.value = res.data.payload
+}
 
+fetchResponse();
 </script>
 
 <template>
-<div v-if="question" class="d-flex w-100 flex-column align-self-center m-1 p-1">
+<div v-if="question && correct != -2" class="d-flex w-100 flex-column align-self-center m-1 p-1">
         <div class="question-container">
             <div class="question-no-div">
                 <div>
@@ -81,18 +82,19 @@ async function submitResponse(){
             </div>
 
             <div class="d-flex mt-3 justify-content-between">
-                <button class="nav-button" @click="
-                submitResponse();
-                router.push({
-                    'path': `/user/subjects/${props.question.sid}/chapters/${props.question.cid}/quizes/${props.question.quiz_id}/questions/${Number(props.index) - 1}`
-                })" :disabled="props.index == 1">
+                <button class="nav-button" @click="async ()=>{
+                    await submitResponse();
+                    console.log(Number(props.index) - 1)
+                    router.push({
+                        'path': `/user/subjects/${props.question.sid}/chapters/${props.question.cid}/quizes/${props.question.quiz_id}/questions/${Number(props.index) - 1}`
+                    })}" :disabled="props.index == 1">
                     Save and prev
                 </button>
-                <button class="nav-button" @click="
-                submitResponse();
-                router.push({
-                    'path': `/user/subjects/${props.question.sid}/chapters/${props.question.cid}/quizes/${props.question.quiz_id}/questions/${Number(props.index) + 1}`
-                })" :disabled="props.index == props.length">
+                <button class="nav-button" @click="async ()=>{
+                    await submitResponse();
+                    router.push({
+                        'path': `/user/subjects/${props.question.sid}/chapters/${props.question.cid}/quizes/${props.question.quiz_id}/questions/${Number(props.index) + 1}`
+                    })}" :disabled="props.index == props.length">
                     Save and next
                 </button>
             </div>
