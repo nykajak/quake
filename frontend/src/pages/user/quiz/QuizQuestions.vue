@@ -1,8 +1,12 @@
 <script setup>
     import { api } from '@/api';
     import { ref } from 'vue';
-    import QuizQuestion from './QuizQuestion.vue';
+
     import { useRoute } from 'vue-router';
+    
+    import QuizQuestion from './QuizQuestion.vue';
+    import QuizNavigation from './QuizNavigation.vue';
+    import Loader from '@/components/Loader.vue';
 
     const props = defineProps(['sid','cid','quiz_id','question_id'])
     const route = useRoute();
@@ -20,7 +24,11 @@
 </script>
 
 <template>
-    <QuizQuestion v-if="questions[props.question_id - 1]" :question="questions[props.question_id - 1]" :index="props.question_id" :length="questions.length"/>
+    <template v-if="questions && questions[props.question_id - 1]">
+        <QuizQuestion :question="questions[props.question_id - 1]" :index="props.question_id" :length="questions.length"/>
+        <QuizNavigation :length="questions.length"/>
+    </template>
+    <Loader v-else/>
 </template>
 
 <style scoped>
