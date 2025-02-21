@@ -1,8 +1,9 @@
 <script setup>
     import { api } from '@/api';
-    import { ref } from 'vue';
+    import { onUpdated, ref } from 'vue';
 
-    import { useRoute } from 'vue-router';
+    import { useRoute, useRouter } from 'vue-router';
+    import { useTimer } from '@/timer';
     
     import QuizQuestion from './QuizQuestion.vue';
     import QuizNavigation from './QuizNavigation.vue';
@@ -10,6 +11,19 @@
 
     const props = defineProps(['sid','cid','quiz_id','question_id'])
     const route = useRoute();
+    const router = useRouter();
+
+    let {time} = useTimer(300);
+
+    function formatTime(time){
+        if (time > 0){
+            return `${Math.floor(time / 60)}  minutes and ${time % 60} seconds left!`;
+        }
+        else{
+            return `You are out of time!`
+        }
+    }
+
     let questions = ref([]);
 
     async function fetchQuestions(){
@@ -21,10 +35,21 @@
     }
 
     fetchQuestions()
+
+    onUpdated(() =>{
+        if (time.value <= 0){
+            router.push({
+                "path": `/user/subjects/${props.sid}/chapters/${props.cid}/quizes/${props.quiz_id}`
+            })
+        }
+    })
 </script>
 
 <template>
     <template v-if="questions && questions[props.question_id - 1]">
+        <div class="d-flex justify-content-end p-2">
+            {{formatTime(time)}}
+        </div>
         <QuizQuestion :question="questions[props.question_id - 1]" :index="props.question_id" :length="questions.length"/>
         <QuizNavigation :length="questions.length"/>
     </template>
