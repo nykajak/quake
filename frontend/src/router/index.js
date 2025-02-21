@@ -11,6 +11,8 @@ import UserDashboard from '@/pages/user/UserDashboard.vue'
 import UserSubjects from '@/pages/user/subject/UserSubjects.vue'
 import UserSubject from '@/pages/user/subject/UserSubject.vue'
 import UserChapter from '@/pages/user/chapter/UserChapter.vue'
+import QuizQuestions from '@/pages/user/quiz/QuizQuestions.vue'
+import QuizStart from '@/pages/user/quiz/QuizStart.vue'
 
 import AdminDashboard from '@/pages/admin/AdminDashboard.vue'
 
@@ -38,7 +40,6 @@ import AdminSubjectEdit from '@/pages/admin/subject/AdminSubjectEdit.vue'
 
 import AdminUser from '@/pages/admin/user/AdminUser.vue'
 import AdminUsers from '@/pages/admin/user/AdminUsers.vue'
-import QuizQuestions from '@/pages/user/quiz/QuizQuestions.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -85,6 +86,11 @@ const router = createRouter({
         {
           path:"subjects/:sid/chapters/:cid",
           component: UserChapter,
+          props: true
+        },
+        {
+          path:"subjects/:sid/chapters/:cid/quizes/:qid",
+          component: QuizStart,
           props: true
         },
         {

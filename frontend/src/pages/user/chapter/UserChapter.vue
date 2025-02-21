@@ -3,6 +3,7 @@
     import { api } from '@/api';
 
     import Loader from '@/components/Loader.vue';
+    import { RouterLink } from 'vue-router';
     
     const props = defineProps(['sid','cid'])
     const chapter = ref({
@@ -24,7 +25,9 @@
         <div class="d-flex flex-column align-items-center">
             <div>
                 <h3>
-                    {{chapter.subject.name}}
+                    <RouterLink :to="`/user/subjects/${props.sid}`">
+                        {{chapter.subject.name}}
+                    </RouterLink>
                 </h3>
             </div>
             <div>
@@ -37,7 +40,9 @@
             <div class="result-obj" v-for="quiz in quizes">
                 <div>
                     <h4>
-                        {{quiz.description}}
+                        <RouterLink :to="`/user/subjects/${props.sid}/chapters/${props.cid}/quizes/${quiz.id}`">
+                            {{quiz.description}}
+                        </RouterLink>
                     </h4>
                 </div>
                 <div class="d-flex flex-column align-items-center">
