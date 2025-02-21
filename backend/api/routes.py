@@ -17,6 +17,13 @@ def page_not_found(e):
 @app.get("/")
 @jwt_required(optional=True)
 def home():
+    """
+        LIVE
+        Check to see current role and permissions of logged in user.
+        GET /
+
+        Expected on success: Response with suitable msg and role attributes.
+    """
     if current_user:
         role = "user" if current_user.is_admin == 0 else "admin"
         return jsonify(msg = f"Hello {current_user.name}!", role = role)

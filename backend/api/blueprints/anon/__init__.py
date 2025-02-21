@@ -8,6 +8,13 @@ anon_routes = Blueprint('anon_routes', __name__)
 
 @anon_routes.post("/login")
 def login():
+    """
+        LIVE
+        Login for users and admin
+        POST /login
+
+        Expected on success: Login status msg with role as payload and setting of JWT token.
+    """
     username = request.form.get("username",None)
     password = request.form.get("password",None)
 
@@ -40,6 +47,14 @@ def logout():
 
 @anon_routes.post("/register")
 def register():
+    """
+        LIVE
+        Register for users and admin
+        POST /register
+        
+        Expected on success: Register status msg.
+    """
+
     username = request.form.get("username",None)
     email = request.form.get("email",None)
     password = request.form.get("password",None)
