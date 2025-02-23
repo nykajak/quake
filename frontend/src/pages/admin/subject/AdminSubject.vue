@@ -43,15 +43,15 @@
     <div v-if="loading == false && ready == true" class="d-flex flex-column flex-grow-1 mt-2">
         <SubjectCard :subject="subject" :active="false"/>
         <div class="d-flex justify-content-center mb-2">
-            <button class="option-button" id="add-button" @click="router.push({
-                path:`/admin/subjects/${subject.id}/chapters/add`
-            })">
-                Add chapter
-            </button>
             <button class="option-button" id="enroll-button" @click="router.push({
                 path:`/admin/subjects/${subject.id}/enrolled`
             })">
                 See enrolled
+            </button>
+            <button class="option-button" id="add-button" @click="router.push({
+                path:`/admin/subjects/${subject.id}/chapters/add`
+            })">
+                Add chapter
             </button>
             <button class="option-button" id="edit-button" @click="router.push({
                 path:`/admin/subjects/${subject.id}/edit`

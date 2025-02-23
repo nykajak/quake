@@ -48,6 +48,16 @@ fetchChapter().then(data => {
         <ChapterCard :chapter="chapter" :active="0"/>
 
         <div class="d-flex flex-row justify-content-center">
+            <button class="option-button" id="view-questions" @click="router.push({
+                path:`/admin/subjects/${props.sid}/chapters/${props.cid}/questions`
+            })">
+                Manage questions
+            </button>
+            <button class="option-button" id="view-quizes" @click="router.push({
+                path:`/admin/subjects/${props.sid}/chapters/${props.cid}/quizes`
+            })">
+                Manage quizes
+            </button>
             <button class="option-button" id="edit-button" @click="router.push({
                 path:`/admin/subjects/${props.sid}/chapters/${props.cid}/edit`
             })">
@@ -68,5 +78,13 @@ fetchChapter().then(data => {
 
 #edit-button{
     background-color: var(--error-color);
+}
+
+#view-questions{
+    background-color: var(--primary-color);
+}
+
+#view-quizes{
+    background-color: var(--secondary-color);
 }
 </style>

@@ -34,6 +34,9 @@ async function editChapter(){
     f.append("description",document.getElementById("edit-description").innerText)
 
     let res = await api.put(`/admin/subjects/${props.sid}/chapters/${props.cid}`,f)
+    router.push({
+        "path": `/admin/subjects/${props.sid}/chapters/${props.cid}`
+    })
     return res.data
 }
 
@@ -48,24 +51,27 @@ fetchChapter().then(data => {
 
 <template>
     <div v-if="loading == false && ready == true" class="d-flex flex-column flex-grow-1 mt-2">
-        <div class="d-flex flex-row justify-content-center">
-            <RouterLink :to="'/admin/subjects/'+chapter.subject.id">
-                <h2>{{ chapter.subject.name }}</h2>
-            </RouterLink>
-        </div>
         <div class="d-flex flex-column justify-content-center align-items-center text-center">
             <input id="edit-name" type="text" :value="chapter.name">
             <div contenteditable="true" id="edit-description" type="text">
                 {{ chapter.description }}
             </div>
 
-            <input type="submit" @click="editChapter">
+            <input id="submit-button" type="submit" @click="editChapter" value="Confirm Edits?">
         </div>
     </div>
     <Loader v-else/>
 </template>
 
 <style scoped>
+#submit-button{
+    display: flex;
+    background-color: var(--secondary-color);
+    border: none;
+    color: var(--light-color);
+    padding: 0.33em;
+}
+
 #edit-name{
     display: flex;
     text-align: center;

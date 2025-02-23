@@ -4,9 +4,6 @@
     import { RouterLink } from 'vue-router';
     
     import { api } from '@/api';
-
-    import SubjectCard from './components/SubjectCard.vue';
-    import ChapterCard from '../chapter/components/ChapterCard.vue';
     import Loader from '@/components/Loader.vue';
 
     const router = useRouter();
@@ -61,12 +58,6 @@
         <div class="d-flex justify-content-center mb-2">
             <input type="submit" class="option-button" id="edit-button" @click="editSubject" value="Confirm Edits?" />
         </div>
-        <div class="chapters">
-            <h1 class="heading">Chapters</h1>
-            <div class="d-flex flex-column align-items-center m-2" v-for="chapter in subject.chapters">
-                <ChapterCard :chapter="chapter" :active="1"></ChapterCard>
-            </div>
-        </div>
     </div>
 
     <Loader v-else/>
@@ -98,26 +89,8 @@
 }
 
 #edit-button{
-    background-color: var(--error-color);
-}
-
-#add-button{
-    background-color: var(--tertiary-color);
-}
-
-#enroll-button{
     background-color: var(--secondary-color);
 }
-
-.chapters{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding-top: 1em;
-    flex-grow: 1;
-    border-top: 1px solid light-dark(var(--dark-color),var(--light-color));
-}
-
 .heading{
     color: var(--secondary-color);
     font-size: 3em;
