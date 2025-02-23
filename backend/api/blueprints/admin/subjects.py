@@ -56,6 +56,15 @@ def specific_subject(id):
 @jwt_required()
 @admin_required
 def edit_subject(id):
+    """
+        Edit subject.
+        POST /admin/subjects
+
+        Request body: name,description,credits
+
+        Expected on success: Modification of existing subject.
+    """
+
     name = request.form.get("name", None)
     description = request.form.get("description", None)
     credits = request.form.get("credits", None)
@@ -72,16 +81,19 @@ def edit_subject(id):
             if credits:
                 try:
                     credits = int(credits)
-                    s.credits = credits
-                except Exception as e:
-                    print(type(e))
-                    pass
+                    if credits > 0:
+                        s.credits = credits
+
+                    else:
+                        return jsonify(msg="Malformed request: Credits field should be greater than 0"),400
+
+                except ValueError as e:
+                    return jsonify(msg="Malformed request: Credits field should be integer"),400
             
             db.session.commit()
 
         except Exception as e:
-            print(type(e))
-            return jsonify(msg="Edit subject failure"),400
+            return jsonify(msg="Subject with that name already exists!"),400
 
         return jsonify(msg="Edit subject success"),200
     
@@ -106,10 +118,13 @@ def add_subject():
     try:
         credits = int(credits)
     except:
-        return jsonify(msg="Malformed request: Check if all fields included"),400
+        return jsonify(msg="Malformed request: Credits field should be integer"),400
 
-    if credits == 0 or name is None:
+    if name is None or len(name) == 0:
         return jsonify(msg="Malformed request: Check if all fields included"),400
+    
+    if credits <= 0:
+        return jsonify(msg="Malformed request: Credits field should be greater than 0"),400
     
     s = Subject(name = name, credits = credits, description = description)
     try:
@@ -118,7 +133,7 @@ def add_subject():
         return jsonify(msg="Subject creation successful",payload=s.serialise()),200
     
     except IntegrityError as e:
-        return jsonify(msg="Name is not unique!"),400
+        return jsonify(msg="Subject already exists!"),400
     
 
 @admin_subject_routes.get("/<sid>/chapters/<cid>")
