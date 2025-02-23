@@ -34,6 +34,9 @@
         f.append("description",document.getElementById("edit-description").innerText)
 
         let res = await api.put(`/admin/subjects/${props.sid}`,f)
+        router.push({
+            "path":`/admin/subjects/${props.sid}`
+        })
         return res.data
     }
 

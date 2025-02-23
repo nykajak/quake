@@ -84,11 +84,11 @@
 }
 
 #add-button{
-    background-color: var(--tertiary-color);
+    background-color: var(--secondary-color);
 }
 
 #enroll-button{
-    background-color: var(--secondary-color);
+    background-color: var(--primary-color);
 }
 
 .chapters{
