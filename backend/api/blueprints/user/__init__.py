@@ -1,7 +1,7 @@
 from functools import wraps
 from flask import jsonify, Blueprint, request
 from flask_jwt_extended import get_current_user, jwt_required
-from datetime import datetime
+from datetime import datetime, timedelta
 from api.models import *
 
 user_routes = Blueprint('user_routes', __name__)
@@ -63,8 +63,9 @@ def user_specific_chapter(sid,cid):
 @jwt_required()
 @user_required
 def user_questions(sid,cid,qid):
-    res = Quiz.query.filter(Quiz.id == qid).scalar().questions
-    return jsonify(payload = [x.serialise("unsafe") for x in res])
+    quiz = Quiz.query.filter(Quiz.id == qid).scalar()
+    questions = quiz.questions
+    return jsonify(payload = [x.serialise(required=("unsafe")) for x in questions], quiz = quiz.serialise())
 
 @user_routes.get("/subjects/<sid>/chapters/<cid>/quizes/<quiz_id>/questions/<question_id>")
 @jwt_required()

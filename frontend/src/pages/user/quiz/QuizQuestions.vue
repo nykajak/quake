@@ -28,6 +28,26 @@
 
     async function fetchQuestions(){
         let res = await api.get(`/user/subjects/${props.sid}/chapters/${props.cid}/quizes/${props.quiz_id}`);
+        
+        // let dated = res.data.quiz.dated;
+        // let startDate = new Date(dated.year, dated.month, dated.day, dated.hour, dated.minute)
+        // let endDate = new Date(startDate);
+        // endDate.setMinutes(startDate.getMinutes() + res.data.quiz.duration);
+        // let current = new Date();
+
+        // console.log(current.getTime())
+        // console.log(startDate.getTime())
+        // console.log(endDate.getTime())
+        // if (){
+        //     console.log("Can attempt!")
+        // }
+        // else if (current.getTime() < startDate.getTime()){
+        //     console.log("Has not started")
+        // }
+        // else{
+        //     console.log("Quiz expired")
+        // }
+
         questions.value = res.data.payload.map((x)=>{
             let y = {...x, 'sid':props.sid, 'cid':props.cid, 'quiz_id':props.quiz_id}
             return y;
