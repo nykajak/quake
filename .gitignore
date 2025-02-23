@@ -4,6 +4,7 @@ test*
 questions.txt
 user_secrets.txt
 local_run.py
+database.json
 
 
 # Logs
