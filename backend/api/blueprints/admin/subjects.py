@@ -502,7 +502,7 @@ def add_question(sid,cid):
     
     description = request.form.get("description", None)
     correct = int(request.form.get("correct", -1))
-    marks = request.form.get("marks",None)
+    marks = request.form.get("marks", 1)
     
     options = []
     for i in range(4):
@@ -512,7 +512,7 @@ def add_question(sid,cid):
         
         options.append(o)
 
-    if description is None or correct == -1 or marks is None:
+    if description is None or correct == -1:
         return jsonify(msg="Malformed request!"),400
 
     c = Chapter.query.filter(Chapter.id == cid, Chapter.subject_id == sid)
@@ -523,7 +523,7 @@ def add_question(sid,cid):
     db.session.add(q)
     db.session.commit()
 
-    return jsonify(msg="Question created successfully!"),200
+    return jsonify(msg="Question created successfully!", payload = q.id),200
 
 
     

@@ -1,19 +1,25 @@
 <script setup>
 
 import { ref } from 'vue';
-const correctOption = ref(-1);
+import { api } from '@/api';
+import { useRouter } from 'vue-router';
 
-function fun(e){
-    const entries = new FormData(e.target).entries();
-    for (let entry of entries){
-        console.log(entry)
-    }
+const props = defineProps(['sid','cid'])
+const router = useRouter();
+const correctOption = ref(-1);
+async function createQuestion(e){
+    let f = new FormData(e.target);
+    let res = await api.post(`/admin/subjects/${props.sid}/chapters/${props.cid}/questions`, f)
+    router.push({
+        "path": `/admin/subjects/${props.sid}/chapters/${props.cid}/questions/${res.data.payload}`
+    })
+    return res.data;
 }
 </script>
 
 <template>
     <div class="d-flex w-100 flex-column align-self-center m-1 p-1">
-        <form @submit.prevent="fun">
+        <form @submit.prevent="createQuestion">
             <input type="hidden" name="correct" :value="correctOption">
             <div class="question-container">
                 <div class="question-no-div">
@@ -22,45 +28,45 @@ function fun(e){
                     </div>
                 </div>
                 <div class="question-statement-div">
-                    <textarea type="text" class="question-input" placeholder="Question Text" name="question"></textarea>
+                    <textarea type="text" class="question-input" placeholder="Question Text" name="description"></textarea>
                 </div>
             </div>
             
             <div class="option-container">
                 <div class="d-flex flex-row justify-content-center flex-wrap w-100">
                     <div class="option-button">
-                        <button :class="{'rounded-div':true,'selected-option':correctOption === 1}" @click.prevent="() => {correctOption = 1}">
+                        <button :class="{'rounded-div':true,'selected-option':correctOption === 0}" @click.prevent="() => {correctOption = 0}">
                             A
                         </button>
                         <div class="option-text">
-                            <input type="text" class="option-input" name="option-a">
+                            <input type="text" class="option-input" name="options[0]">
+                        </div>
+                    </div>
+        
+                    <div class="option-button">
+                        <button :class="{'rounded-div':true,'selected-option':correctOption === 1}" @click.prevent="() => {correctOption = 1}">
+                            B
+                        </button>
+                        <div class="option-text">
+                            <input type="text" class="option-input" name="options[1]">
                         </div>
                     </div>
         
                     <div class="option-button">
                         <button :class="{'rounded-div':true,'selected-option':correctOption === 2}" @click.prevent="() => {correctOption = 2}">
-                            B
+                            C
                         </button>
                         <div class="option-text">
-                            <input type="text" class="option-input" name="option-b">
+                            <input type="text" class="option-input" name="options[2]">
                         </div>
                     </div>
         
                     <div class="option-button">
                         <button :class="{'rounded-div':true,'selected-option':correctOption === 3}" @click.prevent="() => {correctOption = 3}">
-                            C
-                        </button>
-                        <div class="option-text">
-                            <input type="text" class="option-input" name="option-c">
-                        </div>
-                    </div>
-        
-                    <div class="option-button">
-                        <button :class="{'rounded-div':true,'selected-option':correctOption === 4}" @click.prevent="() => {correctOption = 4}">
                             D
                         </button>
                         <div class="option-text">
-                            <input type="text" class="option-input" name="option-d">
+                            <input type="text" class="option-input" name="options[3]">
                         </div>
                     </div>
                 </div>
