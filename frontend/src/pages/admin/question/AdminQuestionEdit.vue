@@ -1,8 +1,10 @@
 <script setup>
 import { api } from '@/api';
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 
 const props = defineProps(['sid','cid','qid'])
+const router = useRouter()
 
 async function fetchQuestion(){
     let res = await api.get(`/admin/subjects/${props.sid}/chapters/${props.cid}/questions/${props.qid}`)
@@ -39,6 +41,9 @@ async function editQuestion(e){
     f.append("options[3]",entries.get("option-d"))
 
     let res = await api.put(`/admin/subjects/${props.sid}/chapters/${props.cid}/questions/${props.qid}`,f);
+    router.push({
+        "path": `/admin/subjects/${props.sid}/chapters/${props.cid}/questions/${props.qid}`
+    })
     return res.data
 }
 </script>

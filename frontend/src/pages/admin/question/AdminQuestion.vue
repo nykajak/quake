@@ -78,7 +78,7 @@ fetchQuestion().then((data)=>{
                     'path': `/admin/subjects/${props.sid}/chapters/${props.cid}/questions/${props.qid}/edit`
                 }
             )">
-                Edit?
+                Edit Question
             </button>
         </div>
     </div>
