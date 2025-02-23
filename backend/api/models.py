@@ -214,9 +214,14 @@ class Response(db.Model):
 
     def serialise(self,required = ()):
         res = {
-            "id": self.id,
             "marked": self.marked,
-            "answered_at": self.answered_at,
+            "dated": {
+                "day":f"{self.answered_at.day}",
+                "month":f"{self.answered_at.month}",
+                "year":f"{self.answered_at.year}",
+                "hour":f"{self.answered_at.hour:0>2}",
+                "minute":f"{self.answered_at.minute:0>2}",
+            },
         }
 
         if len(required) == 0:
