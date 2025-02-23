@@ -41,6 +41,13 @@ def login():
 
 @anon_routes.post("/logout")
 def logout():
+    """
+        LIVE
+        Logout currently logged in user or admin
+        POST /logout
+        
+        Expected on success: Unset cookies from response.
+    """
     response = jsonify({"msg": "Logout successful"})
     unset_jwt_cookies(response)
     return response,200

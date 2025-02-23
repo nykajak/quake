@@ -3,6 +3,7 @@ from flask_jwt_extended import jwt_required
 from api.models import *
 from api.blueprints.admin import admin_required
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm.exc import StaleDataError
 
 admin_user_routes = Blueprint('admin_user_routes', __name__, url_prefix="/users")
 
@@ -13,7 +14,7 @@ def all_users():
     """
         LIVE
         See all users.
-        GET http://localhost:5000/admin/users/
+        GET /admin/users/
 
         Query string args: page, per_page and q (for filtering)
 
@@ -38,7 +39,7 @@ def specific_users(id):
     """
         LIVE
         See specific user.
-        GET http://localhost:5000/admin/users/:id
+        GET /admin/users/:id
 
         Expected on success: Specific user details with subject information
     """
@@ -55,12 +56,13 @@ def specific_users(id):
 @admin_required
 def add_user_to_subject(uid,sid):
     """
+        LIVE
         Enroll user in subject.
-        POST http://localhost:5000/admin/users/:id/subjects/:sid
+        POST /admin/users/:id/subjects/:sid
 
         Expected on success: User gains access to subject
     """
-    u = User.query.filter(User.id == uid).scalar()
+    u = User.query.filter(User.id == uid, User.is_admin == 0).scalar()
     s = Subject.query.filter(Subject.id == sid).scalar()
     if u and s:
         try:
@@ -77,12 +79,13 @@ def add_user_to_subject(uid,sid):
 @admin_required
 def remove_user_from_subject(uid,sid):
     """
+        LIVE
         Un-enroll user in subject.
-        DELETE http://localhost:5000/admin/users/:id/subjects/:sid
+        DELETE /admin/users/:id/subjects/:sid
 
         Expected on success: User loses access to subject
     """
-    u = User.query.filter(User.id == uid).scalar()
+    u = User.query.filter(User.id == uid, User.is_admin == 0).scalar()
     s = Subject.query.filter(Subject.id == sid).scalar()
     if u and s:
         try:
@@ -90,7 +93,7 @@ def remove_user_from_subject(uid,sid):
             db.session.commit()
             return jsonify(msg="Subject removed from user enrollment!"),200
 
-        except ValueError as e:
+        except StaleDataError as e:
             return jsonify(msg="User is not enrolled!"),400
     return jsonify(msg="No such user or subject found!"),400
 
@@ -103,7 +106,7 @@ def remove_user_from_subject(uid,sid):
 def specific_users_scores(id):
     """
         Retreive user scores.
-        GET http://localhost:5000/admin/users/:id/scores
+        GET /admin/users/:id/scores
 
         Expected on success: Summary of user scores
     """
@@ -121,7 +124,7 @@ def specific_users_scores(id):
 def specific_users_responses(id):
     """
         Retreive user responses.
-        GET http://localhost:5000/admin/users/:id/responses
+        GET /admin/users/:id/responses
 
         Expected on success: User details and list of user responses
     """

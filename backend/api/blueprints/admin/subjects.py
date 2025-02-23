@@ -16,9 +16,9 @@ def all_subjects():
     """
         LIVE
         See all subjects.
-        GET http://localhost:5000/admin/subjects/
+        GET /admin/subjects/
 
-        Query string args: page, per_page and q (for filtering)
+        Query string args: page, per_page and q (for pagination and filtering)
 
         Expected on success: List of all subjects according to query.
     """
@@ -42,7 +42,7 @@ def specific_subject(id):
     """
         LIVE
         See specific subject.
-        GET http://localhost:5000/admin/subjects/:id
+        GET /admin/subjects/:id
 
         Expected on success: Specific subject details with chapter information
     """
@@ -93,7 +93,7 @@ def edit_subject(id):
 def add_subject():
     """
         Add new subject.
-        POST http://localhost:5000/admin/subjects
+        POST /admin/subjects
 
         Request body: name,description,credits
 
@@ -128,7 +128,7 @@ def specific_chapter(sid,cid):
     """
         LIVE
         See particular chapter information.
-        GET http://localhost:5000/admin/subjects/:sid/chapters/:cid
+        GET /admin/subjects/:sid/chapters/:cid
 
         Expected on success: Chapter details
     """
@@ -165,7 +165,7 @@ def edit_chapter(sid,cid):
 def add_chapter(sid):
     """
         Add chapter.
-        POST http://localhost:5000/admin/subjects/:sid/chapters
+        POST /admin/subjects/:sid/chapters
 
         Request body: name, description
 
@@ -197,7 +197,7 @@ def add_chapter(sid):
 def all_quizes(sid,cid):
     """
         See quizes of a particular chapter.
-        GET http://localhost:5000/admin/subjects/:sid/chapters/:cid/quizes
+        GET /admin/subjects/:sid/chapters/:cid/quizes
 
         Expected on success: Chapter details along with list of quizes
     """
@@ -246,7 +246,7 @@ def edit_quiz(sid,cid,qid):
 def specific_quiz(sid,cid,qid):
     """
         See specific quiz details.
-        GET http://localhost:5000/admin/subjects/:sid/chapters/:cid/quizes/:qid
+        GET /admin/subjects/:sid/chapters/:cid/quizes/:qid
 
         Expected on success: Specific quiz details
     """
@@ -366,7 +366,7 @@ def remove_question_from_quiz(sid,cid,qid):
 def add_quiz(sid,cid):
     """
         Add new quiz.
-        POST http://localhost:5000/admin/subjects/:sid/chapters/:cid/quizes
+        POST /admin/subjects/:sid/chapters/:cid/quizes
 
         Request Body: dated, duration, description
 
@@ -399,7 +399,7 @@ def add_quiz(sid,cid):
 def see_questions(sid,cid):
     """
         See all questions for a chapter.
-        GET http://localhost:5000/admin/subjects/:sid/chapters/:cid/questions
+        GET /admin/subjects/:sid/chapters/:cid/questions
 
         Expected on success: Chapter information with list of all questions
     """
@@ -463,7 +463,7 @@ def edit_question(sid,cid,qid):
 def specific_question(sid,cid,qid):
     """
         See specific question.
-        GET http://localhost:5000/admin/subjects/:sid/chapters/:cid/questions/:qid
+        GET /admin/subjects/:sid/chapters/:cid/questions/:qid
 
         Expected on success: Question information
     """
@@ -480,7 +480,7 @@ def specific_question(sid,cid,qid):
 def add_question(sid,cid):
     """
         Add new question.
-        POST http://localhost:5000/admin/subjects/:sid/chapters/:cid/questions
+        POST /admin/subjects/:sid/chapters/:cid/questions
 
         Expected on success: Question creation
     """
@@ -519,7 +519,7 @@ def see_enrolled(sid):
     """
         LIVE
         See all students enrolled for subject.
-        POST http://localhost:5000/admin/subjects/:sid/enrolled
+        POST /admin/subjects/:sid/enrolled
 
         Expected on success: List of users enrolled for subject
     """
