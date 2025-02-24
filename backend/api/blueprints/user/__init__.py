@@ -1,7 +1,7 @@
 from functools import wraps
 from flask import jsonify, Blueprint, request
 from flask_jwt_extended import get_current_user, jwt_required
-from datetime import datetime, timedelta
+import datetime
 from api.models import *
 
 user_routes = Blueprint('user_routes', __name__)
@@ -64,6 +64,18 @@ def user_specific_chapter(sid,cid):
 @user_required
 def user_questions(sid,cid,qid):
     quiz = Quiz.query.filter(Quiz.id == qid).scalar()
+    if quiz is None:
+        return jsonify(msg = "No such quiz found!"), 400
+    
+    current_datetime = datetime.datetime.now()
+
+    if (current_datetime > quiz.dated + datetime.timedelta(minutes=quiz.duration)):
+        return jsonify(msg = "Quiz attempt time expired!"), 400
+    
+    if (current_datetime < quiz.dated):
+        return jsonify(msg = "Quiz has not started!"), 400
+    
+    quiz = Quiz.query.filter(Quiz.id == qid).scalar()
     questions = quiz.questions
     return jsonify(payload = [x.serialise(required=("unsafe")) for x in questions], quiz = quiz.serialise())
 
@@ -90,6 +102,18 @@ def user_answer_question(sid,cid,quiz_id,question_id):
     except ValueError:
         return jsonify(msg = "Invalid option selected!"), 400
 
+    quiz = Quiz.query.filter(Quiz.id == quiz_id).scalar()
+    if quiz is None:
+        return jsonify(msg = "No such quiz found!"), 400
+    
+    current_datetime = datetime.datetime.now()
+
+    if (current_datetime > quiz.dated + datetime.timedelta(minutes=quiz.duration)):
+        return jsonify(msg = "Quiz attempt time expired!"), 400
+    
+    if (current_datetime < quiz.dated):
+        return jsonify(msg = "Quiz has not started!"), 400
+
     r = Response.query.filter(Response.user_id == user.id, Response.question_id == question_id, Response.quiz_id == quiz_id).scalar()
     if marked == -1:
         if r:
@@ -99,14 +123,14 @@ def user_answer_question(sid,cid,quiz_id,question_id):
 
     elif 0 <= marked < 4:
         if r is None:
-            r = Response(user_id = user.id, quiz_id = quiz_id, question_id = question_id, marked = marked, answered_at = datetime.now())
+            r = Response(user_id = user.id, quiz_id = quiz_id, question_id = question_id, marked = marked, answered_at = datetime.datetime.now())
             db.session.add(r)
             db.session.commit()
             return jsonify(msg = "Response created!"), 200
 
         else:
             r.marked = marked
-            r.answered_at = datetime.now()
+            r.answered_at = datetime.datetime.now()
             db.session.commit()
             return jsonify(msg = "Response modified!"), 200
 

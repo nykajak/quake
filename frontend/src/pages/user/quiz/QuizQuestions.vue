@@ -27,7 +27,21 @@
     let questions = ref([]);
 
     async function fetchQuestions(){
-        let res = await api.get(`/user/subjects/${props.sid}/chapters/${props.cid}/quizes/${props.quiz_id}`);
+
+        try{
+            let res = await api.get(`/user/subjects/${props.sid}/chapters/${props.cid}/quizes/${props.quiz_id}`);
+            questions.value = res.data.payload.map((x)=>{
+                let y = {...x, 'sid':props.sid, 'cid':props.cid, 'quiz_id':props.quiz_id}
+                return y;
+            });
+        }
+        catch(err){
+            console.log(err);
+            router.push({
+                "path": `/user/subjects/${props.sid}/chapters/${props.cid}/quizes/${props.quiz_id}`
+            })
+        }
+        
         
         // let dated = res.data.quiz.dated;
         // let startDate = new Date(dated.year, dated.month, dated.day, dated.hour, dated.minute)
@@ -47,11 +61,6 @@
         // else{
         //     console.log("Quiz expired")
         // }
-
-        questions.value = res.data.payload.map((x)=>{
-            let y = {...x, 'sid':props.sid, 'cid':props.cid, 'quiz_id':props.quiz_id}
-            return y;
-        });
     }
 
     fetchQuestions()

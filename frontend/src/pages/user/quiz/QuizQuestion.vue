@@ -10,9 +10,15 @@ const route = useRoute();
 let correct = ref(-2);
 
 async function submitResponse(){
-    let f = new FormData();
-    f.append("marked",correct.value)
-    let res = await api.post(`/user/subjects/${props.question.sid}/chapters/${props.question.cid}/quizes/${props.question.quiz_id}/questions/${props.question.id}`, f);
+    try{
+        let f = new FormData();
+        f.append("marked",correct.value)
+        let res = await api.post(`/user/subjects/${props.question.sid}/chapters/${props.question.cid}/quizes/${props.question.quiz_id}/questions/${props.question.id}`, f);
+  
+    }
+    catch(err){
+        console.log(err)
+    }
 }
 
 async function fetchResponse(){
