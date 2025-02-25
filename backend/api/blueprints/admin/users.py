@@ -7,6 +7,8 @@ from sqlalchemy.orm.exc import StaleDataError
 
 admin_user_routes = Blueprint('admin_user_routes', __name__, url_prefix="/users")
 
+# Error handling and graceful fail states
+
 @admin_user_routes.get("/")
 @jwt_required()
 @admin_required

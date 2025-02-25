@@ -14,6 +14,8 @@ def page_not_found(e):
     resp = jsonify(msg="Page not found!")
     return resp,404
 
+# Optionally add error handler for 401 - unauthorised errors
+
 @app.get("/")
 @jwt_required(optional=True)
 def home():

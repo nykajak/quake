@@ -23,6 +23,7 @@ class User(db.Model):
     email = db.Column(db.String(128),unique = True, nullable = False)
     password = db.Column(db.String(128), nullable = False)
     is_admin = db.Column(db.Integer, default = 0, nullable = False)
+    # Date of joining?
 
     subjects = db.relationship('Subject', secondary = registered, backref = 'users', lazy='dynamic')
     responses = db.relationship('Response', backref="user", lazy='dynamic')
@@ -58,7 +59,7 @@ class Subject(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(80),unique = True, nullable = False)
     description = db.Column(db.String(128))
-    credits = db.Column(db.Integer, nullable = False)
+    credits = db.Column(db.Integer, nullable = False) # Maybe unneeded
 
     chapters = db.relationship('Chapter', backref='subject', lazy='dynamic')
 
@@ -91,7 +92,7 @@ class Chapter(db.Model):
     subject_id = db.Column(db.Integer, db.ForeignKey("subjects.id"), nullable = False)
     name = db.Column(db.String(80), nullable = False)
     description = db.Column(db.String(128))
-    order = db.Column(db.Integer)
+    order = db.Column(db.Integer) # Explicit ordering not needed!
 
     quizes = db.relationship('Quiz', backref = "chapter", lazy='dynamic')
     questions = db.relationship("Question", backref = "chapter", lazy='dynamic')

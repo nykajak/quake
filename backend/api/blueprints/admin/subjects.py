@@ -7,7 +7,9 @@ from sqlalchemy.exc import IntegrityError
 from datetime import datetime, timedelta
 
 admin_subject_routes = Blueprint('admin_subject_routes', __name__, url_prefix="/subjects")
-
+# Split up file into smaller files - subject, chapter, quiz, question etc
+# Error handling and graceful fail states
+# Documentation
 
 @admin_subject_routes.get("/")
 @jwt_required()

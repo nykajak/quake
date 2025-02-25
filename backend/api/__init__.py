@@ -22,3 +22,4 @@ db.init_app(app)
 app.app_context().push()
 
 import api.routes
+# Rewrite this file to support multiple config types

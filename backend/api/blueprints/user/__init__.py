@@ -6,6 +6,9 @@ from api.models import *
 
 user_routes = Blueprint('user_routes', __name__)
 
+# Add relevant documentation
+# Add relevant error handling and graceful fail states
+
 def user_required(fun):
     @wraps(fun)
     def inner(*args,**kwargs):
