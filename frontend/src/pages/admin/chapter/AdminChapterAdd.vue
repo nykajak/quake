@@ -8,7 +8,7 @@ const router = useRouter();
 
 async function validateForm(e){
     try {
-        let res = await api.post(`/admin/subjects/${props.sid}/chapters`, new FormData(e.target))
+        let res = await api.post(`/admin/subjects/${props.sid}/chapters/`, new FormData(e.target))
         router.push({"path":`/admin/subjects/${props.sid}/chapters/${res.data.payload.id}`})
         return;
     }

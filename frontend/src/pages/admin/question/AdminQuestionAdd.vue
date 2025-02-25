@@ -9,7 +9,7 @@ const router = useRouter();
 const correctOption = ref(-1);
 async function createQuestion(e){
     let f = new FormData(e.target);
-    let res = await api.post(`/admin/subjects/${props.sid}/chapters/${props.cid}/questions`, f)
+    let res = await api.post(`/admin/subjects/${props.sid}/chapters/${props.cid}/questions/`, f)
     router.push({
         "path": `/admin/subjects/${props.sid}/chapters/${props.cid}/questions/${res.data.payload}`
     })
