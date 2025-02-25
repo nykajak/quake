@@ -7,58 +7,61 @@
     import UserCard from './components/UserCard.vue';
     import Loader from '@/components/Loader.vue';
 
-    const router = useRouter();
     const props = defineProps(['uid']);
     
     const user = ref(null);
-    const loading = ref(false);
-    const ready = ref(false);
+    const errorMessage = ref("")
 
     async function fetchUsers(){
         try{
-            loading.value = true;
             let res = await api.get(`/admin/users/${props.uid}`);
-            loading.value = false;
-            return res.data.payload
+            user.value = res.data.payload;
         }
 
         catch(err){
-            loading.value = false;
-            router.push({"name":"NotFound"})
-            return -1
+            // Validation error for user not found
+            if (err.status == 404){
+                errorMessage.value = err.response.data.msg;
+            }
+            else{
+                console.log(err);
+            }
         }
     }
     
-    fetchUsers().then(data => {
-        if (data != -1){
-            user.value = data;
-            ready.value = true;
-        }
-    })
+    fetchUsers()
 </script>
 
 <template>
-    <div v-if="loading == false && ready == true" class="d-flex flex-row flex-grow-1 mt-4">
-        <div class="user-card">
-            <UserCard :user="user" :active="false"/>
-        </div>
-
-        <div class="user-info">
-            <h2 class="heading">Subjects</h2>
-            <div class="d-flex flex-column w-100 align-items-center">
-                <div class="subject-info" v-for="subject in user.subjects">
-                    <div>
-                        <h5 class="subject-heading">{{ subject.name }}</h5>
-                    </div>
-                    <div>
-                        <h5>
-                            <button class="dropdown">	
-                                &#9656;
-                            </button>
-                        </h5>
+    <div v-if="user || errorMessage" class="d-flex flex-row flex-grow-1 mt-4">
+        <template v-if="user">
+            <!-- Display the user details -->
+            <div class="user-card">
+                <UserCard :user="user" :active="false"/>
+            </div>
+            
+            <!-- Display the user subject details -->
+            <div class="user-info">
+                <h2 class="heading">Subjects</h2>
+                <div class="d-flex flex-column w-100 align-items-center">
+                    <div class="subject-info" v-for="subject in user.subjects">
+                        <div>
+                            <h5 class="subject-heading">{{ subject.name }}</h5>
+                        </div>
+                        <div>
+                            <h5>
+                                <button class="dropdown">	
+                                    &#9656;
+                                </button>
+                            </h5>
+                        </div>
                     </div>
                 </div>
             </div>
+        </template>
+
+        <div v-else class="error-div">
+            {{ errorMessage }}
         </div>
     </div>
 
@@ -66,6 +69,16 @@
 </template>
 
 <style scoped>
+
+.error-div{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin-top: 2rem;
+    font-size: 2rem;
+    width: 100%;
+}
+
 .user-card{
     display: flex;
     flex-direction: column;
