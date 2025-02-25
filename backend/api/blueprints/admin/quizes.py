@@ -2,7 +2,7 @@ from flask import Blueprint,jsonify,request
 from flask_jwt_extended import jwt_required
 from api.models import *
 from api.blueprints.admin import admin_required
-from datetime import datetime
+from datetime import datetime, timedelta
 
 admin_quiz_routes = Blueprint('admin_quiz_routes', __name__)
 
@@ -16,11 +16,26 @@ def all_quizes(sid,cid):
 
         Expected on success: Chapter details along with list of quizes
     """
-    c = Chapter.query.filter(Chapter.id == cid, Chapter.subject_id == sid).scalar()
-    if c:
-        return jsonify(payload = c.serialise(required=("quizes"))),200
+
+    filter_ = request.args.get("filter", "pending")
+
+    if filter_ not in ["pending", "past"]:
+        return jsonify("Invalid filter passed!"), 400
     
-    return jsonify(msg="Subject or chapter not found!"),400
+    current_datetime = datetime.now()
+    quizes = Quiz.query.filter(Quiz.chapter_id == int(cid)).all()
+
+    new_ = []
+    for q in quizes:
+        if filter_ == "pending":
+            if current_datetime < q.dated + timedelta(minutes = q.duration):
+                new_.append(q.serialise())
+
+        else:
+            if current_datetime > q.dated + timedelta(minutes = q.duration):
+                new_.append(q.serialise())
+    
+    return jsonify(payload = new_),200
 
 @admin_quiz_routes.put("/<qid>")
 @jwt_required()

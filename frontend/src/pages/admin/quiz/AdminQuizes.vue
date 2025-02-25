@@ -2,25 +2,48 @@
 import { ref } from 'vue';
 import { api } from '@/api';
 
-import { RouterLink } from 'vue-router';
+import { RouterLink, useRouter, useRoute } from 'vue-router';
 
+const router = useRouter()
+const route = useRoute()
 const props = defineProps(['sid','cid'])
 const quizes = ref([]);
 
-async function fetchQuizes(){
-    let res = await api.get(`/admin/subjects/${props.sid}/chapters/${props.cid}/quizes/`);
-    return res.data.payload.quizes;
+let filter = route.query.filter ?? "pending";
+async function fetchResults(e){
+    const f = new FormData(e.target);
+    filter = f.get("filter") 
+    router.push({
+        "path": route.path,
+        "query": {
+            "filter": filter
+        }
+    })
 }
 
-fetchQuizes().then((data)=>{
-    quizes.value = data;
-    console.log(data)
-})
+async function initialFetch(){
+    let res = await api.get(`/admin/subjects/${props.sid}/chapters/${props.cid}/quizes/?filter=${filter}`);
+    quizes.value = res.data.payload;
+}
+
+initialFetch()
 
 </script>
 
 <template>
-    <div class="d-flex flex-column flex-grow-1">
+    <div class="d-flex flex-column flex-grow-1 mt-2 align-items-center">
+        <form @submit.prevent="fetchResults" class="d-flex flex-column w-100 align-items-center mt-1">
+            <div class="form-options-div-container">
+                <div class="form-options-div">
+                    <label for="past">Search past quizes</label>
+                    <input type="radio" name="filter" id="past" value="past" :checked="filter == 'past'">
+                    <label for="pending">Search pending quizes</label>
+                    <input type="radio" name="filter" id="pending" value="pending" :checked="filter == 'pending'">
+                </div>
+                <input type="submit" value="Filter" id="search-button">
+            </div>
+        </form>
+
         <div v-for="quiz in quizes" class="d-flex flex-column align-items-center mt-3">
             <h3>
                 <RouterLink :to="`/admin/subjects/${props.sid}/chapters/${props.cid}/quizes/${quiz.id}`">
@@ -37,4 +60,23 @@ fetchQuizes().then((data)=>{
 </template>
 
 <style scoped>
+#search-button{
+    background-color: var(--secondary-color);
+    color: var(--light-color);
+    border: none;
+}
+
+.form-options-div-container{
+    display: flex;
+    align-items: center;
+}
+
+.form-options-div{
+    display: flex;
+    flex-direction: row;
+    gap:1em;    
+    padding: 0.5em;
+    margin-left:1em;
+    margin-right:1em;
+}
 </style>
