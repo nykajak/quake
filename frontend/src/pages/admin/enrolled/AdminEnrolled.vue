@@ -39,13 +39,24 @@ fetchUsers().then(data => {
 
 <template>
     <div v-if="loading == 0 && ready == 1">
-        <template v-for="user in users">
+        <div class="d-flex flex-column align-items-center justify-content-center" v-for="user in users">
             <UserCard :user="user" :active="true"/>
-        </template>
+            <button id="remove-button" @click="async () => {
+                let res = await api.delete(`/admin/users/${user.id}/subjects/${props.sid}`);
+            }">
+                Remove enrollment?
+            </button>
+        </div>
     </div>
 
     <Loader v-else/>
 </template>
 
 <style scoped>
+#remove-button{
+    display: flex;
+    border: none;
+    background-color: var(--error-color);
+    color: var(--light-color);
+}
 </style>
