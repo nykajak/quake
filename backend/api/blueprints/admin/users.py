@@ -21,18 +21,53 @@ def all_users():
         Query string args: page, per_page and q (for filtering)
 
         Expected on success: List of all users according to query.
+        Expected to be handled by frontend:
+            Error code 400 - Bad request
+            Error code 404 - If page that does not exist is queried
+            Empty list as payload
     """
-    page = int(request.args.get("page",1))
-    per_page = int(request.args.get("per_page",5))
-    q = request.args.get("q",None)
 
-    if not q:
-        query = User.query.filter(User.is_admin == 0).paginate(page=page,per_page=per_page,max_per_page=10)
-    else:
-        query = User.query.filter(User.is_admin == 0, User.name.startswith(q)).paginate(page=page,per_page=per_page,max_per_page=10)
-    res = [u.serialise() for u in query]
+    page = request.args.get("page", 1)
+    per_page = request.args.get("per_page", 5)
+    q = request.args.get("q", None)
+
+    # Validation - Check if page and per_page are integers
+    try:
+        page = int(page)
+
+    except ValueError as e:
+        return jsonify(msg = "Bad request - page should be a postive integer"), 400
+
+    try:
+        per_page = int(per_page)
+
+    except ValueError as e:
+        return jsonify(msg = "Bad request - per_page should be a postive integer"), 400
     
-    return jsonify(payload=res,pages=query.pages)
+    # Validation - Check if page and per_page are non-zero and positive integers
+    if page <= 0:
+        return jsonify(msg = "Bad request - page should be a postive integer"), 400
+
+    if per_page <= 0:
+        return jsonify(msg = "Bad request - per_page should be a postive integer"), 400
+
+    # Arbitrary constant on max allowed amount of users
+    # If per_page >= MAX_USERS_PER_PAGE then a page contains MAX_USERS_PER_PAGE items only
+    MAX_USERS_PER_PAGE = 10
+
+    # Searching for all users
+    query = User.query.filter(
+            User.is_admin == 0, 
+            User.name.startswith(q)
+        ).paginate(
+            page = page,
+            per_page = per_page,
+            max_per_page = MAX_USERS_PER_PAGE
+    )
+    
+    # Returned payload may be empty list - Should be handled in frontend
+    res = [u.serialise() for u in query]
+    return jsonify(payload=res,pages=query.pages), 200
 
 @admin_user_routes.get("/<id>")
 @jwt_required()
@@ -45,6 +80,7 @@ def specific_users(id):
 
         Expected on success: Specific user details with subject information
     """
+
     u = User.query.filter(User.id == id, User.is_admin == 0).scalar()
     if u:
         return jsonify(payload=u.serialise(required=['subjects']))
