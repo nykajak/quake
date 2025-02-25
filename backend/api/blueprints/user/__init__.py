@@ -76,8 +76,10 @@ def user_questions(sid,cid,qid):
         return jsonify(msg = "Quiz has not started!"), 400
     
     quiz = Quiz.query.filter(Quiz.id == qid).scalar()
+    remaining_time = quiz.dated + datetime.timedelta(minutes = quiz.duration) - datetime.datetime.now()
+    print(remaining_time)
     questions = quiz.questions
-    return jsonify(payload = [x.serialise(required=("unsafe")) for x in questions], quiz = quiz.serialise())
+    return jsonify(payload = [x.serialise(required=("unsafe")) for x in questions], quiz = quiz.serialise(), time = str(remaining_time))
 
 @user_routes.get("/subjects/<sid>/chapters/<cid>/quizes/<quiz_id>/questions/<question_id>")
 @jwt_required()
