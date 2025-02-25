@@ -103,6 +103,8 @@ def add_user_to_subject(uid,sid):
         POST /admin/users/:id/subjects/:sid
 
         Expected on success: User gains access to subject
+        Expected to be handled by frontend:
+            Frontend should not be able to change request sent.
     """
     u = User.query.filter(User.id == uid, User.is_admin == 0).scalar()
     s = Subject.query.filter(Subject.id == sid).scalar()
@@ -112,7 +114,7 @@ def add_user_to_subject(uid,sid):
             db.session.commit()
             return jsonify(msg = "Added subject!"),200
         except IntegrityError as e:
-            return jsonify(msg = "Already enrolled!"),400
+            return jsonify(msg = "Already enrolled!"),200
         
     return jsonify(msg="No such user or subject found!"),400
 
@@ -126,6 +128,8 @@ def remove_user_from_subject(uid,sid):
         DELETE /admin/users/:id/subjects/:sid
 
         Expected on success: User loses access to subject
+        Expected to be handled by frontend:
+            Frontend should not be able to change request sent.
     """
     u = User.query.filter(User.id == uid, User.is_admin == 0).scalar()
     s = Subject.query.filter(Subject.id == sid).scalar()
@@ -136,7 +140,7 @@ def remove_user_from_subject(uid,sid):
             return jsonify(msg="Subject removed from user enrollment!"),200
 
         except StaleDataError as e:
-            return jsonify(msg="User is not enrolled!"),400
+            return jsonify(msg="User is not enrolled!"),200
     return jsonify(msg="No such user or subject found!"),400
 
 
