@@ -1,10 +1,11 @@
 <script setup>
     import { ref } from 'vue';
     import { api } from '@/api';
+    import { RouterLink, useRouter } from 'vue-router';
 
     import Loader from '@/components/Loader.vue';
-    import { RouterLink } from 'vue-router';
     
+    const router = useRouter();
     const props = defineProps(['sid','cid'])
     const chapter = ref({
         "name": "Chapter"
@@ -12,9 +13,17 @@
     const quizes = ref([]);
 
     async function fetchQuizes(){
-        let res = await api.get(`/user/subjects/${props.sid}/chapters/${props.cid}`);
-        quizes.value = res.data.payload.quizes;
-        chapter.value = res.data.payload;
+        try{
+            let res = await api.get(`/user/subjects/${props.sid}/chapters/${props.cid}`);
+            quizes.value = res.data.payload.quizes;
+            chapter.value = res.data.payload;
+        }
+        catch(err){
+            console.log(err);
+            router.push({
+                "path": `/user/subjects/${props.sid}`
+            });
+        }
     }
     
     fetchQuizes();

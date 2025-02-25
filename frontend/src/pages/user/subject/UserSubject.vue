@@ -2,21 +2,28 @@
 import { api } from '@/api';
 import { defineProps, ref } from 'vue';
 
-import { RouterLink } from 'vue-router';
+import { RouterLink, useRouter } from 'vue-router';
 import UserSubjectCard from './components/UserSubjectCard.vue';
 import Loader from '@/components/Loader.vue';
 
 const props = defineProps(['sid']);
+const router = useRouter();
 const subject = ref(null);
 
 async function fetchSubject(){
-    let res = await api.get(`/user/subjects/${props.sid}`);
-    return res.data.payload
+    try{
+        let res = await api.get(`/user/subjects/${props.sid}`);
+        subject.value = res.data.payload;
+    }
+    catch(err){
+        console.log(err);
+        router.push({
+            "path": `/user/subjects`
+        })
+    }
 }
 
-fetchSubject().then((data)=>{
-    subject.value = data;
-})
+fetchSubject()
 
 </script>
 
