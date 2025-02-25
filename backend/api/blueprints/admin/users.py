@@ -5,7 +5,7 @@ from api.blueprints.admin import admin_required
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.exc import StaleDataError
 
-admin_user_routes = Blueprint('admin_user_routes', __name__, url_prefix="/users")
+admin_user_routes = Blueprint('admin_user_routes', __name__)
 
 # Error handling and graceful fail states
 

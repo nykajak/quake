@@ -15,6 +15,14 @@ def admin_required(fun):
 
 from api.blueprints.admin.users import admin_user_routes
 from api.blueprints.admin.subjects import admin_subject_routes
+from api.blueprints.admin.chapters import admin_chapter_routes
+from api.blueprints.admin.questions import admin_question_routes
+from api.blueprints.admin.quizes import admin_quiz_routes
+from api.blueprints.admin.enrolled import admin_enrolled_routes
 
-admin_routes.register_blueprint(admin_user_routes)
-admin_routes.register_blueprint(admin_subject_routes)
+admin_routes.register_blueprint(admin_user_routes, url_prefix="/users")
+admin_routes.register_blueprint(admin_subject_routes, url_prefix="/subjects")
+admin_subject_routes.register_blueprint(admin_chapter_routes,url_prefix = "/<sid>/chapters")
+admin_subject_routes.register_blueprint(admin_enrolled_routes,url_prefix = "/<sid>/enrolled")
+admin_chapter_routes.register_blueprint(admin_question_routes,url_prefix = "/<cid>/questions")
+admin_chapter_routes.register_blueprint(admin_quiz_routes,url_prefix = "/<cid>/quizes")

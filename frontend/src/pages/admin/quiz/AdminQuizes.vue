@@ -8,18 +8,21 @@ const props = defineProps(['sid','cid'])
 const quizes = ref([]);
 
 async function fetchQuizes(){
-    let res = await api.get(`/admin/subjects/${props.sid}/chapters/${props.cid}/quizes`);
+    let res = await api.get(`/admin/subjects/${props.sid}/chapters/${props.cid}/quizes/`);
+    console.log(res.data.payload)
     return res.data.payload.quizes;
 }
 
 fetchQuizes().then((data)=>{
     quizes.value = data;
+    console.log(data)
 })
 
 </script>
 
 <template>
     <div class="d-flex flex-column flex-grow-1">
+        {{ quizes }}
         <div v-for="quiz in quizes" class="d-flex flex-column align-items-center mt-3">
             <h3>
                 <RouterLink :to="`/admin/subjects/${props.sid}/chapters/${props.cid}/quizes/${quiz.id}`">

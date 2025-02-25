@@ -8,7 +8,7 @@ const questions = ref([]);
 const props = defineProps(['sid','cid'])
 
 async function fetchQuestion(){
-    let res = await api.get(`/admin/subjects/${props.sid}/chapters/${props.cid}/questions`)
+    let res = await api.get(`/admin/subjects/${props.sid}/chapters/${props.cid}/questions/`)
     return res.data.payload.questions;
 }
 
