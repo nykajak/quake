@@ -13,7 +13,6 @@
     const route = useRoute();
     const router = useRouter();
 
-    let {time} = useTimer(300);
 
     function formatTime(time){
         if (time > 0){
@@ -25,6 +24,7 @@
     }
 
     let questions = ref([]);
+    let time = ref(300);
 
     async function fetchQuestions(){
 
@@ -34,12 +34,14 @@
                 let y = {...x, 'sid':props.sid, 'cid':props.cid, 'quiz_id':props.quiz_id}
                 return y;
             });
+            // return useTimer(res.data.time);
         }
         catch(err){
             console.log(err);
             router.push({
                 "path": `/user/subjects/${props.sid}/chapters/${props.cid}/quizes/${props.quiz_id}`
             })
+            // return err;
         }
         
         
@@ -63,7 +65,9 @@
         // }
     }
 
-    fetchQuestions()
+    fetchQuestions().then((data)=>{
+        // time.value = data.time.value;
+    })
 
     onUpdated(() =>{
         if (time.value <= 0){
@@ -77,7 +81,7 @@
 <template>
     <template v-if="questions && questions[props.question_id - 1]">
         <div class="d-flex justify-content-end p-2">
-            {{formatTime(time)}}
+            <!-- {{formatTime(time)}} -->
         </div>
         <QuizQuestion :question="questions[props.question_id - 1]" :index="props.question_id" :length="questions.length"/>
         <QuizNavigation :length="questions.length"/>
