@@ -141,3 +141,24 @@ def user_answer_question(sid,cid,quiz_id,question_id):
 
     else:
         return jsonify(msg = "Invalid option selected!"),400
+
+@user_routes.post("/enroll")
+@jwt_required()
+@user_required
+def enroll_course():
+    user = get_current_user()
+    sid = request.form.get("subject_id", None)
+
+    if sid is None:
+        return jsonify(msg = "Bad request: subject_id not included!"), 400
+
+    s = Subject.query.filter(Subject.id == sid).scalar()
+    if s:
+        if s in user.subjects:
+            return jsonify(msg = "User already enrolled!"), 200
+        
+        user.subjects.add(s)
+        db.session.commit()
+        return jsonify(msg = "User enrolled in course!"), 200
+
+    return jsonify(msg = "Subject not found!"), 400
