@@ -136,20 +136,3 @@ def add_subject():
     
     except IntegrityError as e:
         return jsonify(msg="Subject already exists!"),400
-    
-@admin_subject_routes.get("/<sid>/enrolled")
-@jwt_required()
-@admin_required
-def see_enrolled(sid):
-    """
-        LIVE
-        See all students enrolled for subject.
-        POST /admin/subjects/:sid/enrolled
-
-        Expected on success: List of users enrolled for subject
-    """
-    s = Subject.query.filter(Subject.id == sid).scalar()
-    if s:
-        return jsonify(payload=s.serialise(required=['users']))
-    
-    return jsonify(msg="No such subject found!"),400

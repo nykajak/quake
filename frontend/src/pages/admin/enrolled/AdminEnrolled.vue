@@ -16,7 +16,7 @@ const users = ref([]);
 async function fetchUsers(){
     try{
         loading.value = true;
-        let res = await api.get(`/admin/subjects/${props.sid}/enrolled`);
+        let res = await api.get(`/admin/enrolled/subjects/${props.sid}`);
         loading.value = false;
         return res.data.payload
     }
@@ -42,7 +42,7 @@ fetchUsers().then(data => {
         <div class="d-flex flex-column align-items-center justify-content-center" v-for="user in users">
             <UserCard :user="user" :active="true"/>
             <button id="remove-button" @click="async () => {
-                let res = await api.delete(`/admin/users/${user.id}/subjects/${props.sid}`);
+                let res = await api.delete(`/admin/enrolled/users/${user.id}/subjects/${props.sid}`);
             }">
                 Remove enrollment?
             </button>

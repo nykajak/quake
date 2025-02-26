@@ -1,4 +1,6 @@
 from functools import wraps
+from flask_jwt_extended import jwt_required
+from api.models import *
 from flask import jsonify,Blueprint
 from flask_jwt_extended import get_current_user
 
@@ -22,7 +24,7 @@ from api.blueprints.admin.enrolled import admin_enrolled_routes
 
 admin_routes.register_blueprint(admin_user_routes, url_prefix="/users")
 admin_routes.register_blueprint(admin_subject_routes, url_prefix="/subjects")
+admin_routes.register_blueprint(admin_enrolled_routes,url_prefix = "/enrolled")
 admin_subject_routes.register_blueprint(admin_chapter_routes,url_prefix = "/<sid>/chapters")
-admin_subject_routes.register_blueprint(admin_enrolled_routes,url_prefix = "/<sid>/enrolled")
 admin_chapter_routes.register_blueprint(admin_question_routes,url_prefix = "/<cid>/questions")
 admin_chapter_routes.register_blueprint(admin_quiz_routes,url_prefix = "/<cid>/quizes")

@@ -2,8 +2,6 @@ from flask import Blueprint,jsonify,request
 from flask_jwt_extended import jwt_required
 from api.models import *
 from api.blueprints.admin import admin_required
-from sqlalchemy.exc import IntegrityError
-from sqlalchemy.orm.exc import StaleDataError
 
 admin_user_routes = Blueprint('admin_user_routes', __name__)
 
@@ -89,59 +87,6 @@ def specific_users(id):
     if u:
         return jsonify(payload=u.serialise(required=['subjects']))
     return jsonify(msg="No such user found!"),404
-
-
-
-
-@admin_user_routes.post("/<uid>/subjects/<sid>")
-@jwt_required()
-@admin_required
-def add_user_to_subject(uid,sid):
-    """
-        LIVE
-        Enroll user in subject.
-        POST /admin/users/:id/subjects/:sid
-
-        Expected on success: User gains access to subject
-        Expected to be handled by frontend:
-            Frontend should not be able to change request sent.
-    """
-    u = User.query.filter(User.id == uid, User.is_admin == 0).scalar()
-    s = Subject.query.filter(Subject.id == sid).scalar()
-    if u and s:
-        try:
-            u.subjects.append(s)
-            db.session.commit()
-            return jsonify(msg = "Added subject!"),200
-        except IntegrityError as e:
-            return jsonify(msg = "Already enrolled!"),200
-        
-    return jsonify(msg="No such user or subject found!"),400
-
-@admin_user_routes.delete("/<uid>/subjects/<sid>")
-@jwt_required()
-@admin_required
-def remove_user_from_subject(uid,sid):
-    """
-        LIVE
-        Un-enroll user in subject.
-        DELETE /admin/users/:id/subjects/:sid
-
-        Expected on success: User loses access to subject
-        Expected to be handled by frontend:
-            Frontend should not be able to change request sent.
-    """
-    u = User.query.filter(User.id == uid, User.is_admin == 0).scalar()
-    s = Subject.query.filter(Subject.id == sid).scalar()
-    if u and s:
-        try:
-            u.subjects.remove(s)
-            db.session.commit()
-            return jsonify(msg="Subject removed from user enrollment!"),200
-
-        except StaleDataError as e:
-            return jsonify(msg="User is not enrolled!"),200
-    return jsonify(msg="No such user or subject found!"),400
 
 
 
