@@ -1,4 +1,5 @@
 from api.database import db
+import datetime
 
 # Registed relation to check if user registered for a particular course.
 registered = db.Table("registered",
@@ -269,3 +270,29 @@ class Score(db.Model):
             res["quiz"] = self.quiz.serialise()
 
         return res
+    
+class Requested(db.Model):
+    """
+        Requested model that represents User sending a request to enroll 
+    """
+
+    __tablename__ = "requested"
+
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key = True)
+    quiz_id = db.Column(db.Integer, db.ForeignKey('quizes.id'), primary_key = True)
+    dated = db.Column(db.DateTime, nullable = False, default = datetime.datetime.now())
+
+    def serialise(self,required = ()):
+         res = {
+            "user_id": self.user_id,
+            "quiz_id": self.quiz_id,
+            "dated": {
+                "day":f"{self.dated.day}",
+                "month":f"{self.dated.month}",
+                "year":f"{self.dated.year}",
+                "hour":f"{self.dated.hour:0>2}",
+                "minute":f"{self.dated.minute:0>2}",
+            },
+        }
+         
+         return res
