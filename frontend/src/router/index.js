@@ -11,6 +11,7 @@ import UserDashboard from '@/pages/user/UserDashboard.vue'
 import UserSubjects from '@/pages/user/subject/UserSubjects.vue'
 import UserSubject from '@/pages/user/subject/UserSubject.vue'
 import UserChapter from '@/pages/user/chapter/UserChapter.vue'
+import UserEnroll from '@/pages/user/enroll/UserEnroll.vue'
 import QuizQuestions from '@/pages/user/quiz/QuizQuestions.vue'
 import QuizStart from '@/pages/user/quiz/QuizStart.vue'
 
@@ -98,6 +99,11 @@ const router = createRouter({
           component: QuizQuestions,
           props: true
         },
+        {
+          path: "subjects/enroll",
+          component: UserEnroll,
+          props: true
+        }
       ]
     },
     {

@@ -279,13 +279,13 @@ class Requested(db.Model):
     __tablename__ = "requested"
 
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key = True)
-    quiz_id = db.Column(db.Integer, db.ForeignKey('quizes.id'), primary_key = True)
+    subject_id = db.Column(db.Integer, db.ForeignKey('subjects.id'), primary_key = True)
     dated = db.Column(db.DateTime, nullable = False, default = datetime.datetime.now())
 
     def serialise(self,required = ()):
          res = {
             "user_id": self.user_id,
-            "quiz_id": self.quiz_id,
+            "subject_id": self.subject_id,
             "dated": {
                 "day":f"{self.dated.day}",
                 "month":f"{self.dated.month}",

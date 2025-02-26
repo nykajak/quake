@@ -3,6 +3,7 @@ from flask import jsonify, Blueprint, request
 from flask_jwt_extended import get_current_user, jwt_required
 import datetime
 from api.models import *
+from sqlalchemy.exc import IntegrityError
 
 user_routes = Blueprint('user_routes', __name__)
 
@@ -24,6 +25,18 @@ def user_required(fun):
 def profile():
     u = get_current_user()
     return jsonify(payload=u.serialise()),200
+
+@user_routes.get("/subjects/all")
+@jwt_required()
+@user_required
+def available_subjects():
+    u = get_current_user()
+
+    requested = [x.subject_id for x in Requested.query.all()]
+    enrolled = [x.id for x in u.subjects]
+    subjects = [x.serialise() for x in Subject.query.all()]
+    subjects = [x for x in subjects if x["id"] not in enrolled and x["id"] not in requested]
+    return jsonify(payload=subjects),200
 
 @user_routes.get("/subjects")
 @jwt_required()
@@ -157,8 +170,13 @@ def enroll_course():
         if s in user.subjects:
             return jsonify(msg = "User already enrolled!"), 200
         
-        user.subjects.add(s)
-        db.session.commit()
-        return jsonify(msg = "User enrolled in course!"), 200
+        try:
+            r = Requested(user_id = user.id, subject_id = sid)
+            db.session.add(r)
+            db.session.commit()
+            return jsonify(msg = "User request sent!"), 200
+        
+        except IntegrityError as e:
+            return jsonify(msg = "User request already exists!"), 200
 
     return jsonify(msg = "Subject not found!"), 400
