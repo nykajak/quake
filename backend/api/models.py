@@ -282,6 +282,9 @@ class Requested(db.Model):
     subject_id = db.Column(db.Integer, db.ForeignKey('subjects.id'), primary_key = True)
     dated = db.Column(db.DateTime, nullable = False, default = datetime.datetime.now())
 
+    subject = db.relationship('Subject', backref="requested")
+    user = db.relationship('User', backref="requested")
+
     def serialise(self,required = ()):
          res = {
             "user_id": self.user_id,

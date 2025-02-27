@@ -180,3 +180,10 @@ def enroll_course():
             return jsonify(msg = "User request already exists!"), 200
 
     return jsonify(msg = "Subject not found!"), 400
+
+@user_routes.get("/requested")
+@jwt_required()
+@user_required
+def requested_subjects():
+    user = get_current_user()
+    return jsonify(payload = [x.subject.serialise() for x in user.requested])
