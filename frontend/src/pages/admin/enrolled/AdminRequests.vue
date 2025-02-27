@@ -21,6 +21,13 @@
 
 <template>
     <div v-if="requests" class="d-flex flex-column flex-grow-1 mt-4 align-items-center">
+
+        <div v-if="requests.length == 0">
+            <h3>
+                No requests pending!
+            </h3>
+        </div>
+
         <div class="d-flex flex-column align-items-center mb-3" v-for="r in requests">
             <div>
                 Username: {{ r.user.name }} 

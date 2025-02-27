@@ -35,6 +35,9 @@ function toggle(){
             <div class="nav-div">
                 <RouterLink class="nav-link" to="/admin/subjects"><strong>Subjects</strong></RouterLink>
             </div>
+            <div class="nav-div">
+                <RouterLink class="nav-link" to="/admin/requests"><strong>Requests</strong></RouterLink>
+            </div>
         </div>
 
         <div class="header-inner-div" id="utility-div">
