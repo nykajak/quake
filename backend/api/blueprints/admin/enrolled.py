@@ -7,6 +7,22 @@ from sqlalchemy.orm.exc import StaleDataError
 
 admin_enrolled_routes = Blueprint('admin_enrolled_routes', __name__)
 
+@admin_enrolled_routes.get("/requests")
+@jwt_required()
+@admin_required
+def see_requests():
+    """
+        See all pending requests for enrollment.
+        GET /admin/enrolled/requests
+
+        Expected on success: Return payload of all pending requests.
+    """
+
+    l = db.session.query(Requested, User, Subject).join(User,  Requested.user_id == User.id).join(Subject,  Requested.subject_id == Subject.id)
+    l = [{"user":x[1].serialise(),"subject":x[2].serialise()} for x in l]
+
+    return jsonify(payload = l), 200
+
 @admin_enrolled_routes.get("/subjects/<sid>")
 @jwt_required()
 @admin_required
@@ -32,7 +48,7 @@ def add_user_to_subject(uid,sid):
     """
         LIVE
         Enroll user in subject.
-        POST /admin/users/:id/subjects/:sid
+        POST /admin/enrolled/users/:id/subjects/:sid
 
         Expected on success: User gains access to subject
         Expected to be handled by frontend:
@@ -57,7 +73,7 @@ def remove_user_from_subject(uid,sid):
     """
         LIVE
         Un-enroll user in subject.
-        DELETE /admin/users/:id/subjects/:sid
+        DELETE /admin/enrolled/users/:id/subjects/:sid
 
         Expected on success: User loses access to subject
         Expected to be handled by frontend:
