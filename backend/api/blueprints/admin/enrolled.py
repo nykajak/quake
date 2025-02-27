@@ -54,6 +54,12 @@ def add_user_to_subject(uid,sid):
         Expected to be handled by frontend:
             Frontend should not be able to change request sent.
     """
+
+    r = Requested.query.filter(Requested.user_id == uid, Requested.subject_id == sid).scalar()
+    if r:
+        db.session.delete(r)
+        db.session.commit()
+
     u = User.query.filter(User.id == uid, User.is_admin == 0).scalar()
     s = Subject.query.filter(Subject.id == sid).scalar()
     if u and s:
@@ -79,6 +85,12 @@ def remove_user_from_subject(uid,sid):
         Expected to be handled by frontend:
             Frontend should not be able to change request sent.
     """
+
+    r = Requested.query.filter(Requested.user_id == uid, Requested.subject_id == sid).scalar()
+    if r:
+        db.session.delete(r)
+        db.session.commit()
+        
     u = User.query.filter(User.id == uid, User.is_admin == 0).scalar()
     s = Subject.query.filter(Subject.id == sid).scalar()
     if u and s:
