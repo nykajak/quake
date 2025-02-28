@@ -1,9 +1,8 @@
 <script setup>
     import { api } from '@/api';
-    import { onUpdated, ref } from 'vue';
+    import { ref } from 'vue';
 
     import { useRoute, useRouter } from 'vue-router';
-    import { useTimer } from '@/timer';
     
     import QuizQuestion from './QuizQuestion.vue';
     import QuizNavigation from './QuizNavigation.vue';
@@ -24,7 +23,7 @@
     }
 
     let questions = ref([]);
-    let time = ref(300);
+    let time = ref(null);
 
     async function fetchQuestions(){
 
@@ -34,54 +33,36 @@
                 let y = {...x, 'sid':props.sid, 'cid':props.cid, 'quiz_id':props.quiz_id}
                 return y;
             });
-            // return useTimer(res.data.time);
+            time.value = res.data.time
         }
         catch(err){
             console.log(err);
             router.push({
                 "path": `/user/subjects/${props.sid}/chapters/${props.cid}/quizes/${props.quiz_id}`
             })
-            // return err;
         }
         
-        
-        // let dated = res.data.quiz.dated;
-        // let startDate = new Date(dated.year, dated.month, dated.day, dated.hour, dated.minute)
-        // let endDate = new Date(startDate);
-        // endDate.setMinutes(startDate.getMinutes() + res.data.quiz.duration);
-        // let current = new Date();
-
-        // console.log(current.getTime())
-        // console.log(startDate.getTime())
-        // console.log(endDate.getTime())
-        // if (){
-        //     console.log("Can attempt!")
-        // }
-        // else if (current.getTime() < startDate.getTime()){
-        //     console.log("Has not started")
-        // }
-        // else{
-        //     console.log("Quiz expired")
-        // }
     }
 
     fetchQuestions().then((data)=>{
-        // time.value = data.time.value;
+        time.value = data.res.time;
     })
 
-    onUpdated(() =>{
+    let interval_id = setInterval(() => {
+        time.value -= 1;
         if (time.value <= 0){
+            clearInterval(interval_id);
             router.push({
                 "path": `/user/subjects/${props.sid}/chapters/${props.cid}/quizes/${props.quiz_id}`
             })
         }
-    })
+    },1000)
 </script>
 
 <template>
-    <template v-if="questions && questions[props.question_id - 1]">
+    <template v-if="time && questions && questions[props.question_id - 1]">
         <div class="d-flex justify-content-end p-2">
-            <!-- {{formatTime(time)}} -->
+            {{formatTime(time)}}
         </div>
         <QuizQuestion :question="questions[props.question_id - 1]" :index="props.question_id" :length="questions.length"/>
         <QuizNavigation :length="questions.length"/>

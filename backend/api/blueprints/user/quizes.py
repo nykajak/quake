@@ -23,6 +23,6 @@ def user_questions(sid,cid,qid):
     
     quiz = Quiz.query.filter(Quiz.id == qid).scalar()
     remaining_time = quiz.dated + datetime.timedelta(minutes = quiz.duration) - datetime.datetime.now()
-    print(remaining_time)
-    questions = quiz.questions
-    return jsonify(payload = [x.serialise(required=("unsafe")) for x in questions], quiz = quiz.serialise(), time = str(remaining_time))
+    
+    seconds = int(remaining_time.total_seconds())
+    return jsonify(payload = [x.serialise(required=("unsafe")) for x in quiz.questions], quiz = quiz.serialise(), time = seconds)
