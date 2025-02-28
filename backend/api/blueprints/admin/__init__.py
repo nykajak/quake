@@ -21,9 +21,11 @@ from api.blueprints.admin.chapters import admin_chapter_routes
 from api.blueprints.admin.questions import admin_question_routes
 from api.blueprints.admin.quizes import admin_quiz_routes
 from api.blueprints.admin.enrolled import admin_enrolled_routes
+from api.blueprints.admin.responses import admin_response_routes
 
 admin_routes.register_blueprint(admin_user_routes, url_prefix="/users")
 admin_routes.register_blueprint(admin_subject_routes, url_prefix="/subjects")
+admin_routes.register_blueprint(admin_response_routes, url_prefix="/responses")
 admin_routes.register_blueprint(admin_enrolled_routes,url_prefix = "/enrolled")
 admin_subject_routes.register_blueprint(admin_chapter_routes,url_prefix = "/<sid>/chapters")
 admin_chapter_routes.register_blueprint(admin_question_routes,url_prefix = "/<cid>/questions")
