@@ -10,7 +10,7 @@ const subjects = ref([]);
 const router = useRouter();
 
 async function fetchSubjects(){
-    let res = await api.get("/user/subjects");
+    let res = await api.get("/user/subjects/");
     return res.data.payload.subjects
 }
 

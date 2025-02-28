@@ -12,7 +12,7 @@ async function fetchSubjects(){
 }
 
 async function fetchRequests(){
-    let res = await api.get(`/user/requested`);
+    let res = await api.get(`/user/enrolled/`);
     requests.value = res.data.payload;
 }
 
@@ -27,7 +27,7 @@ fetchRequests()
         </h2>
         <div class="d-flex flex-column mb-4 align-items-center" v-for="subject in subjects">
             <button class="subject-button" @click="async () =>{
-                let res = await api.post(`/user/enroll`, {
+                let res = await api.post(`/user/enrolled/`, {
                     subject_id: subject.id
                 }, 
                 {
