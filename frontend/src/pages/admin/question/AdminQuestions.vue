@@ -3,15 +3,19 @@ import { api } from '@/api';
 import { ref } from 'vue';
 
 import { RouterLink, useRoute } from 'vue-router';
+import Pagination from '@/components/Pagination.vue';
+import PerPage from '@/components/PerPage.vue';
 
 const props = defineProps(['sid','cid'])
 const route = useRoute();
-const questions = ref([]);
+const questions = ref(null);
+const numPages = ref(null);
 
 async function fetchQuestions(){
     let page = route.query.page ?? 1
     let per_page = route.query.per_page ?? 5
     let res = await api.get(`/admin/subjects/${props.sid}/chapters/${props.cid}/questions/?page=${page}&per_page=${per_page}`)
+    numPages.value = res.data.pages
     questions.value = res.data.payload.questions;
 }
 
@@ -19,8 +23,11 @@ fetchQuestions()
 </script>
 
 <template>
-    <div class="d-flex flex-column flex-grow-1 pt-4">
+    <div v-if="questions" class="d-flex flex-column flex-grow-1 pt-4">
         <div class="d-flex flex-column align-items-center gap-4">
+            <div class="d-flex align-items-center gap-2">
+                Entries per page: <PerPage/>
+            </div>
             <div class="question-div" v-for="question in questions">
                 <div class="question-div-layout">
                     <div class="question-div-decoration">
@@ -32,6 +39,10 @@ fetchQuestions()
                         </RouterLink>
                     </div>
                 </div>
+            </div>
+            
+            <div class="d-flex justify-content-center">
+                <Pagination :pages="numPages" :url="route.fullPath"/>
             </div>
         </div>
     </div>

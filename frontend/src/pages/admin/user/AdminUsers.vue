@@ -81,7 +81,7 @@
                 </div>
                 
                 <div class="d-flex justify-content-center">
-                    <Pagination :pages="numPages" type="users"/>
+                    <Pagination :pages="numPages" :url="route.fullPath"/>
                 </div>
             </div>
 
