@@ -1,44 +1,41 @@
 <script setup>
 import { api } from '@/api';
 import { defineProps, ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRoute } from 'vue-router';
 
 import UserCard from '../user/components/UserCard.vue';
 import Loader from '@/components/Loader.vue';
+import Pagination from '@/components/Pagination.vue';
+import PerPage from '@/components/PerPage.vue';
 
 const props = defineProps(['sid']);
 
-const router = useRouter();
-const loading = ref(false);
-const ready = ref(false);
-const users = ref([]);
+const route = useRoute();
+
+const users = ref(null);
+const numPages = ref(null);
 
 async function fetchUsers(){
     try{
-        loading.value = true;
-        let res = await api.get(`/admin/enrolled/subjects/${props.sid}`);
-        loading.value = false;
-        return res.data.payload
+        let page = route.query.page ?? 1;
+        let per_page = route.query.per_page ?? 5;
+        let res = await api.get(`/admin/enrolled/subjects/${props.sid}?page=${page}&per_page=${per_page}`);
+        users.value = res.data.payload.users;
+        numPages.value = res.data.pages;
     }
     catch(err){
-        loading.value = false;
-        router.push({"name":"NotFound"})
         return -1
     }
 }
-
-fetchUsers().then(data => {
-    if (data != -1){
-        users.value = data.users;
-        ready.value = true;
-    }
-})
-
+fetchUsers()
 
 </script>
 
 <template>
-    <div v-if="loading == 0 && ready == 1">
+    <div v-if="users" class="mt-3">
+        <div class="d-flex justify-content-center gap-2 align-items-center">
+            Users per page: <PerPage/>
+        </div>
         <div class="d-flex flex-column align-items-center justify-content-center" v-for="user in users">
             <UserCard :user="user" :active="true"/>
             <button id="remove-button" @click="async () => {
@@ -46,6 +43,9 @@ fetchUsers().then(data => {
             }">
                 Remove enrollment?
             </button>
+        </div>
+        <div class="d-flex mt-2 justify-content-center">
+            <Pagination :url="route.path" :pages="numPages"/>
         </div>
     </div>
 
