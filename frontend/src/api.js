@@ -6,5 +6,5 @@ export let api = axios.create({
  });
 
  api.defaults.headers.common = {
-    'X-CSRF-TOKEN': document.cookie.slice("csrf_access_token".length + 1)
+    'X-CSRF-TOKEN': document.cookie.split("=")[1]
   };
