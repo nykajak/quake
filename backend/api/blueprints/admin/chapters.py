@@ -77,7 +77,7 @@ def add_chapter(sid):
 
         Expected on success: Chapter creation in backend
         Expected to be handled by frontend:
-            404 - Frontend should show not found if chapter not found
+            404 - Frontend should show not found if subject not found
             400 - Validation errors
             400 - Database errors
     """
