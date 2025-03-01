@@ -2,19 +2,20 @@
 import { api } from '@/api';
 import { ref } from 'vue';
 
-import { RouterLink } from 'vue-router';
+import { RouterLink, useRoute } from 'vue-router';
 
-const questions = ref([]);
 const props = defineProps(['sid','cid'])
+const route = useRoute();
+const questions = ref([]);
 
-async function fetchQuestion(){
-    let res = await api.get(`/admin/subjects/${props.sid}/chapters/${props.cid}/questions/`)
-    return res.data.payload.questions;
+async function fetchQuestions(){
+    let page = route.query.page ?? 1
+    let per_page = route.query.per_page ?? 5
+    let res = await api.get(`/admin/subjects/${props.sid}/chapters/${props.cid}/questions/?page=${page}&per_page=${per_page}`)
+    questions.value = res.data.payload.questions;
 }
 
-fetchQuestion().then((data)=>{
-    questions.value = data;
-})
+fetchQuestions()
 </script>
 
 <template>

@@ -21,9 +21,28 @@ def see_questions(sid,cid):
             404 - Subject/Chapter not found
     """
 
+    page = request.args.get("page", 1)
+    per_page = request.args.get("per_page", 5)
+
+    try:
+        page = int(page)
+        per_page = int(per_page)
+
+        if page <= 0:
+            return jsonify(msg="Bad request: page has to be postiive integer!"), 400
+
+        if per_page <= 0:
+            return jsonify(msg="Bad request: per_page has to be postiive integer!"), 400
+
+    except ValueError as e:
+        return jsonify(msg="Bad request: page and per_page have to be integers!"), 400
+
     c = Chapter.query.filter(Chapter.id == cid, Chapter.subject_id == sid).scalar()
     if c:
-        return jsonify(payload = c.serialise(required=("questions"))), 200
+        MAX_QUESTIONS_PER_PAGE = 10
+        query = c.questions.paginate(page = page, per_page = per_page, max_per_page = MAX_QUESTIONS_PER_PAGE)
+        questions = [x.serialise() for x in query]
+        return jsonify(payload = {"questions":questions}, pages = query.pages), 200
     
     return jsonify(msg="Subject or chapter not found!"), 400
 
