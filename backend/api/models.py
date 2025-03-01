@@ -26,7 +26,7 @@ class User(db.Model):
     is_admin = db.Column(db.Integer, default = 0, nullable = False)
     # Date of joining?
 
-    subjects = db.relationship('Subject', secondary = registered, backref = 'users', lazy='dynamic')
+    subjects = db.relationship('Subject', secondary = registered, backref=db.backref('users', lazy='dynamic'), lazy='dynamic')
     responses = db.relationship('Response', backref="user", lazy='dynamic')
     scores = db.relationship('Score', backref = 'user', lazy='dynamic')
 

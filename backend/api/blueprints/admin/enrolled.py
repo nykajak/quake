@@ -46,9 +46,28 @@ def see_enrolled(sid):
         Expected to be handled by frontend:
             200 - Empty payload, frontend should render some message
     """
+    page = request.args.get("page", 1)
+    per_page = request.args.get("per_page", 5)
+
+    try:
+        page = int(page)
+        per_page = int(per_page)
+
+        if page <= 0:
+            return jsonify(msg="Bad request: page has to be postiive integer!"), 400
+
+        if per_page <= 0:
+            return jsonify(msg="Bad request: per_page has to be postiive integer!"), 400
+
+    except ValueError as e:
+        return jsonify(msg="Bad request: page and per_page have to be integers!"), 400
+    
     s = Subject.query.filter(Subject.id == sid).scalar()
     if s:
-        return jsonify(payload = s.serialise(required = ['users']))
+        MAX_USERS_PER_PAGE = 10
+        query = s.users.paginate(page = page, per_page = per_page, max_per_page = MAX_USERS_PER_PAGE)
+        users = [x.serialise() for x in query]
+        return jsonify(payload = {"users":users}, pages = query.pages), 200
     
     return jsonify(msg = "No such subject found!"), 400
 
