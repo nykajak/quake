@@ -29,18 +29,20 @@ if (route.query.page){
         <div class="p-2 d-flex align-items-center" v-if="startPage > 1">
             ---
         </div>
-            <div class="p-2" v-for="n in 5">
+            <template v-for="n in 5">
                 <template v-if="startPage + n - 1 <= props.pages && 1 <= startPage + n - 1">
-                    <button @click="() => {
-                        router.push({path: `${url}`, query : {
-                        ...route.query,
-                        'page': startPage + n - 1
-                    }})
-                    }" :class="{current:startPage + n - 1 == (route.query.page ?? 1)}">
-                        {{ startPage + n - 1 }}
-                    </button>
+                    <div class="p-2">
+                        <button @click="() => {
+                            router.push({path: `${url}`, query : {
+                            ...route.query,
+                            'page': startPage + n - 1
+                        }})
+                        }" :class="{current:startPage + n - 1 == (route.query.page ?? 1)}">
+                            {{ startPage + n - 1 }}
+                        </button>
+                    </div>
                 </template>
-            </div>
+            </template>
         <div class="p-2 d-flex align-items-center" v-if="startPage < props.pages - 4">
             ---
         </div>
