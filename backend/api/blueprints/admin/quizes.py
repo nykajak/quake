@@ -4,6 +4,7 @@ from api.models import *
 from api.blueprints.admin import admin_required
 from datetime import datetime, timedelta
 
+# Base URL: /admin/subjects/<sid>/chapters/<cid>/quizes
 admin_quiz_routes = Blueprint('admin_quiz_routes', __name__)
 
 @admin_quiz_routes.get("/")
@@ -11,12 +12,18 @@ admin_quiz_routes = Blueprint('admin_quiz_routes', __name__)
 @admin_required
 def all_quizes(sid,cid):
     """
+        LIVE, STABLE
         See quizes of a particular chapter.
         GET /admin/subjects/:sid/chapters/:cid/quizes
 
-        Expected on success: Chapter details along with list of quizes
+        Expected on success: Chapter information with paginated list of quizes per filter
+        Expected to be handled by frontend:
+            200 - Empty payload, frontend should render some message
+            400 - Invalid filter passed
+            404 - Subject/Chapter not found
     """
 
+    # User input from query string
     filter_ = request.args.get("filter", "pending")
 
     if filter_ not in ["pending", "past"]:
@@ -25,45 +32,79 @@ def all_quizes(sid,cid):
     current_datetime = datetime.now()
     quizes = Quiz.query.filter(Quiz.chapter_id == int(cid)).all()
 
-    new_ = []
+    payload = []
     for q in quizes:
         if filter_ == "pending":
+            # Has not ended - current time < end time of quiz
             if current_datetime < q.dated + timedelta(minutes = q.duration):
-                new_.append(q.serialise())
+                payload.append(q.serialise())
 
         else:
+            # Only quizes that have ended already
             if current_datetime > q.dated + timedelta(minutes = q.duration):
-                new_.append(q.serialise())
+                payload.append(q.serialise())
     
-    return jsonify(payload = new_),200
+    return jsonify(payload = payload), 200
 
 @admin_quiz_routes.put("/<qid>")
 @jwt_required()
 @admin_required
 def edit_quiz(sid,cid,qid):
+    """
+        LIVE
+        Edit specific quiz.
+        PUT /admin/subjects/:sid/chapters/:cid/quizes/:qid
+
+        Expected on success: Quiz information edited
+        Expected to be handled by frontend:
+            400 - Db errors
+            400 - Validation errors
+            404 - Subject/Chapter not found
+    """
+
+    # User input from form
     dated = request.form.get("dated",None)
     duration = request.form.get("duration",None)
     description = request.form.get("description",None)
 
     q = Quiz.query.filter(Quiz.id == qid, Quiz.chapter_id == cid).scalar()
 
+    # Checking existence of quiz in given chapter and subject
     if q and q.chapter.subject_id == int(sid):
         if dated:
-            x = datetime(year=int(dated[:4]),month=int(dated[5:7]),day=int(dated[8:10]),hour=int(dated[11:13]),minute=int(dated[14:16]))
-            q.dated = x
+            # Do not touch - Specific date format
+            quiz_date = datetime(
+                year=int(dated[:4]),
+                month=int(dated[5:7]),
+                day=int(dated[8:10]),
+                hour=int(dated[11:13]),
+                minute=int(dated[14:16])
+            )
+            q.dated = quiz_date
         
         if duration:
+            # Validation - duration - int > 0
             try:
-                q.duration = int(duration)
+                duration = int(duration)
+                if duration > 0:
+                    q.duration = duration
+                else:
+                    return jsonify(msg="Bad request: Duration must be non-zero and positive!"), 400
 
-            except Exception as e:
-                print(type(e))
-                pass
-
+            except ValueError as e:
+                return jsonify(msg="Bad request: Duration must be an integer!"), 400
+                
         if description:
             q.description = description
+        
+        # Checking for db errors
+        try:
+            db.session.commit()
 
-        db.session.commit()
+        except Exception as e:
+            print(e)
+            return jsonify(msg="Database error!"), 400
+        
         return jsonify(msg="Quiz editing success!"),200
     
     return jsonify(msg="Subject, chapter or quiz not found!"),400
@@ -74,13 +115,16 @@ def edit_quiz(sid,cid,qid):
 @admin_required
 def specific_quiz(sid,cid,qid):
     """
+        LIVE STABLE
         See specific quiz details.
         GET /admin/subjects/:sid/chapters/:cid/quizes/:qid
 
-        Expected on success: Specific quiz details
+        Expected on success: Quiz information
+        Expected to be handled by frontend:
+            404 - Subject/Chapter not found
     """
-    q = Quiz.query.filter(Quiz.id == qid, Quiz.chapter_id == cid).scalar()
 
+    q = Quiz.query.filter(Quiz.id == qid, Quiz.chapter_id == cid).scalar()
     if q and q.chapter.subject_id == int(sid):
         return jsonify(payload = q.serialise())
     
@@ -90,29 +134,46 @@ def specific_quiz(sid,cid,qid):
 @jwt_required()
 @admin_required
 def specific_quiz_questions(sid,cid,qid):
+    """
+        LIVE
+        See questions in quiz by filter.
+        GET /admin/subjects/:sid/chapters/:cid/quizes/:qid
+
+        Expected on success: Quiz question information filtered and paginated
+        Expected to be handled by frontend:
+            404 - Subject/Chapter not found
+            400 - Invalid filter
+    """
+
+    # User input through query_string
     query_str = request.args.get("q","")
-    filter = request.args.get("filter","all")
+    filter_ = request.args.get("filter","all")
     
     q = Quiz.query.filter(Quiz.id == qid, Quiz.chapter_id == cid).scalar()
 
     if not (q and q.chapter.subject_id == int(sid)):
         return jsonify(msg="Subject, chapter or quiz not found!"),400
 
-    if filter == "present":
+    if filter_ == "present":
+        # All questions that are in quiz
         if len(query_str) == 0:
             return jsonify(payload=[x.serialise() for x in q.questions])
         
+        # All questions that are in quiz starting with query_str
         else:
             return jsonify(payload=[x.serialise() for x in q.questions.filter(Question.description.contains(query_str))])
 
-    elif filter == "absent":
+    elif filter_ == "absent":
+         # All questions that are not in quiz
          if len(query_str) == 0:
             return jsonify(payload=[x.serialise() for x in Question.query.filter(Question.chapter_id == int(cid)).all() if x not in q.questions])
          
+         # All questions that are not in quiz starting with query_str
          else:
             return jsonify(payload=[x.serialise() for x in Question.query.filter(Question.chapter_id == int(cid), Question.description.contains(query_str)).all() if x not in q.questions])
     
-    elif filter == "all":
+    elif filter_ == "all":
+         # All questions in chapter
          if len(query_str) == 0:
             l = []
             for x in Question.query.filter(Question.chapter_id == int(cid)).all():
@@ -125,6 +186,7 @@ def specific_quiz_questions(sid,cid,qid):
 
             return jsonify(payload=l)
          
+         # All questions in chapter with starting query_str
          else:
             l = []
             for x in Question.query.filter(Question.chapter_id == int(cid), Question.description.contains(query_str)).all():
