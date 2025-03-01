@@ -5,6 +5,9 @@ export let api = axios.create({
     baseURL: "http://localhost:5000/",
  });
 
- api.defaults.headers.common = {
-    'X-CSRF-TOKEN': document.cookie.split("=")[1]
-  };
+ api.interceptors.request.use(
+   config => {
+      config.headers['X-CSRF-TOKEN'] = document.cookie.split("=")[1]
+      return config
+   }
+ )
