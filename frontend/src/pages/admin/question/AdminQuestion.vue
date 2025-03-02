@@ -4,8 +4,8 @@ import { ref } from 'vue';
 
 import { useRouter } from 'vue-router';
 
-import StaticOption from './components/StaticOption.vue';
-import StaticQuestion from './components/StaticQuestion.vue';
+import StaticOption from '../../../components/StaticOption.vue';
+import StaticQuestion from '../../../components/StaticQuestion.vue';
 
 const router = useRouter();
 
