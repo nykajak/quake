@@ -2,11 +2,13 @@
     import { defineProps, ref } from 'vue';
     import { useRouter } from 'vue-router';
     import { RouterLink } from 'vue-router';
+
     
     import { api } from '@/api';
-
+    
     import SubjectCard from './components/SubjectCard.vue';
     import ChapterCard from '../chapter/components/ChapterCard.vue';
+    import NavButton from '@/components/NavButton.vue';
     import Loader from '@/components/Loader.vue';
 
     const router = useRouter();
@@ -43,21 +45,9 @@
     <div v-if="loading == false && ready == true" class="d-flex flex-column flex-grow-1 mt-2">
         <SubjectCard :subject="subject" :active="false"/>
         <div class="d-flex justify-content-center mb-2">
-            <button class="option-button" id="enroll-button" @click="router.push({
-                path:`/admin/subjects/${subject.id}/enrolled`
-            })">
-                See enrolled
-            </button>
-            <button class="option-button" id="add-button" @click="router.push({
-                path:`/admin/subjects/${subject.id}/chapters/add`
-            })">
-                Add chapter
-            </button>
-            <button class="option-button" id="edit-button" @click="router.push({
-                path:`/admin/subjects/${subject.id}/edit`
-            })">
-                Edit subject
-            </button>
+            <NavButton text="See enrolled" :url="`/admin/subjects/${subject.id}/enrolled`" color="primary"/>
+            <NavButton text="Add chapter" :url="`/admin/subjects/${subject.id}/chapters/add`" color="secondary"/>
+            <NavButton text="Edit subject" :url="`/admin/subjects/${subject.id}/edit`" color="error"/>
         </div>
         <div class="chapters">
             <h1 class="heading">Chapters</h1>
@@ -71,26 +61,6 @@
 </template>
 
 <style scoped>
-
-.option-button{
-    display: flex;
-    border: none;
-    padding: 0.5em;
-    color: var(--light-color);
-}
-
-#edit-button{
-    background-color: var(--error-color);
-}
-
-#add-button{
-    background-color: var(--secondary-color);
-}
-
-#enroll-button{
-    background-color: var(--primary-color);
-}
-
 .chapters{
     display: flex;
     flex-direction: column;

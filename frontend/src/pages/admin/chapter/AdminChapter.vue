@@ -6,6 +6,8 @@ import { useRouter } from 'vue-router';
 
 import Loader from '@/components/Loader.vue';
 import ChapterCard from './components/ChapterCard.vue';
+import NavButton from '@/components/NavButton.vue';
+
 import { RouterLink } from 'vue-router';
 
 const router = useRouter();
@@ -48,21 +50,9 @@ fetchChapter().then(data => {
         <ChapterCard :chapter="chapter" :active="0"/>
 
         <div class="d-flex flex-row justify-content-center">
-            <button class="option-button" id="view-questions" @click="router.push({
-                path:`/admin/subjects/${props.sid}/chapters/${props.cid}/questions`
-            })">
-                Manage questions
-            </button>
-            <button class="option-button" id="view-quizes" @click="router.push({
-                path:`/admin/subjects/${props.sid}/chapters/${props.cid}/quizes`
-            })">
-                Manage quizes
-            </button>
-            <button class="option-button" id="edit-button" @click="router.push({
-                path:`/admin/subjects/${props.sid}/chapters/${props.cid}/edit`
-            })">
-                Edit chapter
-            </button>
+            <NavButton text="Manage questions" :url="`/admin/subjects/${props.sid}/chapters/${props.cid}/questions`" color="primary"/>
+            <NavButton text="Manage quizes" :url="`/admin/subjects/${props.sid}/chapters/${props.cid}/quizes`" color="secondary"/>
+            <NavButton text="Edit chapter" :url="`/admin/subjects/${props.sid}/chapters/${props.cid}/edit`" color="error"/>
         </div>
     </div>
     <Loader v-else/>
