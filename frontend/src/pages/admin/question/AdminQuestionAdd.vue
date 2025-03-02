@@ -51,18 +51,6 @@ async function createQuestion(e){
 
 <style scoped>
 
-.option-button:has(.selected-option){
-    input{
-        background-color: green;
-        border-color: green;    
-        transition: none;
-    }
-    background-color: green;
-}
-
-.selected-option{
-    background-color: green !important;
-}
 
 #submit-button{
     border: 1px solid var(--light-color);
@@ -72,34 +60,6 @@ async function createQuestion(e){
     border-radius: 10px;
 }
 
-textarea:focus, input:focus{
-    outline: none;
-}
-
-
-.question-input{
-    display: flex;
-    width: 100%;
-    background-color: var(--secondary-color);
-    border: 1px solid var(--secondary-color);
-    color: var(--light-color);
-    min-height: 2em;
-}
-
-.question-input::placeholder{
-    color: var(--light-color);
-    opacity: 60%;
-    padding-left: 0.2em;
-}
-
-.option-input{
-    display: flex;
-    width: 100%;
-    background-color: var(--secondary-color);
-    border: 1px solid var(--secondary-color);
-    color: var(--light-color);
-    min-height: 2em;
-}
 
 .question-container{
     display: flex;
@@ -111,31 +71,6 @@ textarea:focus, input:focus{
     background-color: var(--secondary-color);
 }
 
-.question-no-div{
-    display: flex;
-    flex-direction: row;
-    height: 100%;
-    margin: 0.33em;
-    padding: 0.33em;
-    align-self: flex-start;
-}
-
-.question-no-div div{
-    display: flex;
-    border: 1px solid var(--light-color);
-    width: 2em;
-    height: 2em;
-    justify-content: center;
-    align-items: center;
-    border-radius: 100%;
-}
-
-.question-statement-div{
-    display: flex;
-    justify-content: center;
-    flex-grow: 1;
-    text-align: center;
-}
 
 .option-container{
     display: flex;
@@ -144,41 +79,5 @@ textarea:focus, input:focus{
     margin-top: 2em;
 }
 
-.option-text{
-    justify-content: center;
-    display: flex;
-    flex-grow: 1;
-}
 
-.option-button{
-    max-width: 35%;
-    display: flex;
-    flex-grow: 1;
-    justify-content: center;
-    align-items: center;
-    padding: 0.5em;
-    margin: 0.5em;
-    color: var(--light-color);
-    border: 1px solid var(--light-color);
-    background-color: var(--secondary-color);
-    border-radius: 1em;
-    
-    input{
-        transition: none;
-    }
-}
-
-.rounded-div{
-    border: 1px solid var(--light-color);
-    border-radius: 100%;
-    width: 1.5em;
-    height: 1.5em;
-    display: flex;
-    flex-shrink: 0;
-    justify-content: center;
-    align-items: center;
-    margin: 0.33em;
-    background-color: var(--secondary-color);
-    color: var(--light-color);
-}
 </style>

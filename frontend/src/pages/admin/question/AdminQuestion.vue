@@ -59,19 +59,6 @@ fetchQuestion().then((data)=>{
     border-radius: 10px;
 }
 
-.option-button:has(.selected-option){
-    input{
-        background-color: green !important;
-        border-color: green !important;    
-        transition: none;
-    }
-    background-color: green !important;
-}
-
-.selected-option{
-    background-color: green !important;
-}
-
 .question-container{
     display: flex;
     flex-direction: row;
@@ -82,31 +69,6 @@ fetchQuestion().then((data)=>{
     background-color: var(--secondary-color);
 }
 
-.question-no-div{
-    display: flex;
-    flex-direction: row;
-    height: 100%;
-    margin: 0.33em;
-    padding: 0.33em;
-}
-
-.question-no-div div{
-    display: flex;
-    border: 1px solid var(--light-color);
-    width: 2em;
-    height: 2em;
-    justify-content: center;
-    align-items: center;
-    border-radius: 100%;
-}
-
-.question-statement-div{
-    display: flex;
-    justify-content: center;
-    flex-grow: 1;
-    text-align: center;
-}
-
 .option-container{
     display: flex;
     flex-direction: column;
@@ -114,35 +76,4 @@ fetchQuestion().then((data)=>{
     margin-top: 2em;
 }
 
-.option-text{
-    justify-content: center;
-    display: flex;
-    flex-grow: 1;
-}
-
-.option-button{
-    max-width: 25%;
-    display: flex;
-    flex-grow: 1;
-    justify-content: center;
-    align-items: center;
-    padding: 0.5em;
-    margin: 0.5em;
-    color: var(--light-color);
-    border: 1px solid var(--light-color);
-    background-color: var(--secondary-color);
-    border-radius: 1em;
-}
-
-.rounded-div{
-    border: 1px solid var(--light-color);
-    border-radius: 100%;
-    width: 1.5em;
-    height: 1.5em;
-    display: flex;
-    flex-shrink: 0;
-    justify-content: center;
-    align-items: center;
-    margin: 0.33em;
-}
 </style>
