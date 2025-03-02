@@ -4,6 +4,9 @@ import { ref } from 'vue';
 
 import { useRouter } from 'vue-router';
 
+import StaticOption from './components/StaticOption.vue';
+import StaticQuestion from './components/StaticQuestion.vue';
+
 const router = useRouter();
 
 const question = ref(null);
@@ -22,53 +25,14 @@ fetchQuestion().then((data)=>{
 <template>
     <div v-if="question" class="d-flex w-100 flex-column align-self-center m-1 p-1">
         <div class="question-container">
-            <div class="question-no-div">
-                <div>
-                    Q{{ question.id }}
-                </div>
-            </div>
-            <div class="question-statement-div">
-                {{ question.description }}
-            </div>
+            <StaticQuestion :index="question.id" :description="question.description" />
         </div>
         
         <div class="option-container">
             <div class="d-flex flex-row justify-content-center flex-wrap w-100">
-                <div class="option-button">
-                    <div :class="{'rounded-div':true, 'selected-option':question.correct == 0}">
-                        A
-                    </div>
-                    <div class="option-text">
-                        {{ question.options[0] }}
-                    </div>
-                </div>
-    
-                <div class="option-button">
-                    <div :class="{'rounded-div':true, 'selected-option':question.correct == 1}">
-                        B
-                    </div>
-                    <div class="option-text">
-                        {{ question.options[1] }}
-                    </div>
-                </div>
-    
-                <div class="option-button">
-                    <div :class="{'rounded-div':true, 'selected-option':question.correct == 2}">
-                        C
-                    </div>
-                    <div class="option-text">
-                        {{ question.options[2] }}
-                    </div>
-                </div>
-    
-                <div class="option-button">
-                    <div :class="{'rounded-div':true, 'selected-option':question.correct == 3}">
-                        D
-                    </div>
-                    <div class="option-text">
-                        {{ question.options[3] }}
-                    </div>
-                </div>
+                <template v-for="n in 4">
+                    <StaticOption :optionNo="n - 1" :correctOption="question.correct" :optionText="question.options[n - 1]"/>
+                </template>
             </div>
         </div>
 
