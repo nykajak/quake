@@ -43,6 +43,7 @@ import AdminUser from '@/pages/admin/user/AdminUser.vue'
 import AdminUsers from '@/pages/admin/user/AdminUsers.vue'
 import AdminRequests from '@/pages/admin/enrolled/AdminRequests.vue'
 import UserQuizResponses from '@/pages/user/responses/UserQuizResponses.vue'
+import AdminResponse from '@/pages/admin/response/AdminResponse.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -128,6 +129,11 @@ const router = createRouter({
         return {"name" : "login"};
       },
       children: [
+        {
+          name: "test",
+          path: "test",
+          component: AdminResponse
+        },
         {
           path:"requests",
           component: AdminRequests,
