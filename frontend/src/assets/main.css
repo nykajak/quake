@@ -21,3 +21,26 @@ body{
 input{
     transition: background-color 0.2s linear, color 0.2s linear;
 }
+
+
+.form-header{
+    color: var(--secondary-color)
+}
+
+#form-submit-button{
+    border: 1px solid var(--light-color);
+    background-color: var(--secondary-color);
+    color: var(--light-color);
+}
+
+.form-div {
+    display: flex;
+    margin: 0.75rem;
+}
+
+.form-div input {
+    display: flex;
+    flex-grow: 1;
+    height: 2.5em;
+    padding-left: 0.5em;
+}

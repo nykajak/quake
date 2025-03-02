@@ -1,10 +1,10 @@
 <script setup>
-
-import { api } from '@/api';
 import { useRouter } from 'vue-router';
 
-const props = defineProps(['sid'])
+import { api } from '@/api';
+
 const router = useRouter();
+const props = defineProps(['sid'])
 
 async function validateForm(e){
     try {
@@ -27,7 +27,6 @@ async function validateForm(e){
                     </h3>
                 </div>
             <form @submit.prevent="validateForm" class="w-100">
-                <input type="hidden">
                 <div class="form-div">
                     <input type="text" name="name" placeholder="Title" required>
                 </div>
@@ -46,25 +45,4 @@ async function validateForm(e){
 </template>
 
 <style scoped>
-.form-header{
-    color: var(--secondary-color)
-}
-
-#form-submit-button{
-    border: 1px solid var(--light-color);
-    background-color: var(--secondary-color);
-    color: var(--light-color);
-}
-
-.form-div {
-    display: flex;
-    margin: 0.75rem;
-}
-
-.form-div input {
-    display: flex;
-    flex-grow: 1;
-    height: 2.5em;
-    padding-left: 0.5em;
-}
 </style>
