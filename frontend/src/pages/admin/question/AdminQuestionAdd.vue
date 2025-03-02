@@ -4,11 +4,17 @@ import { ref } from 'vue';
 import { api } from '@/api';
 import { useRouter } from 'vue-router';
 
+import EditableOption from './components/EditableOption.vue';
+import EditableQuestion from './components/EditableQuestion.vue';
+
 const props = defineProps(['sid','cid'])
 const router = useRouter();
+
 const correctOption = ref(-1);
+
 async function createQuestion(e){
     let f = new FormData(e.target);
+    f.append("description",document.getElementById("question-statement").innerText)
     let res = await api.post(`/admin/subjects/${props.sid}/chapters/${props.cid}/questions/`, f)
     router.push({
         "path": `/admin/subjects/${props.sid}/chapters/${props.cid}/questions/${res.data.payload}`
@@ -22,53 +28,16 @@ async function createQuestion(e){
         <form @submit.prevent="createQuestion">
             <input type="hidden" name="correct" :value="correctOption">
             <div class="question-container">
-                <div class="question-no-div">
-                    <div>
-                        Q
-                    </div>
-                </div>
-                <div class="question-statement-div">
-                    <textarea type="text" class="question-input" placeholder="Question Text" name="description"></textarea>
-                </div>
+                <EditableQuestion description=""/>
             </div>
             
             <div class="option-container">
                 <div class="d-flex flex-row justify-content-center flex-wrap w-100">
-                    <div class="option-button">
-                        <button :class="{'rounded-div':true,'selected-option':correctOption === 0}" @click.prevent="() => {correctOption = 0}">
-                            A
-                        </button>
-                        <div class="option-text">
-                            <input type="text" class="option-input" name="options[0]">
-                        </div>
-                    </div>
-        
-                    <div class="option-button">
-                        <button :class="{'rounded-div':true,'selected-option':correctOption === 1}" @click.prevent="() => {correctOption = 1}">
-                            B
-                        </button>
-                        <div class="option-text">
-                            <input type="text" class="option-input" name="options[1]">
-                        </div>
-                    </div>
-        
-                    <div class="option-button">
-                        <button :class="{'rounded-div':true,'selected-option':correctOption === 2}" @click.prevent="() => {correctOption = 2}">
-                            C
-                        </button>
-                        <div class="option-text">
-                            <input type="text" class="option-input" name="options[2]">
-                        </div>
-                    </div>
-        
-                    <div class="option-button">
-                        <button :class="{'rounded-div':true,'selected-option':correctOption === 3}" @click.prevent="() => {correctOption = 3}">
-                            D
-                        </button>
-                        <div class="option-text">
-                            <input type="text" class="option-input" name="options[3]">
-                        </div>
-                    </div>
+                    <template v-for="n in 4">
+                        <EditableOption default="" :option="n - 1" :correct-option="correctOption" :set-correct-option="(x)=>{
+                            correctOption = x;
+                        }"/>
+                    </template>
                 </div>
             </div>
     

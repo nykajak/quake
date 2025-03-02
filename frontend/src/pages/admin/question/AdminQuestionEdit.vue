@@ -3,6 +3,9 @@ import { api } from '@/api';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
+import EditableOption from './components/EditableOption.vue';
+import EditableQuestion from './components/EditableQuestion.vue';
+
 const props = defineProps(['sid','cid','qid'])
 const router = useRouter()
 
@@ -13,34 +16,22 @@ async function fetchQuestion(){
 
 const qid = ref("")
 const question = ref("");
-const optionA = ref("");
-const optionB = ref("");
-const optionC = ref("");
-const optionD = ref("");
+const options = ref([])
 const correctOption = ref(-1);
 
 fetchQuestion().then((data)=>{
     question.value = data.description;
-    optionA.value = data.options[0];
-    optionB.value = data.options[1];
-    optionC.value = data.options[2];
-    optionD.value = data.options[3];
+    options.value = data.options;
     correctOption.value = data.correct;
     qid.value = data.id;
 })
 
 async function editQuestion(e){
     const entries = new FormData(e.target);
+    entries.append("description",document.getElementById("question-statement").innerText)
+    entries.append("correct",entries.get("correct"))
 
-    const f = new FormData();
-    f.append("description",document.getElementById("question-statement").innerText)
-    f.append("correct",entries.get("correct"))
-    f.append("options[0]",entries.get("option-a"))
-    f.append("options[1]",entries.get("option-b"))
-    f.append("options[2]",entries.get("option-c"))
-    f.append("options[3]",entries.get("option-d"))
-
-    let res = await api.put(`/admin/subjects/${props.sid}/chapters/${props.cid}/questions/${props.qid}`,f);
+    let res = await api.put(`/admin/subjects/${props.sid}/chapters/${props.cid}/questions/${props.qid}`,entries);
     router.push({
         "path": `/admin/subjects/${props.sid}/chapters/${props.cid}/questions/${props.qid}`
     })
@@ -49,59 +40,20 @@ async function editQuestion(e){
 </script>
 
 <template>
-    <div class="d-flex w-100 flex-column align-self-center m-1 p-1">
+    <div v-if="question" class="d-flex w-100 flex-column align-self-center m-1 p-1">
         <form @submit.prevent="editQuestion">
             <input type="hidden" name="correct" :value="correctOption">
             <div class="question-container">
-                <div class="question-no-div">
-                    <div>
-                        Q{{ qid }}
-                    </div>
-                </div>
-                <div class="question-statement-div">
-                    <div id="question-statement" contenteditable="true">
-                        {{question}}
-                    </div>
-                </div>
+                <EditableQuestion :description="question" :index="qid"/>
             </div>
             
             <div class="option-container">
                 <div class="d-flex flex-row justify-content-center flex-wrap w-100">
-                    <div class="option-button">
-                        <button :class="{'rounded-div':true,'selected-option':correctOption === 0}" @click.prevent="() => {correctOption = 0}">
-                            A
-                        </button>
-                        <div class="option-text">
-                            <input type="text" class="option-input" name="option-a" v-model="optionA">
-                        </div>
-                    </div>
-        
-                    <div class="option-button">
-                        <button :class="{'rounded-div':true,'selected-option':correctOption === 1}" @click.prevent="() => {correctOption = 1}">
-                            B
-                        </button>
-                        <div class="option-text">
-                            <input type="text" class="option-input" name="option-b" v-model="optionB">
-                        </div>
-                    </div>
-        
-                    <div class="option-button">
-                        <button :class="{'rounded-div':true,'selected-option':correctOption === 2}" @click.prevent="() => {correctOption = 2}">
-                            C
-                        </button>
-                        <div class="option-text">
-                            <input type="text" class="option-input" name="option-c" v-model="optionC">
-                        </div>
-                    </div>
-        
-                    <div class="option-button">
-                        <button :class="{'rounded-div':true,'selected-option':correctOption === 3}" @click.prevent="() => {correctOption = 3}">
-                            D
-                        </button>
-                        <div class="option-text">
-                            <input type="text" class="option-input" name="option-d" v-model="optionD">
-                        </div>
-                    </div>
+                    <template v-for="n in 4">
+                        <EditableOption :default="options[n - 1]" :option="n - 1" :correct-option="correctOption" :set-correct-option="(x)=>{
+                            correctOption = x;
+                        }"/>
+                    </template>
                 </div>
             </div>
     
