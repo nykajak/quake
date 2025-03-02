@@ -2,22 +2,31 @@
     import { ref, watch } from 'vue';
     import { api } from '@/api';
 
+    import DropDown from './components/DropDown.vue';
+
     const filter = ref(null);
     const question_description = ref(null);
     const hidden = ref(true);
 
+    const user = ref(null)
     const subject = ref(null);
     const chapter = ref(null);
     const quiz = ref(null);
     const question = ref(null);
 
+    const userValues = ref(null);
     const subjectValues = ref(null);
     const chapterValues = ref(null);
     const quizValues = ref(null);
     const questionValues = ref(null);
 
+    async function fetchUserValues(){
+        let res = await api.get("/admin/users/?filter=all")
+        userValues.value = res.data.payload
+    }
+
     async function fetchSubjectValues(){
-        let res = await api.get("/admin/subjects/")
+        let res = await api.get("/admin/subjects/?filter=all")
         subjectValues.value = res.data.payload
     }
 
@@ -36,9 +45,13 @@
         questionValues.value = res.data.payload.questions
     }
 
-    if (subject.value == null){
-        fetchSubjectValues()
+    if (subjectValues.value == null){
+        fetchSubjectValues();
     }
+
+    // if (userValues.value == null){
+    //     fetchUserValues();
+    // }
 
     watch(subject, (newVal, oldVal)=>{
         fetchChapterValues();
@@ -47,6 +60,7 @@
         quizValues.value = null;
         question.value = null;
         quiz.value = null;
+        question_description.value = null;
     })
 
     watch(chapter, (newVal, oldVal)=>{
@@ -54,13 +68,24 @@
         fetchQuizValues();
         question.value = null;
         quiz.value = null;
+        question_description.value = null;
     })
+
+    function handleForm(e){
+        let f = new FormData(e.target)
+        // if (e.get("filter") == "question"){
+        //     f.append("question_id",question);
+        // }
+        // else{
+        //     f.append("quiz_id",quiz);
+        // }
+    }
 
 </script>
 
 <template>
     <div class="d-flex flew-column flex-grow-1">
-        <form @submit.prevent="" class="w-100 d-flex flex-column align-items-center mt-3">
+        <form @submit.prevent="handleForm" class="w-100 d-flex flex-column align-items-center mt-3">
             <div class="d-flex flex-row gap-2 mb-3 flex-wrap justify-content-center">
                 <div class="d-flex flex-row align-items-center justify-content-center gap-2">
                     <label class="field-label" for="username">Username </label>
@@ -117,18 +142,9 @@
                 <!-- Question selection -->
                 <div v-if="filter == `question`" class="d-flex flex-row align-items-center justify-content-center gap-2">
                     Question: 
-                    <div class="d-flex flex-column">
-                        <div class="dropdown" @click="hidden=!hidden">
-                            <input id="dropdown-input" type="text" readonly v-model="question_description">
-                        </div>
-                        <div class="dropdown-options" v-show="hidden == false && questionValues">
-                            <div class="d-flex flex-column">
-                                <template v-for="val in questionValues">
-                                    <button class="dropdown-button" @click="question=val.id;question_description=val.description;hidden=true">{{val.description}}</button>
-                                </template>
-                            </div>
-                        </div>
-                    </div>
+                    <DropDown type="question" :values="questionValues" current="" :setVal="(x)=>{
+                        question = x;
+                    }"/>
                 </div> 
             </div>
 
@@ -140,37 +156,6 @@
 </template>
 
 <style scoped>
-
-#dropdown-input{
-    display: flex;
-    width: 30em;
-}
-
-.dropdown{
-    display: flex;
-    flex-direction: row;
-    gap: 1em;
-    anchor-name: --dropdown;
-}
-
-.dropdown-options{
-    position: absolute;
-    position-anchor: --dropdown;
-    position-area: bottom center;
-    overflow-y: auto;
-    height: 5em;
-    width: 100%;
-    border: 1px solid light-dark(var(--dark-color), var(--light-color));
-}
-
-.dropdown-button{
-    background-color: light-dark(var(--light-color),var(--dark-color));
-    border: none;
-}
-
-.dropdown-button:hover{
-    background-color: var(--secondary-color);
-}
 
 #submit-button{
     background-color: var(--secondary-color);
