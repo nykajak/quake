@@ -1,47 +1,48 @@
 <script setup>
-import { api } from '@/api';
-import { ref } from 'vue';
-import { defineProps } from 'vue';
-import { useRouter } from 'vue-router';
-
-import Loader from '@/components/Loader.vue';
-import ChapterCard from './components/ChapterCard.vue';
-import NavButton from '@/components/NavButton.vue';
-
+import { ref, defineProps } from 'vue';
 import { RouterLink } from 'vue-router';
 
-const router = useRouter();
+import { api } from '@/api';
+
+import ChapterCard from './components/ChapterCard.vue';
+
+import Loader from '@/components/Loader.vue';
+import NavButton from '@/components/NavButton.vue';
+
 const props = defineProps(['sid','cid']);
-const loading = ref(false);
-const ready = ref(false);
+
 const chapter = ref(null);
+const errorMessage = ref(null);
 
 async function fetchChapter(){
     try{
-        loading.value = true;
         let res = await api.get(`/admin/subjects/${props.sid}/chapters/${props.cid}`)
-        loading.value = false;
-        return res.data.payload
+        chapter.value = res.data.payload
     }
     catch(err){
-        console.log(err);
-        loading.value = false;
-        router.push({"name":"NotFound"})
-        return -1
+        if (err.response && err.response.status){
+            // Chapter not found error
+            if(err.response.status == 404){
+                errorMessage.value = 'No such chapter!';
+            }
+            else{
+                errorMessage.value = 'Unforeseen error!';
+                console.log(err.response);
+            }
+        }
+        else{
+            errorMessage.value = 'Unforeseen error!';
+            console.log(err)
+        }
     }
 }
 
-fetchChapter().then(data => {
-    if (data != -1){
-        chapter.value = data;
-        ready.value = true;
-    }
-})
+fetchChapter()
 
 </script>
 
 <template>
-    <div v-if="loading == false && ready == true" class="d-flex flex-column flex-grow-1 mt-2">
+    <div v-if="chapter" class="d-flex flex-column flex-grow-1 mt-2">
         <div class="d-flex flex-row justify-content-center">
             <RouterLink :to="'/admin/subjects/'+chapter.subject.id">
                 <h2>{{ chapter.subject.name }}</h2>
@@ -55,26 +56,21 @@ fetchChapter().then(data => {
             <NavButton text="Edit chapter" :url="`/admin/subjects/${props.sid}/chapters/${props.cid}/edit`" color="error"/>
         </div>
     </div>
-    <Loader v-else/>
+
+    <Loader v-if="chapter == null && errorMessage == null"/>
+
+    <div v-if="errorMessage" class="d-flex flex-column flex-grow-1 mt-4 align-items-center ">
+        <RouterLink :to="'/admin/subjects/'+props.sid">
+            <h2>
+                Back to Subject
+            </h2>
+        </RouterLink>
+        <h2>
+            {{ errorMessage }}
+        </h2>
+    </div>
 </template>
 
 <style scoped>
-.option-button{
-    display: flex;
-    border: none;
-    padding: 0.5em;
-    color: var(--light-color);
-}
 
-#edit-button{
-    background-color: var(--error-color);
-}
-
-#view-questions{
-    background-color: var(--primary-color);
-}
-
-#view-quizes{
-    background-color: var(--secondary-color);
-}
 </style>
