@@ -21,8 +21,16 @@ def see_questions(sid,cid):
             404 - Subject/Chapter not found
     """
 
+    filter_ = request.args.get("filter", "all")
     page = request.args.get("page", 1)
     per_page = request.args.get("per_page", 5)
+
+    if filter_ not in ["all"]:
+        return jsonify("Invalid filter passed!"), 400
+    
+    if filter_ == "all":
+        payload = [q.serialise() for q in Question.query.filter(Question.chapter_id == cid)]
+        return jsonify(payload = {"questions" : payload}), 200
 
     try:
         page = int(page)

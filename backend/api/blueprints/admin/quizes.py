@@ -26,23 +26,30 @@ def all_quizes(sid,cid):
     # User input from query string
     filter_ = request.args.get("filter", "pending")
 
-    if filter_ not in ["pending", "past"]:
+    if filter_ not in ["pending", "past", "all"]:
         return jsonify("Invalid filter passed!"), 400
     
     current_datetime = datetime.now()
     quizes = Quiz.query.filter(Quiz.chapter_id == int(cid)).all()
 
     payload = []
+    if filter_ == "all":
+        payload = [q.serialise() for q in Quiz.query.filter(Quiz.chapter_id == cid)]
+        return jsonify(payload = payload), 200
+
     for q in quizes:
         if filter_ == "pending":
             # Has not ended - current time < end time of quiz
             if current_datetime < q.dated + timedelta(minutes = q.duration):
                 payload.append(q.serialise())
 
-        else:
+        elif filter_ == "past":
             # Only quizes that have ended already
             if current_datetime > q.dated + timedelta(minutes = q.duration):
                 payload.append(q.serialise())
+
+        else:
+            return jsonify("Invalid filter passed!"), 400
     
     return jsonify(payload = payload), 200
 
