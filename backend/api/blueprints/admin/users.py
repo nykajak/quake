@@ -54,14 +54,24 @@ def all_users():
     MAX_USERS_PER_PAGE = 10
 
     # Searching for all users
-    query = User.query.filter(
-            User.is_admin == 0, 
-            User.name.startswith(q)
-        ).paginate(
-            page = page,
-            per_page = per_page,
-            max_per_page = MAX_USERS_PER_PAGE
-    )
+
+    if q:
+        query = User.query.filter(
+                User.is_admin == 0, 
+                User.name.startswith(q)
+            ).paginate(
+                page = page,
+                per_page = per_page,
+                max_per_page = MAX_USERS_PER_PAGE
+        )
+    else:
+        query = User.query.filter(
+                User.is_admin == 0
+            ).paginate(
+                page = page,
+                per_page = per_page,
+                max_per_page = MAX_USERS_PER_PAGE
+        )
     
     # Returned payload may be empty list - Should be handled in frontend
     res = [u.serialise() for u in query]
