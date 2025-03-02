@@ -42,7 +42,6 @@ import AdminSubjectEdit from '@/pages/admin/subject/AdminSubjectEdit.vue'
 import AdminUser from '@/pages/admin/user/AdminUser.vue'
 import AdminUsers from '@/pages/admin/user/AdminUsers.vue'
 import AdminRequests from '@/pages/admin/enrolled/AdminRequests.vue'
-import AdminResponseDashBoard from '@/pages/admin/response/AdminResponse.vue'
 import UserQuizResponses from '@/pages/user/responses/UserQuizResponses.vue'
 
 const router = createRouter({
@@ -129,10 +128,6 @@ const router = createRouter({
         return {"name" : "login"};
       },
       children: [
-        {
-          path:"responses",
-          component: AdminResponseDashBoard,
-        },
         {
           path:"requests",
           component: AdminRequests,
