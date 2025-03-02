@@ -14,17 +14,33 @@ const route = useRoute();
 
 const users = ref(null);
 const numPages = ref(null);
+const errorMessage = ref(null);
 
 async function fetchUsers(){
+    let page = route.query.page ?? 1;
+    let per_page = route.query.per_page ?? 5;
     try{
-        let page = route.query.page ?? 1;
-        let per_page = route.query.per_page ?? 5;
         let res = await api.get(`/admin/enrolled/subjects/${props.sid}?page=${page}&per_page=${per_page}`);
         users.value = res.data.payload.users;
         numPages.value = res.data.pages;
     }
     catch(err){
-        return -1
+        if (err.response && err.response.status){
+            if(err.response.status == 400){
+                errorMessage.value = err.response.data.msg;
+            }
+            // Page not found error
+            else if(err.response.status == 404){
+                errorMessage.value = "Page not found!";
+            }
+            else{
+                errorMessage.value = err.data ?? 'Unforeseen error!';
+            }
+        }
+        else{
+            errorMessage.value = 'Unforeseen error!';
+            console.log(err)
+        }
     }
 }
 fetchUsers()
@@ -49,7 +65,18 @@ fetchUsers()
         </div>
     </div>
 
-    <Loader v-else/>
+    <Loader v-if="users == null && errorMessage == null"/>
+
+    <div v-if="errorMessage" class="d-flex flex-column flex-grow-1 mt-4 align-items-center ">
+        <RouterLink :to="'/admin/subjects/'+props.sid">
+            <h2>
+                Back to Subject
+            </h2>
+        </RouterLink>
+        <h2>
+            {{ errorMessage }}
+        </h2>
+    </div>
 </template>
 
 <style scoped>

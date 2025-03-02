@@ -131,6 +131,11 @@ def remove_user_from_subject(uid,sid):
             200 - User already not enrolled
             400 - Database error
     """
+
+    r = Requested.query.filter(Requested.user_id == uid, Requested.subject_id == sid).scalar()
+    if r:
+        db.session.delete(r)
+        db.session.commit()
     
     # Admin user can't be enrolled!
     u = User.query.filter(User.id == uid, User.is_admin == 0).scalar()

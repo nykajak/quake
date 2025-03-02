@@ -2,7 +2,10 @@
     import { ref } from 'vue';
     import { api } from '@/api';
 
+    import Loader from '@/components/Loader.vue';
+
     const requests = ref(null);
+    const errorMessage = ref(null);
 
     async function rejectResponse(uid,sid){
         let res = await api.delete(`/admin/enrolled/users/${uid}/subjects/${sid}`);
@@ -13,8 +16,33 @@
     }
 
     async function fetchRequests(){
-        let res = await api.get("/admin/enrolled/requests")
-        requests.value = res.data.payload;
+        try{
+            let res = await api.get("/admin/enrolled/requests")
+            if (res.data.payload.length > 0){
+                requests.value = res.data.payload;
+            }
+            else{
+                errorMessage.value = "No pending requests!"
+            }
+        }
+        catch(err){
+            if (err.response && err.response.status){
+                if(err.response.status == 400){
+                    errorMessage.value = err.response.data.msg;
+                }
+                // Page not found error
+                else if(err.response.status == 404){
+                    errorMessage.value = "Page not found!";
+                }
+                else{
+                    errorMessage.value = err.data ?? 'Unforeseen error!';
+                }
+            }
+            else{
+                errorMessage.value = 'Unforeseen error!';
+                console.log(err)
+            }
+        }
     }
     fetchRequests()
 </script>
@@ -49,6 +77,19 @@
                 </button>
             </div>
         </div>
+    </div>
+
+    <Loader v-if="requests == null && errorMessage == null"/>
+
+    <div v-if="errorMessage" class="d-flex flex-column flex-grow-1 mt-4 align-items-center ">
+        <RouterLink :to="'/admin'">
+            <h2>
+                Back to dashboard
+            </h2>
+        </RouterLink>
+        <h2>
+            {{ errorMessage }}
+        </h2>
     </div>
 </template>
 
