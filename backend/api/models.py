@@ -233,10 +233,10 @@ class Response(db.Model):
             res["user"] = self.user.serialise()
         
         if "question" in required:
-            res["question"] = self.question.serialise()
+            res["question"] = self.question.serialise(required = ('chapter'))
 
         if "quiz" in required:
-            res["quiz"] = self.quiz.serialise()
+            res["quiz"] = self.quiz.serialise(required = ('chapter'))
 
         return res
 
