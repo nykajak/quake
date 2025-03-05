@@ -9,7 +9,7 @@
 <template>
     <div class="mt-4 mb-4">
         <StaticQuestion :description="props.response.question.description"/>
-        <StaticOptions :question="props.response.question"/>
+        <StaticOptions :question="props.response.question" :marked="props.response.marked"/>
     </div>
 </template>
 

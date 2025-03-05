@@ -1,5 +1,5 @@
 <script setup>
-    const props = defineProps(['optionNo', 'correctOption', 'optionText', 'clickable'])
+    const props = defineProps(['optionNo', 'correctOption', 'optionText', 'clickable', 'marked'])
     const mapping = {
         0: "A",
         1: "B",
@@ -10,7 +10,7 @@
 
 <template>
     <div v-if="clickable == null" class="option-button">
-        <div :class="{'rounded-div':true, 'selected-option':props.correctOption == props.optionNo}">
+        <div :class="{'rounded-div':true, 'marked-option':props.marked == props.optionNo,'selected-option':props.correctOption == props.optionNo}">
             {{ mapping[props.optionNo] }}
         </div>
         <div class="option-text">
@@ -38,9 +38,23 @@
     background-color: green !important;
 }
 
+.marked-option{
+    background-color: red !important;
+}
+
 .selected-option{
     background-color: green !important;
 }
+
+.option-button:has(.marked-option):not(:has(.selected-option)){
+    input{
+        background-color: red !important;
+        background-color: red !important;  
+        transition: none;
+    }
+    background-color: red !important;
+}
+
 
 .option-text{
     justify-content: center;
