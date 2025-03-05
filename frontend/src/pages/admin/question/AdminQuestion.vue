@@ -4,7 +4,7 @@ import { ref } from 'vue';
 
 import { useRouter } from 'vue-router';
 
-import StaticOption from '../../../components/StaticOption.vue';
+import StaticOptions from '../../../components/StaticOptions.vue';
 import StaticQuestion from '../../../components/StaticQuestion.vue';
 
 const router = useRouter();
@@ -25,14 +25,7 @@ fetchQuestion().then((data)=>{
 <template>
     <div v-if="question" class="d-flex w-100 flex-column align-self-center m-1 p-1">
         <StaticQuestion :index="question.id" :description="question.description" />
-        
-        <div class="option-container">
-            <div class="d-flex flex-row justify-content-center flex-wrap w-100">
-                <template v-for="n in 4">
-                    <StaticOption :optionNo="n - 1" :correctOption="question.correct" :optionText="question.options[n - 1]"/>
-                </template>
-            </div>
-        </div>
+        <StaticOptions :question="question"/>
 
         <div class="d-flex justify-content-center mt-4">
             <button id="edit-button" @click="router.push(
