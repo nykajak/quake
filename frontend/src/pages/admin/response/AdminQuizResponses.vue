@@ -2,8 +2,7 @@
     import { api} from '@/api';
     import { ref } from 'vue';
     
-    import StaticQuestion from '@/components/StaticQuestion.vue';
-    import StaticOption from '@/components/StaticOption.vue';
+    import StaticResponse from '@/components/StaticResponse.vue';
 
     const props = defineProps(['sid','cid','qid'])
     const responses = ref(null);
@@ -19,8 +18,7 @@
 <template>
     <div v-if="responses">
         <div v-for="r in responses">
-            <StaticQuestion :description="r.question.description" />
-            <!-- {{ r }} -->
+            <StaticResponse :response="r"/>
         </div>
     </div>
 </template>
