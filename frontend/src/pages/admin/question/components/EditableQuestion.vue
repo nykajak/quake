@@ -3,14 +3,16 @@
 </script>
 
 <template>
-    <div class="question-no-div">
-        <div>
-            Q{{ index }}
+    <div class="question-container">
+        <div class="question-no-div">
+            <div>
+                Q{{ index }}
+            </div>
         </div>
-    </div>
-    <div class="question-statement-div">
-        <div id="question-statement" contenteditable="true">
-            {{description}}
+        <div class="question-statement-div">
+            <div id="question-statement" contenteditable="true">
+                {{description}}
+            </div>
         </div>
     </div>
 </template>
@@ -48,4 +50,13 @@
     border-radius: 100%;
 }
 
+.question-container{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    border: 1px solid var(--light-color);
+    padding: 0.33em;
+    color: var(--light-color);
+    background-color: var(--secondary-color);
+}
 </style>

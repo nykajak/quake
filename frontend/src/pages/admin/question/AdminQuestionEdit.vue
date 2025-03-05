@@ -43,9 +43,7 @@ async function editQuestion(e){
     <div v-if="question" class="d-flex w-100 flex-column align-self-center m-1 p-1">
         <form @submit.prevent="editQuestion">
             <input type="hidden" name="correct" :value="correctOption">
-            <div class="question-container">
-                <EditableQuestion :description="question" :index="qid"/>
-            </div>
+            <EditableQuestion :description="question" :index="qid"/>
             
             <div class="option-container">
                 <div class="d-flex flex-row justify-content-center flex-wrap w-100">
@@ -73,17 +71,6 @@ async function editQuestion(e){
     background-color: var(--tertiary-color);
     padding: 0.5em;
     border-radius: 10px;
-}
-
-
-.question-container{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    border: 1px solid var(--light-color);
-    padding: 0.33em;
-    color: var(--light-color);
-    background-color: var(--secondary-color);
 }
 
 .option-container{

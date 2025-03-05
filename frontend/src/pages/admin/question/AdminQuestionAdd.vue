@@ -27,9 +27,7 @@ async function createQuestion(e){
     <div class="d-flex w-100 flex-column align-self-center m-1 p-1">
         <form @submit.prevent="createQuestion">
             <input type="hidden" name="correct" :value="correctOption">
-            <div class="question-container">
-                <EditableQuestion description=""/>
-            </div>
+            <EditableQuestion description=""/>
             
             <div class="option-container">
                 <div class="d-flex flex-row justify-content-center flex-wrap w-100">
@@ -59,18 +57,6 @@ async function createQuestion(e){
     padding: 0.5em;
     border-radius: 10px;
 }
-
-
-.question-container{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    border: 1px solid var(--light-color);
-    padding: 0.33em;
-    color: var(--light-color);
-    background-color: var(--secondary-color);
-}
-
 
 .option-container{
     display: flex;

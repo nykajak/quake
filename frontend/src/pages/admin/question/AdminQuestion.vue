@@ -24,9 +24,7 @@ fetchQuestion().then((data)=>{
 
 <template>
     <div v-if="question" class="d-flex w-100 flex-column align-self-center m-1 p-1">
-        <div class="question-container">
-            <StaticQuestion :index="question.id" :description="question.description" />
-        </div>
+        <StaticQuestion :index="question.id" :description="question.description" />
         
         <div class="option-container">
             <div class="d-flex flex-row justify-content-center flex-wrap w-100">
@@ -59,21 +57,12 @@ fetchQuestion().then((data)=>{
     border-radius: 10px;
 }
 
-.question-container{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    border: 1px solid var(--light-color);
-    padding: 0.33em;
-    color: var(--light-color);
-    background-color: var(--secondary-color);
-}
-
 .option-container{
     display: flex;
     flex-direction: column;
     flex-grow: 1;
     margin-top: 2em;
 }
+
 
 </style>

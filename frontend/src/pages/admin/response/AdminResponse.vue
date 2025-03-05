@@ -1,4 +1,6 @@
 <script setup>
+    import StaticQuestion from '@/components/StaticQuestion.vue';
+    import StaticOption from '@/components/StaticOption.vue';
     const props = {
         "response": {
             "user": {
@@ -35,12 +37,12 @@
 <template>
     <div class="d-flex flex-column mt-3 align-items-center">
         <!-- Header and metadata -->
-        <div class="w-100 border">
+        <div class="metadata border">
             <div class="d-flex justify-content-between">
-                <div class="d-flex p-2 m-1">
+                <div class="d-flex p-1 m-1">
                     {{ props.response.user.name }}
                 </div>
-                <div class="d-flex p-2 m-1">
+                <div class="d-flex p-1 m-1">
                     Timestamp:
                     {{ props.response.answered_at.hour }}:{{ props.response.answered_at.minute }}
                     on
@@ -48,20 +50,20 @@
                 </div>
             </div>
             
-            <div class="d-flex align-items-center flex-column">
-                <div>
+            <div class="d-flex justify-content-between">
+                <div class="d-flex p-1 m-1">    
                     Quiz ID: {{ props.response.quiz.id }}
                 </div>
-                <div>
+                <div class="d-flex p-1 m-1">    
                     {{ props.response.quiz.description }}
                 </div>
             </div>
         </div>
 
         <div class="d-flex w-100 flex-column align-self-center m-1 p-1">
-
+            <StaticQuestion :index="props.response.question.id" :description="props.response.question.description"/>
             <!-- Question body -->
-            <div class="question-container">
+            <!-- <div class="question-container">
                     <div class="question-no-div">
                         <div>
                             Q{{ props.response.question.id }}
@@ -110,7 +112,7 @@
                                 </div>
                             </div>
                         </div>
-                </div>
+                </div> -->
         </div>
 
         <!-- Answer -->
@@ -119,98 +121,9 @@
 
 <style scoped>
 
-#edit-button{
-    border: 1px solid var(--light-color);
-    color: var(--light-color);
-    background-color: var(--tertiary-color);
-    padding: 0.5em;
-    border-radius: 10px;
-}
-
-.option-button:has(.selected-option){
-    input{
-        background-color: green !important;
-        border-color: green !important;    
-        transition: none;
-    }
-    background-color: green !important;
-}
-
-.selected-option{
-    background-color: green !important;
-}
-
-.question-container{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    border: 1px solid var(--light-color);
-    padding: 0.33em;
-    color: var(--light-color);
+.metadata{
+    width: 100%;
     background-color: var(--secondary-color);
-}
-
-.question-no-div{
-    display: flex;
-    flex-direction: row;
-    height: 100%;
-    margin: 0.33em;
-    padding: 0.33em;
-}
-
-.question-no-div div{
-    display: flex;
-    border: 1px solid var(--light-color);
-    width: 2em;
-    height: 2em;
-    justify-content: center;
-    align-items: center;
-    border-radius: 100%;
-}
-
-.question-statement-div{
-    display: flex;
-    justify-content: center;
-    flex-grow: 1;
-    text-align: center;
-}
-
-.option-container{
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-    margin-top: 2em;
-}
-
-.option-text{
-    justify-content: center;
-    display: flex;
-    flex-grow: 1;
-}
-
-.option-button{
-    max-width: 25%;
-    display: flex;
-    flex-grow: 1;
-    justify-content: center;
-    align-items: center;
-    padding: 0.5em;
-    margin: 0.5em;
     color: var(--light-color);
-    border: 1px solid var(--light-color);
-    background-color: var(--secondary-color);
-    border-radius: 1em;
-}
-
-.rounded-div{
-    border: 1px solid var(--light-color);
-    border-radius: 100%;
-    width: 1.5em;
-    height: 1.5em;
-    display: flex;
-    flex-shrink: 0;
-    justify-content: center;
-    align-items: center;
-    margin: 0.33em;
 }
 </style>

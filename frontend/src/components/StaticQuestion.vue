@@ -3,13 +3,15 @@
 </script>
 
 <template>
-    <div class="question-no-div">
-        <div>
-            Q{{ props.index }}
+    <div class="question-container">
+        <div class="question-no-div">
+            <div>
+                Q{{ props.index }}
+            </div>
         </div>
-    </div>
-    <div class="question-statement-div">
-        {{ props.description }}
+        <div class="question-statement-div">
+            {{ props.description }}
+        </div>
     </div>
 </template>
 
@@ -39,4 +41,13 @@
     text-align: center;
 }
 
+.question-container{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    border: 1px solid var(--light-color);
+    padding: 0.33em;
+    color: var(--light-color);
+    background-color: var(--secondary-color);
+}
 </style>
