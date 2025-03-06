@@ -6,6 +6,8 @@ import { RouterLink, useRoute } from 'vue-router';
 import Pagination from '@/components/Pagination.vue';
 import PerPage from '@/components/PerPage.vue';
 
+import StaticQuestion from '@/components/StaticQuestion.vue';
+
 const props = defineProps(['sid','cid'])
 const route = useRoute();
 const questions = ref(null);
@@ -28,17 +30,10 @@ fetchQuestions()
             <div class="d-flex align-items-center gap-2">
                 Entries per page: <PerPage/>
             </div>
-            <div class="question-div" v-for="question in questions">
-                <div class="question-div-layout">
-                    <div class="question-div-decoration">
-                        Q
-                    </div>
-                    <div class="question-div-description">
-                        <RouterLink :to="`/admin/subjects/${props.sid}/chapters/${props.cid}/questions/${question.id}`">
-                            <p class="question-text">{{ question.description.length < 100 ? question.description: question.description.slice(0,100) + "..." }}</p>
-                        </RouterLink>
-                    </div>
-                </div>
+            <div class="d-flex p-2 w-100 justify-content-center" v-for="question in questions">
+                <RouterLink class="w-100" :to="`/admin/subjects/${props.sid}/chapters/${props.cid}/questions/${question.id}`">
+                    <StaticQuestion :description="question.description" />
+                </RouterLink>
             </div>
             
             <div class="d-flex justify-content-center">

@@ -4,6 +4,7 @@ import { ref } from 'vue';
 
 import { RouterLink } from 'vue-router';
 import NavButton from '@/components/NavButton.vue';
+import StaticQuestion from '@/components/StaticQuestion.vue';
 
 const props = defineProps(['sid','cid','qid']);
 const questions = ref([]);
@@ -28,17 +29,10 @@ fetchQuestions().then((data)=>{
                 <NavButton text="View responses" :url="`${props.sid}/responses`" color="secondary"/>
             </div>
 
-            <div class="results-div mt-2">
-                <div v-for="question in questions" class="question-div">
-                    <div class="question-decorator">
-                        Q
-                    </div>
-                    <div class="d-flex flex-grow-1">
-                        <RouterLink :to="`/admin/subjects/${props.sid}/chapters/${props.cid}/questions/${question.id}`">
-                            {{ question.description.length < 90 ? question.description : question.description.slice(0,85) + "..." }}
-                        </RouterLink>
-                    </div>
-                </div>
+            <div class="d-flex p-2 w-100 justify-content-center" v-for="question in questions">
+                <RouterLink class="w-100" :to="`/admin/subjects/${props.sid}/chapters/${props.cid}/questions/${question.id}`">
+                    <StaticQuestion :description="question.description" />
+                </RouterLink>
             </div>
         </div>
     </div>
@@ -48,6 +42,7 @@ fetchQuestions().then((data)=>{
 .option-div{
     display: flex;
     flex-direction: row;
+    margin-bottom: 1.5em;
 }
 
 .option-button{

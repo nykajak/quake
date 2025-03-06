@@ -3,6 +3,8 @@
     import { ref } from 'vue';
     import { api } from '@/api';
 
+    import StaticQuestion from '@/components/StaticQuestion.vue';
+
     const props = defineProps(['sid','cid','qid'])
     const router = useRouter();
     const route = useRoute();
@@ -70,18 +72,14 @@
         </form>
 
         <div class="results-div mt-2">
-            <div v-for="question in questions" class="question-div">
-                <div class="question-decorator">
-                    Q
-                </div>
+            <div v-for="question in questions" class="d-flex">
                 <div class="d-flex flex-grow-1">
-                    <RouterLink :to="`/admin/subjects/${props.sid}/chapters/${props.cid}/questions/${question.id}`">
-                        {{ question.description.length < 80 ? question.description : question.description.slice(0,75) + "..." }}
+                    <RouterLink class="w-100" :to="`/admin/subjects/${props.sid}/chapters/${props.cid}/questions/${question.id}`">
+                        <StaticQuestion :description="question.description"/>
                     </RouterLink>
                 </div>
                 <div>
                     <button id="add-button" class="manage-button" v-if="route.query.filter == 'absent' || ((route.query.filter ? route.query.filter == 'all': true) && question.present == false)" @click="()=>addQuestion(question.id)">+</button>
-                    
                     <button id="remove-button" class="manage-button" v-if="route.query.filter == 'present' || ((route.query.filter ? route.query.filter == 'all': true) && question.present == true)" @click="()=>removeQuestion(question.id)">x</button>
                 </div>
             </div>
@@ -93,10 +91,12 @@
 <style scoped>
 
 #add-button{
-    background-color: var(--secondary-color);
+    height: 100%;
+    background-color: var(--primary-color);
 }
 
 #remove-button{
+    height: 100%;
     background-color: var(--error-color);
 }
 
@@ -119,9 +119,10 @@
 .question-decorator{
     display: flex;
     width: 1.5em;
-    height: 1.5em;
+    height: 100%;
     justify-content: center;
-    background-color: var(--secondary-color);
+    align-items: center;
+    background-color: var(--primary-color);
     color: var(--light-color);  
 }
 
