@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 import { api } from '@/api';
 import AdminQuizQuestions from './components/AdminQuizQuestions.vue';
+import NavButton from '@/components/NavButton.vue';
 
 const props = defineProps(['sid','cid','qid'])
 const quiz = ref(null);
@@ -27,6 +28,9 @@ fetchQuiz().then((data)=>{
             <br>
             Quiz duration: {{ quiz.duration  }} minutes
         </p>
+        <div class="d-flex mb-3">
+            <NavButton text="Edit details" :url="`${props.sid}/edit`" color="primary"/>
+        </div>
         <AdminQuizQuestions :sid="props.sid" :cid="props.cid" :qid="props.qid"/>
     </div>
 </template>

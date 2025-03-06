@@ -4,6 +4,8 @@ import { api } from '@/api';
 
 import { RouterLink, useRouter, useRoute } from 'vue-router';
 
+import NavButton from '@/components/NavButton.vue';
+
 const router = useRouter()
 const route = useRoute()
 const props = defineProps(['sid','cid'])
@@ -36,6 +38,10 @@ initialFetch()
 <template>
     <div class="d-flex flex-column flex-grow-1 mt-2 align-items-center">
         <form @submit.prevent="fetchResults" class="d-flex flex-column w-100 align-items-center mt-1">
+            <div class="d-flex mb-2">
+                <NavButton text="+ Add Quiz" url="quizes/add" color="primary"/>
+            </div>
+            
             <div class="form-options-div-container">
                 <div class="form-options-div">
                     <label for="past">Search past quizes</label>
@@ -45,7 +51,7 @@ initialFetch()
                 </div>
             </div>
         </form>
-
+        
         <div v-for="quiz in quizes" class="d-flex flex-column align-items-center mt-3">
             <h3>
                 <RouterLink :to="`/admin/subjects/${props.sid}/chapters/${props.cid}/quizes/${quiz.id}`">
