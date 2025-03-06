@@ -3,6 +3,7 @@ import { api } from '@/api';
 import { ref } from 'vue';
 
 import { RouterLink } from 'vue-router';
+import NavButton from '@/components/NavButton.vue';
 
 const props = defineProps(['sid','cid','qid']);
 const questions = ref([]);
@@ -23,8 +24,8 @@ fetchQuestions().then((data)=>{
         <div class="d-flex flex-column align-items-center">
             <h3>Questions</h3>
             <div class="option-div">
-                <button class="option-button" id="add-button">Modify</button>
-                <button class="option-button" id="search-button">Search</button>
+                <NavButton text="Modify questions" :url="`${props.sid}/search`" color="primary"/>
+                <NavButton text="View responses" :url="`${props.sid}/responses`" color="secondary"/>
             </div>
 
             <div class="results-div mt-2">
