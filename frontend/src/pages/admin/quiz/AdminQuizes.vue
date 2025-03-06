@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { api } from '@/api';
 
 import { RouterLink, useRouter, useRoute } from 'vue-router';
@@ -8,24 +8,27 @@ const router = useRouter()
 const route = useRoute()
 const props = defineProps(['sid','cid'])
 const quizes = ref([]);
+const filter_ = ref("pending");
 
 let filter = route.query.filter ?? "pending";
 async function fetchResults(e){
     const f = new FormData(e.target);
-    filter = f.get("filter") 
     router.push({
         "path": route.path,
         "query": {
-            "filter": filter
+            "filter": filter_.value
         }
     })
 }
 
 async function initialFetch(){
-    let res = await api.get(`/admin/subjects/${props.sid}/chapters/${props.cid}/quizes/?filter=${filter}`);
+    let res = await api.get(`/admin/subjects/${props.sid}/chapters/${props.cid}/quizes/?filter=${filter_.value}`);
     quizes.value = res.data.payload;
 }
 
+watch(filter_, (newValue, oldValue) => {
+    initialFetch();
+})
 initialFetch()
 
 </script>
@@ -36,11 +39,10 @@ initialFetch()
             <div class="form-options-div-container">
                 <div class="form-options-div">
                     <label for="past">Search past quizes</label>
-                    <input type="radio" name="filter" id="past" value="past" :checked="filter == 'past'">
+                    <input type="radio" name="filter" id="past" value="past" v-model="filter_">
                     <label for="pending">Search pending quizes</label>
-                    <input type="radio" name="filter" id="pending" value="pending" :checked="filter == 'pending'">
+                    <input type="radio" name="filter" id="pending" value="pending" v-model="filter_">
                 </div>
-                <input type="submit" value="Filter" id="search-button">
             </div>
         </form>
 
