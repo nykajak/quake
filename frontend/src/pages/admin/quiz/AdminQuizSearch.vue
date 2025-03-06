@@ -146,6 +146,7 @@
 .form-div{
     display: flex;
     flex-direction: row;
+    align-items: center;
     width: 60%;
     gap:1em;    
     padding: 0.5em;
