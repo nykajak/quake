@@ -1,4 +1,4 @@
-from flask import Blueprint,jsonify,request
+from flask import Blueprint,jsonify
 from flask_jwt_extended import jwt_required, get_current_user
 from api.models import *
 from api.blueprints.user import user_required
@@ -9,12 +9,14 @@ user_subject_routes = Blueprint('user_subject_routes', __name__)
 @jwt_required()
 @user_required
 def available_subjects():
+    """
+        GET /user/subjects/all
+    """
     u = get_current_user()
 
-    requested = [x.subject_id for x in Requested.query.all()]
     enrolled = [x.id for x in u.subjects]
-    subjects = [x.serialise() for x in Subject.query.all()]
-    subjects = [x for x in subjects if x["id"] not in enrolled and x["id"] not in requested]
+    requested = [x.subject_id for x in db.session.query(Requested).filter(Requested.user_id == u.id)]
+    subjects = [x.serialise() for x in db.session.query(Subject).filter(Subject.id.notin_(enrolled),Subject.id.notin_(requested))]
     return jsonify(payload=subjects),200
 
 @user_subject_routes.get("/")
