@@ -9,6 +9,7 @@ user_quiz_routes = Blueprint('user_quiz_routes', __name__)
 @jwt_required()
 @user_required
 def user_questions(sid,cid,qid):
+    # TO DO - results could be paginated?
     quiz = Quiz.query.filter(Quiz.id == qid).scalar()
     if quiz is None:
         return jsonify(msg = "No such quiz found!"), 400

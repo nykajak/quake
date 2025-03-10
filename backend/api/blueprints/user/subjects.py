@@ -5,6 +5,7 @@ from api.blueprints.user import user_required
 
 user_subject_routes = Blueprint('user_subject_routes', __name__)
 
+
 @user_subject_routes.get("/all")
 @jwt_required()
 @user_required
@@ -13,6 +14,7 @@ def available_subjects():
         GET /user/subjects/all
     """
     u = get_current_user()
+    # TO DO - Figure out a way to display all subjects user is allwoed to enroll for efficiently
 
     enrolled = [x.id for x in u.subjects]
     requested = [x.subject_id for x in db.session.query(Requested).filter(Requested.user_id == u.id)]
@@ -30,6 +32,7 @@ def user_subjects():
 @jwt_required()
 @user_required
 def user_specific_subject(sid):
+    # TO DO - Make users be able to access subject metadata (only) for all subjects
     u = get_current_user()
     s = Subject.query.filter(Subject.id == sid).scalar()
 
