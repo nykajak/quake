@@ -7,6 +7,8 @@ from datetime import datetime, timedelta
 # Base URL: /admin/subjects/<sid>/chapters/<cid>/quizes
 admin_quiz_routes = Blueprint('admin_quiz_routes', __name__)
 
+# TO DO - Delete a quiz?
+
 @admin_quiz_routes.get("/")
 @jwt_required()
 @admin_required
@@ -22,6 +24,8 @@ def all_quizes(sid,cid):
             400 - Invalid filter passed
             404 - Subject/Chapter not found
     """
+
+    # TO DO - Implement pagination for quiz search
 
     # User input from query string
     filter_ = request.args.get("filter", "pending")
@@ -68,6 +72,8 @@ def edit_quiz(sid,cid,qid):
             400 - Validation errors
             404 - Subject/Chapter not found
     """
+
+    # TO DO - Prevent data of past quiz from being modified
 
     # User input from form
     dated = request.form.get("dated",None)
@@ -152,6 +158,8 @@ def specific_quiz_questions(sid,cid,qid):
             400 - Invalid filter
     """
 
+    # TO DO - Implement pagination for list of questions from Quiz
+
     # User input through query_string
     query_str = request.args.get("q","")
     filter_ = request.args.get("filter","all")
@@ -213,6 +221,9 @@ def specific_quiz_questions(sid,cid,qid):
 @jwt_required()
 @admin_required
 def add_question_to_quiz(sid,cid,qid):
+    # TO DO - Error handling on existence
+    # TO DO - Prevent modification of past quiz
+
     question_id = request.form.get("question_id",None)
 
     if question_id is None:
@@ -237,6 +248,9 @@ def add_question_to_quiz(sid,cid,qid):
 @jwt_required()
 @admin_required
 def remove_question_from_quiz(sid,cid,qid):
+    # TO DO - Error handling on non-existence
+    # TO DO - Prevent modification of past quiz
+
     question_id = request.form.get("question_id",None)
     print(request.data)
 
@@ -270,6 +284,8 @@ def add_quiz(sid,cid):
 
         Expected on success: Quiz object created in db
     """
+
+    # TO DO - Validation of inputted dat - cannot be backdated to past.
 
     c = Chapter.query.filter(Chapter.id == cid, Chapter.subject_id == sid).scalar()
     if c:

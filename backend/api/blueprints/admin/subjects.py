@@ -8,6 +8,8 @@ from sqlalchemy.exc import IntegrityError
 
 admin_subject_routes = Blueprint('admin_subject_routes', __name__)
 
+# TO DO - Subject deletion?
+
 @admin_subject_routes.get("/")
 @jwt_required()
 @admin_required

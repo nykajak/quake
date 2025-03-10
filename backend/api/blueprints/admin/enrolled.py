@@ -21,6 +21,8 @@ def see_requests():
         Expected to be handled by frontend:
             200 - Empty payload, frontend should render some message
     """
+    
+    # TO DO - Pagination of results
 
     # Note: Order of objects in query important as referenced in payload
     query = db.session.query(Requested, User, Subject).join(User,  Requested.user_id == User.id).join(Subject,  Requested.subject_id == Subject.id)

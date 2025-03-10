@@ -5,11 +5,14 @@ from api.blueprints.admin import admin_required
 
 admin_response_routes = Blueprint('admin_response_routes', __name__)
 
+# TO DO - Statistics associated with responses
 
 @admin_response_routes.get("/")
 @jwt_required()
 @admin_required
 def admin_view_responses():
+    # TO DO - A more powerful way of filtering responses (using input fields in frontend?)
+    # TO DO - Make list of responses paginated!
     user_id = request.args.get("user_id", None)
     quiz_id = request.args.get("quiz_id", None)
     question_id = request.args.get("question_id", None)
@@ -30,5 +33,4 @@ def admin_view_responses():
         del params[2]
 
     l = [x.serialise(required = params) for x in r]
-    print(len(l))
     return jsonify(payload = l), 200

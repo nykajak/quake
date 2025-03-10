@@ -100,7 +100,6 @@ def specific_users(id):
 
 
 
-
 @admin_user_routes.get("/<id>/scores")
 @jwt_required()
 @admin_required
@@ -111,11 +110,12 @@ def specific_users_scores(id):
 
         Expected on success: Summary of user scores
     """
+    
+    # TO DO - Add functionality for getting summary of user scores!
     u = User.query.filter(User.id == id).scalar()
     if u:
         return jsonify(payload=u.serialise(required = ("scores")))
     return jsonify(msg="No such user found!"),400
-
 
 
 
@@ -129,6 +129,8 @@ def specific_users_responses(id):
 
         Expected on success: User details and list of user responses
     """
+    
+    # TO DO - Implement pagination in user responses!    
     u = User.query.filter(User.id == id).scalar()
     if u:
         return jsonify(payload=u.serialise(required = ("responses")))

@@ -6,6 +6,8 @@ from api.blueprints.admin import admin_required
 # Base URL: /admin/subjects/<sid>/chapters
 admin_chapter_routes = Blueprint('admin_chapter_routes', __name__)
 
+# TO DO - Remove a chapter?
+
 @admin_chapter_routes.get("/<cid>")
 @jwt_required()
 @admin_required

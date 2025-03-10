@@ -6,6 +6,8 @@ from api.blueprints.admin import admin_required
 # Base URL: /admin/subjects/<sid>/chapters/<cid>/questions
 admin_question_routes = Blueprint('admin_question_routes', __name__)
 
+# TO DO - Delete a question?
+
 @admin_question_routes.get("/")
 @jwt_required()
 @admin_required
