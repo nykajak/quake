@@ -1,15 +1,12 @@
+# Stable API
+
 from flask import Blueprint,jsonify,request
 from flask_jwt_extended import jwt_required
 from api.models import *
 from api.blueprints.admin import admin_required
 from sqlalchemy.exc import IntegrityError
 
-from datetime import datetime, timedelta
-
 admin_subject_routes = Blueprint('admin_subject_routes', __name__)
-# Split up file into smaller files - subject, chapter, quiz, question etc
-# Error handling and graceful fail states
-# Documentation
 
 @admin_subject_routes.get("/")
 @jwt_required()
@@ -24,17 +21,33 @@ def all_subjects():
 
         Expected on success: List of all subjects according to query.
     """
-    
-    page = int(request.args.get("page",1))
-    per_page = int(request.args.get("per_page",5))
+    page = request.args.get("page",1)
+    per_page = request.args.get("per_page",5)
     q = request.args.get("q",None)
 
-    if not q:
-        query = Subject.query.filter().paginate(page=page,per_page=per_page,max_per_page=10)
-    else:
-        query = Subject.query.filter(Subject.name.startswith(q)).paginate(page=page,per_page=per_page,max_per_page=10)
-    res = [s.serialise() for s in query]
+    MAX_SUBJECTS_PER_PAGE=10
     
+    # Validation
+    try:
+        page = int(page)
+    except ValueError as e:
+        return jsonify(msg = "Bad request! page should be integer")
+
+    try:
+        per_page = int(per_page)
+    except ValueError as e:
+        return jsonify(msg = "Bad request! per_page should be integer")
+    
+    if page <= 0:
+        return jsonify(msg = "Bad request! page should be positive integer")
+
+    # Database query
+    if not q:
+        query = Subject.query.filter().paginate(page=page,per_page=per_page,max_per_page=MAX_SUBJECTS_PER_PAGE)
+    else:
+        query = Subject.query.filter(Subject.name.startswith(q)).paginate(page=page,per_page=per_page,max_per_page=MAX_SUBJECTS_PER_PAGE)
+    
+    res = [s.serialise() for s in query]
     return jsonify(payload=res,pages=query.pages)
 
 @admin_subject_routes.get("/<id>")
