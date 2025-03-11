@@ -43,7 +43,6 @@ import AdminUser from '@/pages/admin/user/AdminUser.vue'
 import AdminUsers from '@/pages/admin/user/AdminUsers.vue'
 import AdminRequests from '@/pages/admin/enrolled/AdminRequests.vue'
 import UserQuizResponses from '@/pages/user/responses/UserQuizResponses.vue'
-import AdminResponse from '@/pages/admin/response/AdminResponse.vue'
 import AdminQuizResponses from '@/pages/admin/response/AdminQuizResponses.vue'
 import AdminUserResponses from '@/pages/admin/response/AdminUserResponses.vue'
 import AdminQuestionResponses from '@/pages/admin/response/AdminQuestionResponses.vue'
@@ -132,11 +131,6 @@ const router = createRouter({
         return {"name" : "login"};
       },
       children: [
-        {
-          name: "test",
-          path: "test",
-          component: AdminResponse
-        },
         {
           path:"requests",
           component: AdminRequests,
