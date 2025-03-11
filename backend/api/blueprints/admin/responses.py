@@ -53,4 +53,4 @@ def admin_view_responses():
         del params[2]
 
     r = r.paginate(page = page, per_page = per_page, max_per_page = MAX_RESPONSES_PER_PAGE)
-    return jsonify(payload = [x.serialise(required = params) for x in r]), 200
+    return jsonify(payload = [x.serialise(required = params) for x in r], pages = r.pages), 200

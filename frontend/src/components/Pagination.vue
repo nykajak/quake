@@ -18,7 +18,7 @@ if (route.query.page){
         startPage = 1;
     }
     else{
-        startPage = props.pages - 4;
+        startPage = Math.max(props.pages - 4,0);
     }
 }
 

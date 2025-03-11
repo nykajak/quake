@@ -4,16 +4,20 @@
     import { useRoute } from 'vue-router';
     
     import AdminQuestion from '../question/AdminQuestion.vue';
+    import Pagination from '@/components/Pagination.vue';
+    import PerPage from '@/components/PerPage.vue';
 
     const props = defineProps(['sid','cid','qid'])
     const route = useRoute();
     const responses = ref(null);
+    const pages = ref(null);
 
     async function fetchResponses(){
         let page = route.query.page ?? 1;
         let per_page = route.query.per_page ?? 3;
         let res = await api.get(`/admin/responses/?question_id=${props.qid}&page=${page}&per_page=${per_page}`);
         responses.value = res.data.payload;
+        pages.value = res.data.pages;
     }
 
     fetchResponses()
@@ -21,6 +25,10 @@
 
 <template>
     <AdminQuestion :sid="props.sid" :cid="props.cid" :qid="props.qid"/>
+
+    <div class="d-flex w-100 justify-content-center mb-2 align-items-center gap-1">
+        Number of responses per page: <PerPage/>
+    </div>
 
     <div v-if="responses">
         <template v-for="r in responses">
@@ -39,6 +47,8 @@
             </div>
         </template>
     </div>
+
+    <Pagination :url="route.fullPath" :pages="pages"/>
 </template>
 
 <style scoped>
