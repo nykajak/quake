@@ -3,6 +3,7 @@ from flask_jwt_extended import jwt_required
 from api.models import *
 from api.blueprints.admin import admin_required
 from datetime import datetime, timedelta
+from sqlalchemy import func
 
 # Base URL: /admin/subjects/<sid>/chapters/<cid>/quizes
 admin_quiz_routes = Blueprint('admin_quiz_routes', __name__)
@@ -25,37 +26,52 @@ def all_quizes(sid,cid):
             404 - Subject/Chapter not found
     """
 
-    # TO DO - Implement pagination for quiz search
-
     # User input from query string
     filter_ = request.args.get("filter", "pending")
+    page = request.args.get("page",1)
+    per_page = request.args.get("per_page",5)
+
+    try:
+        page = int(page)
+    except ValueError:
+        return jsonify(msg = "Bad request! page cannot be non integer")
+    
+    try:
+        per_page = int(per_page)
+    except ValueError:
+        return jsonify(msg = "Bad request! per_page cannot be non integer")
+    
+    if page <= 0:
+        return jsonify(msg = "Bad request! page cannot be negative")
+    
+    if per_page <= 0:
+        return jsonify(msg = "Bad request! per_page cannot be negative")
+
+    MAX_QUIZES_PER_PAGE = 10
 
     if filter_ not in ["pending", "past", "all"]:
         return jsonify("Invalid filter passed!"), 400
     
     current_datetime = datetime.now()
-    quizes = Quiz.query.filter(Quiz.chapter_id == int(cid)).all()
+    quizes = Quiz.query.filter(Quiz.chapter_id == int(cid))
 
     payload = []
     if filter_ == "all":
         payload = [q.serialise() for q in Quiz.query.filter(Quiz.chapter_id == cid)]
         return jsonify(payload = payload), 200
 
-    for q in quizes:
-        if filter_ == "pending":
-            # Has not ended - current time < end time of quiz
-            if current_datetime < q.dated + timedelta(minutes = q.duration):
-                payload.append(q.serialise())
 
-        elif filter_ == "past":
-            # Only quizes that have ended already
-            if current_datetime > q.dated + timedelta(minutes = q.duration):
-                payload.append(q.serialise())
-
-        else:
-            return jsonify("Invalid filter passed!"), 400
+    if filter_ == "pending":
+        # Has not ended - start time > current
+        quizes = quizes.filter(Quiz.dated > current_datetime)
+    elif filter_ == "past":
+        # Only quizes that have ended already - start time < current 
+        quizes = quizes.filter(Quiz.dated < current_datetime)
+    else:
+        return jsonify("Invalid filter passed!"), 400
     
-    return jsonify(payload = payload), 200
+    quizes = quizes.paginate(page = page, per_page=per_page, max_per_page = MAX_QUIZES_PER_PAGE)
+    return jsonify(payload = [x.serialise() for x in quizes], pages = quizes.pages), 200
 
 @admin_quiz_routes.put("/<qid>")
 @jwt_required()

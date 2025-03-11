@@ -5,49 +5,59 @@ import { api } from '@/api';
 import { RouterLink, useRouter, useRoute } from 'vue-router';
 
 import NavButton from '@/components/NavButton.vue';
+import PerPage from '@/components/PerPage.vue';
+import Pagination from '@/components/Pagination.vue';
 
 const router = useRouter()
 const route = useRoute()
 const props = defineProps(['sid','cid'])
-const quizes = ref([]);
-const filter_ = ref("pending");
+const quizes = ref(null);
+const pages = ref(null);
 
-let filter = route.query.filter ?? "pending";
-async function fetchResults(e){
-    const f = new FormData(e.target);
+const selected = ref(route.query.filter ?? "pending");
+
+async function navigateFilter(){
     router.push({
         "path": route.path,
         "query": {
-            "filter": filter_.value
+            ...route.query,
+            "filter": selected.value,
+            "page": 1
         }
     })
 }
 
 async function initialFetch(){
-    let res = await api.get(`/admin/subjects/${props.sid}/chapters/${props.cid}/quizes/?filter=${filter_.value}`);
+    let page = route.query.page ?? 1;
+    let per_page = route.query.per_page ?? 5;
+    let filter = route.query.filter ?? "pending";
+    let res = await api.get(`/admin/subjects/${props.sid}/chapters/${props.cid}/quizes/?filter=${filter}&page=${page}&per_page=${per_page}`);
     quizes.value = res.data.payload;
+    pages.value = res.data.pages;
 }
 
-watch(filter_, (newValue, oldValue) => {
-    initialFetch();
-})
 initialFetch()
+
+watch(selected, (newVal,oldVal)=>{
+    navigateFilter();
+})
 
 </script>
 
 <template>
-    <div class="d-flex flex-column flex-grow-1 mt-2 align-items-center">
-        <form @submit.prevent="fetchResults" class="d-flex flex-column w-100 align-items-center mt-1">
+    <div v-if="quizes" class="d-flex flex-column flex-grow-1 mt-2 align-items-center">
+        <form @submit.prevent="" class="d-flex flex-column w-100 align-items-center mt-1">
             <div class="d-flex mb-2">
                 <NavButton text="+ Add Quiz" url="quizes/add" color="primary"/>
+                <PerPage/>
             </div>
             
             <div class="form-options-div-container">
                 <div class="form-options-div">
                     <label for="past">Search past quizes</label>
-                    <input type="radio" name="filter" id="past" value="past" v-model="filter_">
+                    <input type="radio" name="filter" id="past" value="past" v-model="selected">
                     <label for="pending">Search pending quizes</label>
-                    <input type="radio" name="filter" id="pending" value="pending" v-model="filter_">
+                    <input type="radio" name="filter" id="pending" value="pending" v-model="selected">
                 </div>
             </div>
         </form>
@@ -64,6 +74,8 @@ initialFetch()
                 Quiz duration: {{ quiz.duration  }} minutes
             </p>
         </div>
+
+        <Pagination :url="route.fullPath" :pages="pages"/>
     </div>
 </template>
 
