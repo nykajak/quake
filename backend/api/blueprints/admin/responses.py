@@ -12,10 +12,30 @@ admin_response_routes = Blueprint('admin_response_routes', __name__)
 @admin_required
 def admin_view_responses():
     # TO DO - A more powerful way of filtering responses (using input fields in frontend?)
-    # TO DO - Make list of responses paginated!
+    
+    page = request.args.get("page", 1)
+    per_page = request.args.get("per_page", 3)
     user_id = request.args.get("user_id", None)
     quiz_id = request.args.get("quiz_id", None)
     question_id = request.args.get("question_id", None)
+
+    try:
+        page = int(page)
+    except ValueError as e: 
+        return jsonify("Bad request! page must be integer"), 400
+    
+    try:
+        per_page = int(per_page)
+    except ValueError as e: 
+        return jsonify("Bad request! per_page must be integer"), 400
+    
+    if page <= 0:
+        return jsonify("Bad request! page must positive integer"), 400
+    
+    if per_page <= 0:
+        return jsonify("Bad request! per_page must positive integer"), 400
+    
+    MAX_RESPONSES_PER_PAGE = 5
 
     r = Response.query
     params = ['user','quiz','question']
@@ -32,5 +52,5 @@ def admin_view_responses():
         r = r.filter(Response.question_id == question_id)
         del params[2]
 
-    l = [x.serialise(required = params) for x in r]
-    return jsonify(payload = l), 200
+    r = r.paginate(page = page, per_page = per_page, max_per_page = MAX_RESPONSES_PER_PAGE)
+    return jsonify(payload = [x.serialise(required = params) for x in r]), 200
