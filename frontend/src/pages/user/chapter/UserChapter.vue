@@ -1,22 +1,30 @@
 <script setup>
-    import { ref } from 'vue';
+    import { ref, watch } from 'vue';
     import { api } from '@/api';
-    import { RouterLink, useRouter } from 'vue-router';
+    import { RouterLink, useRouter,useRoute } from 'vue-router';
 
     import Loader from '@/components/Loader.vue';
+    import Pagination from '@/components/Pagination.vue';
+    import PerPage from '@/components/PerPage.vue';
     
     const router = useRouter();
+    const route = useRoute();
     const props = defineProps(['sid','cid'])
     const chapter = ref({
         "name": "Chapter"
     });
     const quizes = ref([]);
+    const pages = ref(null);
+    const filter = ref(route.query.filter ?? 'pending')
 
     async function fetchQuizes(){
+        let page = route.query.page ?? 1;
+        let per_page = route.query.per_page ?? 3;
         try{
-            let res = await api.get(`/user/subjects/${props.sid}/chapters/${props.cid}`);
-            quizes.value = res.data.payload.quizes;
+            let res = await api.get(`/user/subjects/${props.sid}/chapters/${props.cid}?filter=${filter.value}&page=${page}&per_page=${per_page}`);
+            quizes.value = res.data.quizes;
             chapter.value = res.data.payload;
+            pages.value = res.data.pages;
         }
         catch(err){
             console.log(err);
@@ -27,6 +35,16 @@
     }
     
     fetchQuizes();
+
+    watch(filter,(newVal,oldVal) =>{
+        router.push({
+            "to": route.fullPath,
+            "query": {
+                "filter" : filter.value,
+                "page": 1
+            }
+        })
+    })
 </script>
 
 <template>
@@ -45,6 +63,15 @@
                 </h1>
             </div>
         </div>
+
+        <div class="d-flex w-100 justify-content-center gap-2">
+            Past: <input type="radio" v-model="filter" value="past">
+            Pending: <input type="radio" v-model="filter" value="pending">
+        </div>
+        <div class="d-flex w-100 align-items-center justify-content-center mb-2 gap-1 mt-2">
+            Quizes per page: <PerPage/>
+        </div>
+
         <div class="results-div">
             <div class="result-obj" v-for="quiz in quizes">
                 <div>
@@ -62,6 +89,7 @@
                     </p>
                 </div>
             </div>
+            <Pagination :url="route.fullPath" :pages="pages"/>
         </div>
     </div>
 
@@ -79,7 +107,7 @@
 .results-div{
     display: flex;
     flex-direction: column;
-    margin-top:2em;
+    margin-top:1em;
     gap:1em;
 }
 
