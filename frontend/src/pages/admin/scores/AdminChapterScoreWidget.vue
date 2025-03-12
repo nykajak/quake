@@ -3,6 +3,8 @@
     import Accuracy from './components/Accuracy.vue'
     import Coverage from './components/Coverage.vue'
 
+    import { RouterLink } from 'vue-router'
+
     import { ref } from 'vue'
     import { api } from '@/api'
 
@@ -70,7 +72,9 @@
 <template>
     <div v-if="chapter" class="d-flex flex-column w-100 justify-content-between align-items-center p-5">
         <h2 class="d-flex flex-grow-1 mb-3">
-            {{chapter.name}}
+            <RouterLink :to="`${props.sid}/chapters/${chapter.id}`">
+                {{chapter.name}}
+            </RouterLink>
         </h2>
         <div class="d-flex w-50 justify-content-between">
             <Accuracy :correct-responses="correctResponses" :wrong-responses="wrongResponses" :color1="color1" :color2="color2"/>
