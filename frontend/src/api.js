@@ -1,6 +1,7 @@
 import axios from 'axios'
-import router from './router';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 export let api = axios.create({
     withCredentials: true,
     baseURL: "http://localhost:5000/",
@@ -13,13 +14,13 @@ export let api = axios.create({
    }
  )
 
- api.interceptors.response.use(response => {
+ axios.interceptors.response.use(response => {
    return response;
-},(error) => {
-  if ((error.response && error.response.status === 401) || error.status == 401) {
+}, error => {
+  if (error.response.status === 401) {
       router.push({
          'path': '/login'
       })
   }
-//   return error;
+  return error;
 });
