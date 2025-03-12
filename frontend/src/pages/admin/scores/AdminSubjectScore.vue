@@ -2,9 +2,7 @@
     import { ref } from 'vue';
     import { api } from '@/api';
 
-    import ChapterCard from '../chapter/components/ChapterCard.vue';
     import SubjectCard from '../subject/components/SubjectCard.vue';
-
     const props = defineProps(['uid','sid'])
     const subject = ref(null);
 
@@ -24,12 +22,17 @@
 </script>
 
 <template>
-    <SubjectCard :subject="subject" :active="true"/>
-    <div class="chapters">
-        <div class="d-flex flex-column align-items-center m-2" v-for="chapter in subject.chapters">
-            {{chapter.name}}
+    <template v-if="subject">
+        <SubjectCard :subject="subject" :active="true"/>
+        <div class="chapters">
+            <div class="d-flex flex-column align-items-start m-2 w-100 border" v-for="chapter in subject.chapters">
+                <h3>
+                    {{chapter.name}}
+                </h3>
+            </div>
         </div>
-    </div>
+    
+    </template>
 </template>
 
 <style scoped>
