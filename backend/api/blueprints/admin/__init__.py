@@ -24,6 +24,7 @@ from api.blueprints.admin.questions import admin_question_routes
 from api.blueprints.admin.quizes import admin_quiz_routes
 from api.blueprints.admin.enrolled import admin_enrolled_routes
 from api.blueprints.admin.responses import admin_response_routes
+from api.blueprints.admin.scores import admin_score_routes
 
 # User related endpoints: /admin/users
 admin_routes.register_blueprint(admin_user_routes, url_prefix="/users")
@@ -45,3 +46,6 @@ admin_chapter_routes.register_blueprint(admin_question_routes,url_prefix = "/<ci
 
 # Quiz related endpoints: /admin/subjects/<sid>/chapters/<cid>/quizes
 admin_chapter_routes.register_blueprint(admin_quiz_routes,url_prefix = "/<cid>/quizes")
+
+# Score related endpoints: /admin/scores
+admin_routes.register_blueprint(admin_score_routes, url_prefix="/scores")
