@@ -1,15 +1,12 @@
 <script setup>
     
-    import ChapterCard from '../chapter/components/ChapterCard.vue'
-    import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js'
-    import { Doughnut } from 'vue-chartjs'
+    import Accuracy from './components/Accuracy.vue'
+    import Coverage from './components/Coverage.vue'
 
     import { ref } from 'vue'
     import { api } from '@/api'
 
     const props = defineProps(['uid','sid','cid'])
-    
-    ChartJS.register(ArcElement, Tooltip, Legend)
 
     const correctResponses = ref(null);
     const wrongResponses = ref(null);
@@ -76,50 +73,8 @@
             {{chapter.name}}
         </h2>
         <div class="d-flex w-50 justify-content-between">
-            <div v-if="!(correctResponses + wrongResponses == 0)" class="d-flex flex-column align-items-center">
-                <Doughnut :data="{
-                    labels: ['correct','incorrect'],
-                    datasets: [
-                        {
-                            backgroundColor: [color1, color2],
-                            data: [correctResponses, wrongResponses]
-                        }
-                    ]
-                }" :options="{
-                    'responsive': true,
-                    maintainAspectRatio: true,
-                }" />
-                <div class="d-flex mt-2">
-                    <h3>Attempt summary</h3>
-                </div>
-            </div>
-
-            <div class="d-flex w-50 justify-content-between" v-else>
-                No Responses yet!
-            </div>
-    
-            <div v-if="!(attemptedQuestions + unattemptedQuestions == 0)" class="d-flex flex-column align-items-center">
-                <Doughnut :data="{
-                    labels: ['attempted','unattempted'],
-                    datasets: [
-                        {
-                            backgroundColor: [color1, color2],
-                            data: [attemptedQuestions, unattemptedQuestions]
-                        }
-                    ]
-                }" :options="{
-                    'responsive': true,
-                    maintainAspectRatio: true,
-                }" />
-                <div class="d-flex mt-2">
-                    <h3>Coverage of questions</h3>
-                </div>
-            </div>
-
-            <div v-else>
-                No questions yet!
-            </div>
-    
+            <Accuracy :correct-responses="correctResponses" :wrong-responses="wrongResponses" :color1="color1" :color2="color2"/>
+            <Coverage :attempted-questions="attemptedQuestions" :unattempted-questions="unattemptedQuestions" :color1="color1" :color2="color2" />
         </div>
     </div>
 </template>
