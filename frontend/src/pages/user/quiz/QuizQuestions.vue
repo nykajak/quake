@@ -28,7 +28,7 @@
     async function fetchQuestions(){
 
         try{
-            let res = await api.get(`/user/subjects/${props.sid}/chapters/${props.cid}/quizes/${props.quiz_id}`);
+            let res = await api.get(`/user/subjects/${props.sid}/chapters/${props.cid}/quizes/${props.quiz_id}/questions`);
             questions.value = res.data.payload.map((x)=>{
                 let y = {...x, 'sid':props.sid, 'cid':props.cid, 'quiz_id':props.quiz_id}
                 return y;

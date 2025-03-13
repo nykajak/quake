@@ -1,12 +1,12 @@
 <script setup>
 import { useRouter } from 'vue-router';
 
-    const props = defineProps(['text','url','color'])
+    const props = defineProps(['text','url','color','active'])
     const router = useRouter();
 </script>
 
 <template>
-    <button :class="['base-button',props.color+'-button'] " @click="router.push({
+    <button :disabled="active === false" :class="['base-button',props.color+'-button'] " @click="router.push({
         'path': `${props.url}`
     })">
         {{ props.text }}

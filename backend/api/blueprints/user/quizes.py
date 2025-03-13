@@ -5,7 +5,7 @@ from api.blueprints.user import user_required
 
 user_quiz_routes = Blueprint('user_quiz_routes', __name__)
 
-@user_quiz_routes.get("/<qid>")
+@user_quiz_routes.get("/<qid>/questions")
 @jwt_required()
 @user_required
 def user_questions(sid,cid,qid):
@@ -27,3 +27,26 @@ def user_questions(sid,cid,qid):
     
     seconds = int(remaining_time.total_seconds())
     return jsonify(payload = [x.serialise(required=("unsafe")) for x in quiz.questions], quiz = quiz.serialise(), time = seconds)
+
+
+@user_quiz_routes.get("/<qid>")
+@jwt_required()
+@user_required
+def user_quiz_view(sid,cid,qid):
+    quiz = Quiz.query.filter(Quiz.id == qid).scalar()
+    if quiz is None:
+        return jsonify(msg = "No such quiz found!"), 400
+    
+    current_datetime = datetime.datetime.now()
+
+    if (current_datetime > quiz.dated + datetime.timedelta(minutes=quiz.duration)):
+        # Quiz expired
+        return jsonify(payload=quiz.serialise(),active=None), 200
+    
+    elif (current_datetime < quiz.dated):
+        # Quiz yet to start
+        return jsonify(payload=quiz.serialise(),active=False), 200
+    
+    else:
+        # Quiz is active and live
+        return jsonify(payload=quiz.serialise(),active=True), 200
