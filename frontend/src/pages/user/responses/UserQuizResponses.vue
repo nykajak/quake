@@ -3,6 +3,8 @@
     import { ref } from 'vue';
     import { api } from '@/api';
 
+    import StaticResponse from '@/components/StaticResponse.vue';
+
     const props = defineProps(['sid','cid','qid'])
     const responses = ref(null);
 
@@ -15,11 +17,7 @@
 
 <template>
     <div v-if="responses" class="d-flex flex-column flex-grow-1 mt-3">
-        <div class="d-flex flex-column align-items-center gap-2">
-            <div v-for="response in responses"> 
-                {{  response.marked }} - {{  response.question.description }}
-            </div>
-        </div>
+        <StaticResponse :response="response" v-for="response in responses" /> 
     </div>
 </template>
 
