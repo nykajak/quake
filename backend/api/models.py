@@ -91,7 +91,6 @@ class Chapter(db.Model):
     subject_id = db.Column(db.Integer, db.ForeignKey("subjects.id"), nullable = False)
     name = db.Column(db.String(80), nullable = False)
     description = db.Column(db.String(128))
-    order = db.Column(db.Integer) # Explicit ordering not needed!
 
     quizes = db.relationship('Quiz', backref = "chapter", lazy='dynamic')
     questions = db.relationship("Question", backref = "chapter", lazy='dynamic')
@@ -101,7 +100,6 @@ class Chapter(db.Model):
             "id": self.id,
             "name": self.name,
             "description": self.description,
-            "order": self.order
         }
 
         res["subject"] = self.subject.serialise()
