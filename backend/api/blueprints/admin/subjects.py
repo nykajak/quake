@@ -15,7 +15,7 @@ admin_subject_routes = Blueprint('admin_subject_routes', __name__)
 @admin_required
 def all_subjects():
     """
-        LIVE
+        DONE
         See all subjects.
         GET /admin/subjects/
 
@@ -57,7 +57,7 @@ def all_subjects():
 @admin_required
 def specific_subject(id):
     """
-        LIVE
+        DONE
         See specific subject.
         GET /admin/subjects/:id
 
@@ -74,6 +74,7 @@ def specific_subject(id):
 @admin_required
 def edit_subject(id):
     """
+        DONE
         Edit subject.
         POST /admin/subjects
 
@@ -121,6 +122,7 @@ def edit_subject(id):
 @admin_required
 def add_subject():
     """
+        DONE
         Add new subject.
         POST /admin/subjects
 
