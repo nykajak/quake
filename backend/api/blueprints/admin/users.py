@@ -12,7 +12,7 @@ admin_user_routes = Blueprint('admin_user_routes', __name__)
 @admin_required
 def all_users():
     """
-        LIVE
+        DONE
         See all users.
         GET /admin/users/
 
@@ -82,7 +82,7 @@ def all_users():
 @admin_required
 def specific_users(id):
     """
-        LIVE
+        DONE
         See specific user.
         GET /admin/users/:id
 
