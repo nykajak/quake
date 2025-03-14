@@ -48,6 +48,7 @@ def see_enrolled(sid):
         Expected to be handled by frontend:
             200 - Empty payload, frontend should render some message
     """
+    userName = request.args.get("q",None)
     page = request.args.get("page", 1)
     per_page = request.args.get("per_page", 5)
 
@@ -67,7 +68,12 @@ def see_enrolled(sid):
     s = Subject.query.filter(Subject.id == sid).scalar()
     if s:
         MAX_USERS_PER_PAGE = 10
-        query = s.users.paginate(page = page, per_page = per_page, max_per_page = MAX_USERS_PER_PAGE)
+
+        if userName is None:
+            query = s.users.paginate(page = page, per_page = per_page, max_per_page = MAX_USERS_PER_PAGE)
+        else:
+            query = s.users.filter(User.name.startswith(userName)).paginate(page = page, per_page = per_page, max_per_page = MAX_USERS_PER_PAGE)
+
         users = [x.serialise() for x in query]
         return jsonify(payload = {"users":users}, pages = query.pages), 200
     

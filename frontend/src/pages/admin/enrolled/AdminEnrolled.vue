@@ -1,18 +1,21 @@
 <script setup>
 import { api } from '@/api';
 import { defineProps, ref } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
 import UserCard from '../user/components/UserCard.vue';
 import Loader from '@/components/Loader.vue';
 import Pagination from '@/components/Pagination.vue';
 import PerPage from '@/components/PerPage.vue';
+import NavButton from '@/components/NavButton.vue';
 
 const props = defineProps(['sid']);
 
 const route = useRoute();
+const router = useRouter();
 
 const users = ref(null);
+const userName = ref(route.query.q ?? "");
 const numPages = ref(null);
 const errorMessage = ref(null);
 
@@ -20,7 +23,7 @@ async function fetchUsers(){
     let page = route.query.page ?? 1;
     let per_page = route.query.per_page ?? 5;
     try{
-        let res = await api.get(`/admin/enrolled/subjects/${props.sid}?page=${page}&per_page=${per_page}`);
+        let res = await api.get(`/admin/enrolled/subjects/${props.sid}?page=${page}&per_page=${per_page}&q=${userName.value}`);
         users.value = res.data.payload.users;
         numPages.value = res.data.pages;
     }
@@ -49,8 +52,25 @@ fetchUsers()
 
 <template>
     <div v-if="users" class="mt-3">
-        <div class="d-flex justify-content-center gap-2 align-items-center">
-            Users per page: <PerPage/>
+        <div class="d-flex flex-column justify-content-center gap-2 align-items-center">
+            <div class="d-flex align-items-center gap-2">
+                Users per page: <PerPage/>
+            </div>
+            <div class="d-flex align-items-center">
+                <div class="gap-2">
+                    Username: <input type="text" v-model="userName">
+                </div>
+                <button @click="router.push({
+                    'path': route.fullPath,
+                    'query': {
+                        ...route.query,
+                        'page': 1,
+                        'q':userName
+                    }
+                })">
+                    Search
+                </button>
+            </div>
         </div>
         <div class="d-flex flex-column align-items-center justify-content-center" v-for="user in users">
             <UserCard :user="user" :active="true"/>
