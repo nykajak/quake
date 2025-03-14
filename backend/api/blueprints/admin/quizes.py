@@ -176,7 +176,7 @@ def specific_quiz_questions(sid,cid,qid):
 
     # User input through query_string
     query_str = request.args.get("q","")
-    filter_ = request.args.get("filter","all")
+    filter_ = request.args.get("filter","present")
 
     page = request.args.get("page",1)
     per_page = request.args.get("per_page",5)
