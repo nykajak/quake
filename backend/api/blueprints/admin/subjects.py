@@ -78,14 +78,13 @@ def edit_subject(id):
         Edit subject.
         POST /admin/subjects
 
-        Request body: name,description,credits
+        Request body: name,description
 
         Expected on success: Modification of existing subject.
     """
 
     name = request.form.get("name", None)
     description = request.form.get("description", None)
-    credits = request.form.get("credits", None)
 
     s = Subject.query.filter(Subject.id == id).scalar()
     if s:
@@ -95,18 +94,6 @@ def edit_subject(id):
             
             if description:
                 s.description = description
-
-            if credits:
-                try:
-                    credits = int(credits)
-                    if credits > 0:
-                        s.credits = credits
-
-                    else:
-                        return jsonify(msg="Malformed request: Credits field should be greater than 0"),400
-
-                except ValueError as e:
-                    return jsonify(msg="Malformed request: Credits field should be integer"),400
             
             db.session.commit()
 
@@ -126,26 +113,19 @@ def add_subject():
         Add new subject.
         POST /admin/subjects
 
-        Request body: name,description,credits
+        Request body: name,description
 
         Expected on success: Creation of new Subject in db
     """
     name = request.form.get("name",None)
     description = request.form.get("description",None)
     
-    credits = request.form.get("credits",0)
-    try:
-        credits = int(credits)
-    except:
-        return jsonify(msg="Malformed request: Credits field should be integer"),400
 
     if name is None or len(name) == 0:
         return jsonify(msg="Malformed request: Check if all fields included"),400
     
-    if credits <= 0:
-        return jsonify(msg="Malformed request: Credits field should be greater than 0"),400
     
-    s = Subject(name = name, credits = credits, description = description)
+    s = Subject(name = name, description = description)
     try:
         db.session.add(s)
         db.session.commit()

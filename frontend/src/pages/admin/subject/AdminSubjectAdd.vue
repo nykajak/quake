@@ -36,10 +36,6 @@ async function validateForm(e){
                 </div>
     
                 <div class="form-div">
-                    <input type="number" name="credits" placeholder="Credits" required>
-                </div>
-    
-                <div class="form-div">
                     <input type="submit" id="form-submit-button">
                 </div>
                 
