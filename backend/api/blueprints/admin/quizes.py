@@ -178,6 +178,16 @@ def specific_quiz_questions(sid,cid,qid):
     # User input through query_string
     query_str = request.args.get("q","")
     filter_ = request.args.get("filter","all")
+
+    page = request.args.get("page",1)
+    per_page = request.args.get("per_page",5)
+
+    return_val,validation = pagination_validation(page,per_page)
+    if validation != 200:
+        return validation
+    
+    page, per_page = return_val
+    MAX_QUESTIONS_PER_PAGE = 10
     
     q = Quiz.query.filter(Quiz.id == qid, Quiz.chapter_id == cid).scalar()
 
@@ -186,48 +196,40 @@ def specific_quiz_questions(sid,cid,qid):
 
     if filter_ == "present":
         # All questions that are in quiz
-        if len(query_str) == 0:
-            return jsonify(payload=[x.serialise() for x in q.questions])
         
-        # All questions that are in quiz starting with query_str
-        else:
-            return jsonify(payload=[x.serialise() for x in q.questions.filter(Question.description.contains(query_str))])
+        query = q.questions
+        if len(query_str) != 0:
+            query = query.filter(Question.description.contains(query_str))
+        
+        query = query.paginate(page = page, per_page = per_page, max_per_page = MAX_QUESTIONS_PER_PAGE)
+        return jsonify(payload=[x.serialise() for x in query], pages = query.pages)
 
     elif filter_ == "absent":
-         # All questions that are not in quiz
-         if len(query_str) == 0:
-            return jsonify(payload=[x.serialise() for x in Question.query.filter(Question.chapter_id == int(cid)).all() if x not in q.questions])
-         
-         # All questions that are not in quiz starting with query_str
-         else:
-            return jsonify(payload=[x.serialise() for x in Question.query.filter(Question.chapter_id == int(cid), Question.description.contains(query_str)).all() if x not in q.questions])
+        # All questions that are not in quiz
+        query = Question.query.filter(Question.chapter_id == int(cid), Question.id.not_in([x.id for x in q.questions]))
+        if len(query_str) != 0:
+            query = query.filter(Question.description.contains(query_str))
+
+        query = query.paginate(page = page, per_page = per_page, max_per_page = MAX_QUESTIONS_PER_PAGE)
+        return jsonify(payload=[x.serialise() for x in query], pages = query.pages)
     
     elif filter_ == "all":
-         # All questions in chapter
-         if len(query_str) == 0:
-            l = []
-            for x in Question.query.filter(Question.chapter_id == int(cid)).all():
-                obj = x.serialise()
-                if x in q.questions:
-                    obj["present"] = True
-                else:
-                    obj["present"] = False
-                l.append(obj)
+        # All questions in chapter
+        query = Question.query.filter(Question.chapter_id == int(cid))
+        if len(query_str) != 0:
+            query = query.filter(Question.description.contains(query_str))
 
-            return jsonify(payload=l)
-         
-         # All questions in chapter with starting query_str
-         else:
-            l = []
-            for x in Question.query.filter(Question.chapter_id == int(cid), Question.description.contains(query_str)).all():
-                obj = x.serialise()
-                if x in q.questions:
-                    obj["present"] = True
-                else:
-                    obj["present"] = False
-                l.append(obj)
+        query = query.paginate(page = page, per_page = per_page, max_per_page = MAX_QUESTIONS_PER_PAGE)
+        l = []
+        for x in query:
+            obj = x.serialise()
+            if x in q.questions:
+                obj["present"] = True
+            else:
+                obj["present"] = False
+            l.append(obj)
 
-            return jsonify(payload=l)
+        return jsonify(payload=l, pages = query.pages)
     
     else:
         return jsonify(msg="Invalid filter provided!"),400

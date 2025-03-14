@@ -4,6 +4,8 @@
     import { api } from '@/api';
 
     import StaticQuestion from '@/components/StaticQuestion.vue';
+    import Pagination from '@/components/Pagination.vue';
+    import PerPage from '@/components/PerPage.vue';
 
     const props = defineProps(['sid','cid','qid'])
     const router = useRouter();
@@ -11,8 +13,9 @@
 
     let q = route.query.q ?? ''
     let filter = route.query.filter ?? 'all'
-
+    
     const questions = ref([]);
+    const pages = ref(null);
 
     async function fetchResults(e){
         const f = new FormData(e.target);
@@ -21,14 +24,19 @@
         router.push({
             "path": route.path,
             "query": {
+                ...route.query,
                 "q": q,
-                "filter": filter
+                "filter": filter,
+                "page": 1
             }
         })
     }
 
     async function initialFetch(){
-        let res = await api.get(`/admin/subjects/${props.sid}/chapters/${props.cid}/quizes/${props.qid}/questions?q=${q}&filter=${filter}`);
+        let page = route.query.page ?? 1;
+        let per_page = route.query.per_page ?? 5;
+        let res = await api.get(`/admin/subjects/${props.sid}/chapters/${props.cid}/quizes/${props.qid}/questions?q=${q}&filter=${filter}&page=${page}&per_page=${per_page}`);
+        pages.value = res.data.pages;
         questions.value = res.data.payload;
     }
 
@@ -48,10 +56,11 @@
 </script>
 
 <template>
-    <div class="d-flex flex-column flex-grow-1 mt-2 align-items-center">
+    <div v-if="questions && pages" class="d-flex flex-column flex-grow-1 mt-2 align-items-center">
         <h3 class="text-center">Searching questions for Quiz</h3>
         <form @submit.prevent="fetchResults" class="d-flex flex-column w-100 align-items-center mt-1">
             <div class="form-div">
+                <PerPage/>
                 <label for="q" class="form-div-label">Search term: </label>
                 <input type="text" class="form-div-input" name="q" :value="route.query.q ?? ''">
             </div>
@@ -71,7 +80,7 @@
             </div>
         </form>
 
-        <div class="results-div mt-2">
+        <div class="results-div mt-2 border w-75">
             <div v-for="question in questions" class="d-flex">
                 <div class="d-flex flex-grow-1">
                     <RouterLink class="w-100" :to="`/admin/subjects/${props.sid}/chapters/${props.cid}/questions/${question.id}`">
@@ -84,6 +93,7 @@
                 </div>
             </div>
         </div>
+        <Pagination :url="route.fullPath" :pages = "pages"/>
     </div>
 
 </template>
