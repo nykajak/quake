@@ -92,7 +92,7 @@ def edit_quiz(sid,cid,qid):
     # Checking existence of quiz in given chapter and subject
     if q and q.chapter.subject_id == int(sid):
         if dated:
-            if current_date < q.date:
+            if current_date < q.dated:
                 # Do not touch - Specific date format
                 quiz_date = datetime(
                     year=int(dated[:4]),
@@ -114,7 +114,7 @@ def edit_quiz(sid,cid,qid):
             except ValueError as e:
                 return jsonify(msg="Bad request: Duration must be an integer!"), 400
             
-            if current_date < q.date:
+            if current_date < q.dated:
                 if duration > 0:
                     q.duration = duration
                 

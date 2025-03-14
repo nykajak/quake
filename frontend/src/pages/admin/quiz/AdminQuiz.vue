@@ -29,7 +29,7 @@ fetchQuiz().then((data)=>{
             Quiz duration: {{ quiz.duration  }} minutes
         </p>
         <div class="d-flex mb-3">
-            <NavButton text="Edit details" :url="`${props.sid}/edit`" color="primary"/>
+            <NavButton text="Edit details" :url="`${props.qid}/edit`" color="primary"/>
         </div>
         <AdminQuizQuestions :sid="props.sid" :cid="props.cid" :qid="props.qid"/>
     </div>
