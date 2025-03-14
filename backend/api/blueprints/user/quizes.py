@@ -1,5 +1,5 @@
 from flask import Blueprint,jsonify,request
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import jwt_required,get_current_user
 from api.models import *
 from api.blueprints.user import user_required
 
@@ -33,6 +33,7 @@ def user_questions(sid,cid,qid):
 @jwt_required()
 @user_required
 def user_quiz_view(sid,cid,qid):
+    user = get_current_user()
     quiz = Quiz.query.filter(Quiz.id == qid).scalar()
     if quiz is None:
         return jsonify(msg = "No such quiz found!"), 400
@@ -41,7 +42,11 @@ def user_quiz_view(sid,cid,qid):
 
     if (current_datetime > quiz.dated + datetime.timedelta(minutes=quiz.duration)):
         # Quiz expired
-        return jsonify(payload=quiz.serialise(),active=None), 200
+        query = db.session.query(Response, Question, User, Quiz).join(Question,Response.question_id == Question.id).join(User,Response.user_id == User.id).join(Quiz,Response.quiz_id == Quiz.id).filter(Quiz.id == qid, User.id == user.id)        
+        if query.count() > 0:
+            query = query.filter(Response.marked == Question.correct)
+            return jsonify(payload=quiz.serialise(),active=None, count = quiz.questions.count(), correct = query.count()), 200
+        return jsonify(payload=quiz.serialise(),active=None, count = quiz.questions.count(), correct = query.count(), attempted = False), 200
     
     elif (current_datetime < quiz.dated):
         # Quiz yet to start
