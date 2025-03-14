@@ -4,6 +4,7 @@ from api.models import *
 from api.blueprints.admin import admin_required
 from datetime import datetime, timedelta
 from sqlalchemy import func
+from api.blueprints.pagination import pagination_validation
 
 # Base URL: /admin/subjects/<sid>/chapters/<cid>/quizes
 admin_quiz_routes = Blueprint('admin_quiz_routes', __name__)
@@ -31,21 +32,11 @@ def all_quizes(sid,cid):
     page = request.args.get("page",1)
     per_page = request.args.get("per_page",5)
 
-    try:
-        page = int(page)
-    except ValueError:
-        return jsonify(msg = "Bad request! page cannot be non integer")
+    return_val,validation = pagination_validation(page,per_page)
+    if validation != 200:
+        return validation
     
-    try:
-        per_page = int(per_page)
-    except ValueError:
-        return jsonify(msg = "Bad request! per_page cannot be non integer")
-    
-    if page <= 0:
-        return jsonify(msg = "Bad request! page cannot be negative")
-    
-    if per_page <= 0:
-        return jsonify(msg = "Bad request! per_page cannot be negative")
+    page, per_page = return_val
 
     MAX_QUIZES_PER_PAGE = 10
 

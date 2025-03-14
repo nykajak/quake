@@ -2,6 +2,7 @@ from flask import Blueprint,jsonify,request
 from flask_jwt_extended import jwt_required
 from api.models import *
 from api.blueprints.admin import admin_required
+from api.blueprints.pagination import pagination_validation
 
 # Base URL: /admin/subjects/<sid>/chapters/<cid>/questions
 admin_question_routes = Blueprint('admin_question_routes', __name__)
@@ -34,18 +35,11 @@ def see_questions(sid,cid):
         payload = [q.serialise() for q in Question.query.filter(Question.chapter_id == cid)]
         return jsonify(payload = {"questions" : payload}), 200
 
-    try:
-        page = int(page)
-        per_page = int(per_page)
-
-        if page <= 0:
-            return jsonify(msg="Bad request: page has to be postiive integer!"), 400
-
-        if per_page <= 0:
-            return jsonify(msg="Bad request: per_page has to be postiive integer!"), 400
-
-    except ValueError as e:
-        return jsonify(msg="Bad request: page and per_page have to be integers!"), 400
+    return_val,validation = pagination_validation(page,per_page)
+    if validation != 200:
+        return validation
+    
+    page, per_page = return_val
 
     c = Chapter.query.filter(Chapter.id == cid, Chapter.subject_id == sid).scalar()
     if c:

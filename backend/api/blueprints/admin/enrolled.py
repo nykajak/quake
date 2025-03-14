@@ -4,6 +4,7 @@ from api.models import *
 from api.blueprints.admin import admin_required
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.exc import StaleDataError
+from api.blueprints.pagination import pagination_validation
 
 # Base URL: /admin/enrolled
 admin_enrolled_routes = Blueprint('admin_enrolled_routes', __name__)
@@ -52,18 +53,11 @@ def see_enrolled(sid):
     page = request.args.get("page", 1)
     per_page = request.args.get("per_page", 5)
 
-    try:
-        page = int(page)
-        per_page = int(per_page)
-
-        if page <= 0:
-            return jsonify(msg="Bad request: page has to be postiive integer!"), 400
-
-        if per_page <= 0:
-            return jsonify(msg="Bad request: per_page has to be postiive integer!"), 400
-
-    except ValueError as e:
-        return jsonify(msg="Bad request: page and per_page have to be integers!"), 400
+    return_val,validation = pagination_validation(page,per_page)
+    if validation != 200:
+        return validation
+    
+    page, per_page = return_val
     
     s = Subject.query.filter(Subject.id == sid).scalar()
     if s:

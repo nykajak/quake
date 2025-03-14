@@ -2,6 +2,7 @@ from flask import Blueprint,jsonify,request
 from flask_jwt_extended import jwt_required
 from api.models import *
 from api.blueprints.admin import admin_required
+from api.blueprints.pagination import pagination_validation
 
 admin_user_routes = Blueprint('admin_user_routes', __name__)
 
@@ -29,25 +30,11 @@ def all_users():
     per_page = request.args.get("per_page", 5)
     q = request.args.get("q", None)
 
-    # Validation - Check if page and per_page are integers
-    try:
-        page = int(page)
-
-    except ValueError as e:
-        return jsonify(msg = "Bad request - page should be a postive integer"), 400
-
-    try:
-        per_page = int(per_page)
-
-    except ValueError as e:
-        return jsonify(msg = "Bad request - per_page should be a postive integer"), 400
+    return_val,validation = pagination_validation(page,per_page)
+    if validation != 200:
+        return validation
     
-    # Validation - Check if page and per_page are non-zero and positive integers
-    if page <= 0:
-        return jsonify(msg = "Bad request - page should be a postive integer"), 400
-
-    if per_page <= 0:
-        return jsonify(msg = "Bad request - per_page should be a postive integer"), 400
+    page, per_page = return_val
 
     # Arbitrary constant on max allowed amount of users
     # If per_page >= MAX_USERS_PER_PAGE then a page contains MAX_USERS_PER_PAGE items only

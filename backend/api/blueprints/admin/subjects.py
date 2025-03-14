@@ -5,6 +5,7 @@ from flask_jwt_extended import jwt_required
 from api.models import *
 from api.blueprints.admin import admin_required
 from sqlalchemy.exc import IntegrityError
+from api.blueprints.pagination import pagination_validation
 
 admin_subject_routes = Blueprint('admin_subject_routes', __name__)
 
@@ -29,19 +30,11 @@ def all_subjects():
 
     MAX_SUBJECTS_PER_PAGE=10
     
-    # Validation
-    try:
-        page = int(page)
-    except ValueError as e:
-        return jsonify(msg = "Bad request! page should be integer")
-
-    try:
-        per_page = int(per_page)
-    except ValueError as e:
-        return jsonify(msg = "Bad request! per_page should be integer")
+    return_val,validation = pagination_validation(page,per_page)
+    if validation != 200:
+        return validation
     
-    if page <= 0:
-        return jsonify(msg = "Bad request! page should be positive integer")
+    page, per_page = return_val
 
     # Database query
     if not q:

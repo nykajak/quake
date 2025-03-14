@@ -2,6 +2,7 @@ from flask import Blueprint,jsonify,request
 from flask_jwt_extended import jwt_required
 from api.models import *
 from api.blueprints.admin import admin_required
+from api.blueprints.pagination import pagination_validation
 
 admin_response_routes = Blueprint('admin_response_routes', __name__)
 
@@ -19,21 +20,11 @@ def admin_view_responses():
     quiz_id = request.args.get("quiz_id", None)
     question_id = request.args.get("question_id", None)
 
-    try:
-        page = int(page)
-    except ValueError as e: 
-        return jsonify("Bad request! page must be integer"), 400
+    return_val,validation = pagination_validation(page,per_page)
+    if validation != 200:
+        return validation
     
-    try:
-        per_page = int(per_page)
-    except ValueError as e: 
-        return jsonify("Bad request! per_page must be integer"), 400
-    
-    if page <= 0:
-        return jsonify("Bad request! page must positive integer"), 400
-    
-    if per_page <= 0:
-        return jsonify("Bad request! per_page must positive integer"), 400
+    page, per_page = return_val
     
     MAX_RESPONSES_PER_PAGE = 5
 
