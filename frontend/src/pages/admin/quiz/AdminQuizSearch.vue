@@ -44,12 +44,14 @@
         const formData = new FormData();
         formData.append('question_id',id);
         let res = await api.post(`/admin/subjects/${props.sid}/chapters/${props.cid}/quizes/${props.qid}/questions/add`, formData)
+        router.go(0);
     }
 
     async function removeQuestion(id){
         const formData = new FormData();
         formData.append('question_id',id);
         let res = await api.post(`/admin/subjects/${props.sid}/chapters/${props.cid}/quizes/${props.qid}/questions/remove`, formData)
+        router.go(0);
     }
 
     initialFetch()
@@ -80,7 +82,7 @@
             </div>
         </form>
 
-        <div class="results-div mt-2 border w-75">
+        <div class="results-div mt-2 w-75">
             <div v-for="question in questions" class="d-flex">
                 <div class="d-flex flex-grow-1">
                     <RouterLink class="w-100" :to="`/admin/subjects/${props.sid}/chapters/${props.cid}/questions/${question.id}`">
