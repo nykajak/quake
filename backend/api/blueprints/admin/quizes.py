@@ -300,8 +300,6 @@ def add_quiz(sid,cid):
         Expected on success: Quiz object created in db
     """
 
-    # TO DO - Validation of inputted dat - cannot be backdated to past.
-
     c = Chapter.query.filter(Chapter.id == cid, Chapter.subject_id == sid).scalar()
     if c:
         dated = request.form.get("dated",None)
@@ -312,6 +310,10 @@ def add_quiz(sid,cid):
             return jsonify(msg="Malformed request!"),400    
 
         x = datetime(year=int(dated[:4]),month=int(dated[5:7]),day=int(dated[8:10]),hour=int(dated[11:13]),minute=int(dated[14:16]))
+        current_time = datetime.now()
+        if x < current_time:
+            return jsonify(msg="Cannot create quiz in the past!"),400
+
         q = Quiz(chapter_id = cid, dated = x, duration = int(duration), description = description)
         db.session.add(q)
         db.session.commit()
