@@ -89,39 +89,47 @@ def edit_quiz(sid,cid,qid):
             404 - Subject/Chapter not found
     """
 
-    # TO DO - Prevent data of past quiz from being modified
-
     # User input from form
     dated = request.form.get("dated",None)
     duration = request.form.get("duration",None)
     description = request.form.get("description",None)
 
     q = Quiz.query.filter(Quiz.id == qid, Quiz.chapter_id == cid).scalar()
+    current_date = datetime.now()
 
     # Checking existence of quiz in given chapter and subject
     if q and q.chapter.subject_id == int(sid):
         if dated:
-            # Do not touch - Specific date format
-            quiz_date = datetime(
-                year=int(dated[:4]),
-                month=int(dated[5:7]),
-                day=int(dated[8:10]),
-                hour=int(dated[11:13]),
-                minute=int(dated[14:16])
-            )
-            q.dated = quiz_date
+            if current_date < q.date:
+                # Do not touch - Specific date format
+                quiz_date = datetime(
+                    year=int(dated[:4]),
+                    month=int(dated[5:7]),
+                    day=int(dated[8:10]),
+                    hour=int(dated[11:13]),
+                    minute=int(dated[14:16])
+                )
+                q.dated = quiz_date
+
+            else:
+                return jsonify(msg = 'Cannot change date of a past quiz'),400
         
         if duration:
             # Validation - duration - int > 0
             try:
                 duration = int(duration)
-                if duration > 0:
-                    q.duration = duration
-                else:
-                    return jsonify(msg="Bad request: Duration must be non-zero and positive!"), 400
 
             except ValueError as e:
                 return jsonify(msg="Bad request: Duration must be an integer!"), 400
+            
+            if current_date < q.date:
+                if duration > 0:
+                    q.duration = duration
+                
+                else:
+                    return jsonify(msg="Bad request: Duration must be non-zero and positive!"), 400
+            else:
+                return jsonify(msg = 'Cannot change duration of a past quiz'),400
                 
         if description:
             q.description = description
