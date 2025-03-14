@@ -57,24 +57,28 @@ fetchUsers()
                 Users per page: <PerPage/>
             </div>
             <div class="d-flex align-items-center">
-                <div class="gap-2">
-                    Username: <input type="text" v-model="userName">
+                <div class="d-flex align-items-center gap-1">
+                    <label for="username-query">Username:</label>
+                    <input class="username-query" type="text" v-model="userName">
                 </div>
-                <button @click="router.push({
-                    'path': route.fullPath,
-                    'query': {
-                        ...route.query,
-                        'page': 1,
-                        'q':userName
-                    }
-                })">
-                    Search
-                </button>
+                <div class="d-flex align-items-center gap-1">
+                    <button id="search-button" @click="router.push({
+                        'path': route.fullPath,
+                        'query': {
+                            ...route.query,
+                            'page': 1,
+                            'q':userName
+                        }
+                    })">
+                        Search
+                    </button>
+                </div>
+                
             </div>
         </div>
         <div class="d-flex flex-column align-items-center justify-content-center" v-for="user in users">
             <UserCard :user="user" :active="true"/>
-            <button id="remove-button" @click="async () => {
+            <button class="remove-button" @click="async () => {
                 let res = await api.delete(`/admin/enrolled/users/${user.id}/subjects/${props.sid}`);
             }">
                 Remove enrollment?
@@ -100,10 +104,18 @@ fetchUsers()
 </template>
 
 <style scoped>
-#remove-button{
+.remove-button{
     display: flex;
     border: none;
     background-color: var(--error-color);
+    color: var(--light-color);
+}
+
+#search-button{
+    display: flex;
+    height: 100%;
+    border: 1px solid light-dark(var(--dark-color),var(--light-color));
+    background-color: var(--secondary-color);
     color: var(--light-color);
 }
 </style>
