@@ -3,6 +3,7 @@ from flask_jwt_extended import jwt_required
 from api.models import *
 from api.blueprints.admin import admin_required
 from datetime import datetime, timedelta
+from sqlalchemy.orm.exc import StaleDataError
 from sqlalchemy import func
 from api.blueprints.pagination import pagination_validation
 
@@ -173,8 +174,6 @@ def specific_quiz_questions(sid,cid,qid):
             400 - Invalid filter
     """
 
-    # TO DO - Implement pagination for list of questions from Quiz
-
     # User input through query_string
     query_str = request.args.get("q","")
     filter_ = request.args.get("filter","all")
@@ -238,21 +237,18 @@ def specific_quiz_questions(sid,cid,qid):
 @jwt_required()
 @admin_required
 def add_question_to_quiz(sid,cid,qid):
-    # TO DO - Error handling on existence
     # TO DO - Prevent modification of past quiz
 
     question_id = request.form.get("question_id",None)
 
     if question_id is None:
         return jsonify(msg="Malformed request!"),400
-    
-    try:
-        question_id = int(question_id)
-    except ValueError as e:
-        return jsonify(msg="Malformed request!"),400
 
     question = Question.query.filter(Question.id == question_id).scalar()
     quiz = Quiz.query.filter(Quiz.id == qid).scalar()
+
+    if question is None or quiz is None:
+        return jsonify(msg="Quiz or question not found!"),404
 
     if question.chapter.id != quiz.chapter.id:
         return jsonify(msg="Cannot add question from different chapter!"),400
@@ -265,29 +261,27 @@ def add_question_to_quiz(sid,cid,qid):
 @jwt_required()
 @admin_required
 def remove_question_from_quiz(sid,cid,qid):
-    # TO DO - Error handling on non-existence
     # TO DO - Prevent modification of past quiz
 
     question_id = request.form.get("question_id",None)
-    print(request.data)
-
-    if question_id is None:
-        return jsonify(msg="Malformed request!"),400
-    
-    try:
-        question_id = int(question_id)
-    except ValueError as e:
-        return jsonify(msg="Malformed request!"),400
 
     question = Question.query.filter(Question.id == question_id).scalar()
     quiz = Quiz.query.filter(Quiz.id == qid).scalar()
 
+    if question is None or quiz is None:
+        return jsonify(msg="Quiz or question not found!"),404
+
     if question.chapter.id != quiz.chapter.id:
         return jsonify(msg="Cannot perform operation on question from different chapter!"),400
+    
+    try: 
+        quiz.questions.remove(question)
+        db.session.commit()
+        return jsonify(msg="Question successfully removed!"),200
 
-    quiz.questions.remove(question)
-    db.session.commit()
-    return jsonify(msg="Question successfully removed!"),200
+    except StaleDataError as e:
+        return jsonify(msg = "Question was never added!"), 200
+
 
 @admin_quiz_routes.post("/")
 @jwt_required()
