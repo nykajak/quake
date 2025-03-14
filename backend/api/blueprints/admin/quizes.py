@@ -237,8 +237,6 @@ def specific_quiz_questions(sid,cid,qid):
 @jwt_required()
 @admin_required
 def add_question_to_quiz(sid,cid,qid):
-    # TO DO - Prevent modification of past quiz
-
     question_id = request.form.get("question_id",None)
 
     if question_id is None:
@@ -246,6 +244,10 @@ def add_question_to_quiz(sid,cid,qid):
 
     question = Question.query.filter(Question.id == question_id).scalar()
     quiz = Quiz.query.filter(Quiz.id == qid).scalar()
+
+    current_time = datetime.now()
+    if quiz.dated < current_time:
+        return jsonify(msg="Unable to add questions to a past quiz!"), 400
 
     if question is None or quiz is None:
         return jsonify(msg="Quiz or question not found!"),404
@@ -261,12 +263,14 @@ def add_question_to_quiz(sid,cid,qid):
 @jwt_required()
 @admin_required
 def remove_question_from_quiz(sid,cid,qid):
-    # TO DO - Prevent modification of past quiz
-
     question_id = request.form.get("question_id",None)
 
     question = Question.query.filter(Question.id == question_id).scalar()
     quiz = Quiz.query.filter(Quiz.id == qid).scalar()
+
+    current_time = datetime.now()
+    if quiz.dated < current_time:
+        return jsonify(msg="Unable to remove questions from a past quiz!"), 400
 
     if question is None or quiz is None:
         return jsonify(msg="Quiz or question not found!"),404
