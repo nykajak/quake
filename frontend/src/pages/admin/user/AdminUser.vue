@@ -40,6 +40,9 @@
             <!-- Display the user details -->
             <div class="user-card">
                 <UserCard :user="user" :active="false"/>
+                <div class="d-flex flex-row justify-content-center">
+                    <NavButton color="primary" text="See Responses" :url="`${user.id}/responses`"/>
+                </div>
             </div>
             
             <!-- Display the user subject details -->

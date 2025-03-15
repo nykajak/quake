@@ -23,10 +23,6 @@ import NavButton from '@/components/NavButton.vue';
                 </h1>
                 <div class="email-div">{{props.user.email}}</div>
             </div>
-
-            <div class="mt-1">
-                <NavButton color="primary" text="See Responses" :url="`${props.user.id}/responses`"/>
-            </div>
         </div>
     </div>
 </template>
