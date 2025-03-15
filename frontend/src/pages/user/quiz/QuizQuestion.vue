@@ -7,16 +7,39 @@ import { useRoute } from 'vue-router';
 
 import StaticOption from '@/components/StaticOption.vue';
 import StaticQuestion from '@/components/StaticQuestion.vue';
+import QuizNavigation from './QuizNavigation.vue';
+import Loader from '@/components/Loader.vue';
 
-const props = defineProps(['question', 'index', 'length']);
 const route = useRoute();
-let correct = ref(-2);
+const props = defineProps(['sid','cid','quiz_id','question_id']);
+
+const correct = ref(-2);
+const question = ref(null);
+const num = ref(null);
+const time = ref(null);
+
+function formatTime(time){
+    if (time > 0){
+        return `${Math.floor(time / 60)}  minutes and ${time % 60} seconds left!`;
+    }
+    else{
+        return `You are out of time!`
+    }
+}
+
+async function fetchQuestion(){
+    let res = await api.get(`/user/subjects/${props.sid}/chapters/${props.cid}/quizes/${props.quiz_id}/questions/${props.question_id}`);
+    correct.value = res.data.payload;
+    question.value = res.data.question;
+    num.value = res.data.num;
+    time.value = res.data.time;
+}
 
 async function submitResponse(){
     try{
         let f = new FormData();
         f.append("marked",correct.value)
-        let res = await api.post(`/user/subjects/${props.question.sid}/chapters/${props.question.cid}/quizes/${props.question.quiz_id}/questions/${props.question.id}`, f);
+        let res = await api.post(`/user/subjects/${props.sid}/chapters/${props.cid}/quizes/${props.quiz_id}/questions/${props.question_id}`, f);
   
     }
     catch(err){
@@ -24,53 +47,69 @@ async function submitResponse(){
     }
 }
 
-async function fetchResponse(){
-    let res = await api.get(`/user/subjects/${route.params.sid}/chapters/${route.params.cid}/quizes/${route.params.quiz_id}/questions/${props.question.id}`);
-    correct.value = res.data.payload
-}
+fetchQuestion();
 
-fetchResponse();
+let interval_id = setInterval(() => {
+    time.value -= 1;
+    if (time.value <= 0){
+        clearInterval(interval_id);
+        router.push({
+            "path": `/user/subjects/${props.sid}/chapters/${props.cid}/quizes/${props.quiz_id}`
+        })
+    }
+},1000)
+
 </script>
 
 <template>
-<div v-if="question && correct != -2" class="d-flex w-100 flex-column align-self-center m-1 p-1">
-        <div class="question-container">
-            <StaticQuestion :index="props.index" :description="props.question.description"/>
+    <template v-if="time">
+        <div class="d-flex justify-content-end p-2">
+            {{formatTime(time)}}
         </div>
         
-        <div class="option-container">
-            <div class="d-flex flex-row justify-content-center flex-wrap w-100">
-                <template v-for="n in 4">
-                    <StaticOption :optionNo="n-1" :correctOption="correct" :option-text="props.question.options[n-1]" :clickable="(x)=>{
-                        correct = x;
-                    }"/>
-                </template>
+        <div v-if="question" class="d-flex w-100 flex-column align-self-center m-1 p-1">
+            <div class="question-container">
+                <StaticQuestion :index="props.question_id" :description="question.description"/>
             </div>
             
-            <div class="d-flex mt-3 justify-content-center">
-                <button id="clear-button" @click="correct = -1">
-                    Clear choice
-                </button>
-            </div>
+            <div class="option-container">
+                <div class="d-flex flex-row justify-content-center flex-wrap w-100">
+                    <template v-for="n in 4">
+                        <StaticOption :optionNo="n-1" :correctOption="correct" :option-text="question.options[n-1]" :clickable="(x)=>{
+                            correct = x;
+                        }"/>
+                    </template>
+                </div>
+                
+                <div class="d-flex mt-3 justify-content-center">
+                    <button id="clear-button" @click="correct = -1">
+                        Clear choice
+                    </button>
+                </div>
 
-            <div class="d-flex mt-3 justify-content-between">
-                <button class="nav-button" @click="async ()=>{
-                    await submitResponse();
-                    router.push({
-                        'path': `/user/subjects/${props.question.sid}/chapters/${props.question.cid}/quizes/${props.question.quiz_id}/questions/${Number(props.index) - 1}`
-                    })}" :disabled="props.index == 1">
-                    Save and prev
-                </button>
-                <button class="nav-button" @click="async ()=>{
-                    await submitResponse();
-                    router.push({
-                        'path': `/user/subjects/${props.question.sid}/chapters/${props.question.cid}/quizes/${props.question.quiz_id}/questions/${Number(props.index) + 1}`
-                    })}" :disabled="props.index == props.length">
-                    Save and next
-                </button>
+                <div class="d-flex mt-3 justify-content-between">
+                    <button class="nav-button" @click="async ()=>{
+                        await submitResponse();
+                        router.push({
+                            'path': `/user/subjects/${props.sid}/chapters/${props.cid}/quizes/${props.quiz_id}/questions/${Number(props.question_id) - 1}`
+                        })}" :disabled="props.question_id == 1">
+                        Save and prev
+                    </button>
+                    <button class="nav-button" @click="async ()=>{
+                        await submitResponse();
+                        router.push({
+                            'path': `/user/subjects/${props.sid}/chapters/${props.cid}/quizes/${props.quiz_id}/questions/${Number(props.question_id) + 1}`
+                        })}" :disabled="props.question_id == num">
+                        Save and next
+                    </button>
+                </div>
             </div>
         </div>
-    </div>
+
+        <QuizNavigation :length="num" :beforeSubmit="submitResponse"/>
+    </template>
+    <Loader v-else/>
+
 </template>
 
 <style scoped>
@@ -103,6 +142,7 @@ fetchResponse();
     align-items: center;
     border: 1px solid var(--light-color);
     padding: 0.33em;
+    width: 100%;
     color: var(--light-color);
     background-color: var(--secondary-color);
 }

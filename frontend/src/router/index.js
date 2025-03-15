@@ -12,7 +12,7 @@ import UserSubjects from '@/pages/user/subject/UserSubjects.vue'
 import UserSubject from '@/pages/user/subject/UserSubject.vue'
 import UserChapter from '@/pages/user/chapter/UserChapter.vue'
 import UserEnroll from '@/pages/user/enroll/UserEnroll.vue'
-import QuizQuestions from '@/pages/user/quiz/QuizQuestions.vue'
+import QuizQuestion from '@/pages/user/quiz/QuizQuestion.vue'
 import QuizStart from '@/pages/user/quiz/QuizStart.vue'
 
 import AdminDashboard from '@/pages/admin/AdminDashboard.vue'
@@ -107,7 +107,7 @@ const router = createRouter({
         },
         {
           path:"subjects/:sid/chapters/:cid/quizes/:quiz_id/questions/:question_id",
-          component: QuizQuestions,
+          component: QuizQuestion,
           props: true
         },
         {
