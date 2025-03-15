@@ -1,3 +1,5 @@
+# STABLE
+
 from flask import Blueprint,jsonify,request
 from flask_jwt_extended import jwt_required
 from api.models import *
@@ -11,9 +13,9 @@ admin_chapter_routes = Blueprint('admin_chapter_routes', __name__)
 @admin_chapter_routes.get("/<cid>")
 @jwt_required()
 @admin_required
-def specific_chapter(sid,cid):
+def admin_view_specific_chapter(sid,cid):
     """
-        LIVE, STABLE
+        DONE
         See particular chapter information.
         GET /admin/subjects/:sid/chapters/:cid
 
@@ -30,16 +32,16 @@ def specific_chapter(sid,cid):
 @admin_chapter_routes.put("/<cid>")
 @jwt_required()
 @admin_required
-def edit_chapter(sid,cid):
+def admin_edit_chapter(sid,cid):
     """
-        LIVE, STABLE
+        DONE
         Edit particular chapter information.
         PUT /admin/subjects/:sid/chapters/:cid
 
         Expected on success: Chapter details edited in backend
         Expected to be handled by frontend:
             404 - Frontend should show not found if chapter not found
-            400 - Frontend should gracefully handle db errors
+            500 - Frontend should gracefully handle db errors
     """
 
     # User input from form
@@ -61,19 +63,19 @@ def edit_chapter(sid,cid):
             db.session.commit()
         except Exception as e:
             print(e)
-            return jsonify(msg = "Database error encountered!"), 400
+            return jsonify(msg = "Database error encountered!"), 500
 
         return jsonify(msg = "Chapter edit success!"), 200
 
-    return jsonify(msg = "Subject or chapter not found!"), 404
+    return jsonify(msg = "Chapter not found!"), 404
 
 
 @admin_chapter_routes.post("/")
 @jwt_required()
 @admin_required
-def add_chapter(sid):
+def admin_add_chapter(sid):
     """
-        LIVE, STABLE
+        DONE
         Add a new empty chapter in some subject.
         POST /admin/subjects/:sid/chapters
 
@@ -81,7 +83,7 @@ def add_chapter(sid):
         Expected to be handled by frontend:
             404 - Frontend should show not found if subject not found
             400 - Validation errors
-            400 - Database errors
+            500 - Database errors
     """
     
     # User input from form
@@ -105,6 +107,6 @@ def add_chapter(sid):
         db.session.commit()
     except Exception as e:
         print(e)
-        return jsonify(msg = "Database error encountered!"), 400
+        return jsonify(msg = "Database error encountered!"), 500
     
     return jsonify(msg = "Chapter creation successful!", payload = c.serialise()), 200
