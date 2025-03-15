@@ -18,15 +18,23 @@ def see_requests():
         See all pending requests for enrollment.
         GET /admin/enrolled/requests
 
-        Expected on success: Payload containing all requests
+        Expected on success: Payload containing list of mappings to user and subject
         Expected to be handled by frontend:
             200 - Empty payload, frontend should render some message
+            400 - Bad request
     """
+    page = request.args.get("page",1)
+    per_page = request.args.get("per_page",5)
     
-    # TO DO - Pagination of results
+    return_val,validation = pagination_validation(page,per_page)
+    if validation != 200:
+        return validation
+    
+    MAX_REQUEST_PER_PAGE = 10
+    page, per_page = return_val
 
-    # Note: Order of objects in query important as referenced in payload
     query = db.session.query(Requested, User, Subject).join(User,  Requested.user_id == User.id).join(Subject,  Requested.subject_id == Subject.id)
+    query = query.paginate(page = page, per_page = per_page, max_per_page = MAX_REQUEST_PER_PAGE)
     payload = [
         {
             "user": x[1].serialise(),
@@ -34,7 +42,7 @@ def see_requests():
         } for x in query
     ]
 
-    return jsonify(payload = payload), 200
+    return jsonify(payload = payload, pages = query.pages), 200
 
 @admin_enrolled_routes.get("/subjects/<sid>")
 @jwt_required()

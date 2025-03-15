@@ -1,11 +1,16 @@
 <script setup>
     import { ref } from 'vue';
     import { api } from '@/api';
+    import { useRoute } from 'vue-router';
 
     import Loader from '@/components/Loader.vue';
+    import Pagination from '@/components/Pagination.vue';
+    import PerPage from '@/components/PerPage.vue';
 
+    const route = useRoute();
     const requests = ref(null);
     const errorMessage = ref(null);
+    const pages = ref(null);
 
     async function rejectResponse(uid,sid){
         let res = await api.delete(`/admin/enrolled/users/${uid}/subjects/${sid}`);
@@ -17,9 +22,13 @@
 
     async function fetchRequests(){
         try{
-            let res = await api.get("/admin/enrolled/requests")
+            let page = route.query.page ?? 1;
+            let per_page = route.query.per_page ?? 5;
+            console.log(page,per_page)
+            let res = await api.get(`/admin/enrolled/requests?page=${page}&per_page=${per_page}`)
             if (res.data.payload.length > 0){
                 requests.value = res.data.payload;
+                pages.value = res.data.pages;
             }
             else{
                 errorMessage.value = "No pending requests!"
@@ -55,28 +64,31 @@
                 No requests pending!
             </h3>
         </div>
-
-        <div class="d-flex flex-column align-items-center mb-3" v-for="r in requests">
-            <div>
-                Username: {{ r.user.name }} 
+        <template v-else>
+            <PerPage/>
+            <div class="d-flex flex-column align-items-center mb-3" v-for="r in requests">
+                <div>
+                    Username: {{ r.user.name }} 
+                </div>
+                <div>
+                    Subject: {{ r.subject.name }}
+                </div>
+    
+                <div class="d-flex mt-3">
+                    <button class="accept-button" @click="async () => {
+                        await acceptResponse(r.user.id,r.subject.id);
+                    }">
+                        Accept
+                    </button>
+                    <button class="reject-button" @click="async () => {
+                        await rejectResponse(r.user.id,r.subject.id);
+                    }">
+                        Reject
+                    </button>
+                </div>
             </div>
-            <div>
-                Subject: {{ r.subject.name }}
-            </div>
-
-            <div class="d-flex mt-3">
-                <button class="accept-button" @click="async () => {
-                    await acceptResponse(r.user.id,r.subject.id);
-                }">
-                    Accept
-                </button>
-                <button class="reject-button" @click="async () => {
-                    await rejectResponse(r.user.id,r.subject.id);
-                }">
-                    Reject
-                </button>
-            </div>
-        </div>
+            <Pagination :url="route.fullPath" :pages="pages"/>
+        </template>
     </div>
 
     <Loader v-if="requests == null && errorMessage == null"/>
