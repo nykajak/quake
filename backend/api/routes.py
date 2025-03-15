@@ -5,25 +5,26 @@ from flask_jwt_extended import jwt_required,current_user,get_jwt,create_access_t
 from sqlalchemy.exc import IntegrityError
 from datetime import datetime,timedelta
 
+# Lookup for particular user
 @jwt.user_lookup_loader
 def user_lookup_callback(_jwt_header, jwt_data):
     identity = jwt_data["sub"]
     return User.query.filter(User.name == identity).scalar()
 
+# Error handler for 404 errors
 @app.errorhandler(404)
 def page_not_found(e):
     resp = jsonify(msg="Page not found!")
     return resp,404
 
-# Optionally add error handler for 401 - unauthorised errors
-
+# Refresh jwt tokens which are close to expiry (15 mins)
 @app.after_request
 def refresh_tokens(response):
     try:
         exp_timestamp = get_jwt()["exp"]
         now = datetime.now()
 
-        target_timestamp = datetime.timestamp(now + timedelta(minutes=30))
+        target_timestamp = datetime.timestamp(now + timedelta(minutes=15))
         if target_timestamp > exp_timestamp:
             access_token = create_access_token(identity=get_jwt_identity())
             set_access_cookies(response, access_token)
@@ -36,8 +37,8 @@ def refresh_tokens(response):
 @jwt_required(optional=True)
 def home():
     """
-        LIVE
-        Check to see current role and permissions of logged in user.
+        DONE
+        Check to see current role of logged in user.
         GET /
 
         Expected on success: Response with suitable msg and role attributes.
@@ -48,6 +49,7 @@ def home():
     
     return jsonify(msg = "Hello anonymous person!", role = "anon")
 
+# All the role based rules imported and registered here!
 from api.blueprints.anon import anon_routes
 from api.blueprints.admin import admin_routes
 from api.blueprints.user import user_routes
