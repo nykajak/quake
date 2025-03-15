@@ -9,7 +9,7 @@ anon_routes = Blueprint('anon_routes', __name__)
 @anon_routes.post("/login")
 def login():
     """
-        LIVE
+        DONE
         Login for users and admin
         POST /login
 
@@ -42,7 +42,7 @@ def login():
 @anon_routes.post("/logout")
 def logout():
     """
-        LIVE
+        DONE
         Logout currently logged in user or admin
         POST /logout
         
@@ -55,7 +55,7 @@ def logout():
 @anon_routes.post("/register")
 def register():
     """
-        LIVE
+        DONE
         Register for users and admin
         POST /register
         
