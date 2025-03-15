@@ -14,7 +14,7 @@ admin_enrolled_routes = Blueprint('admin_enrolled_routes', __name__)
 @admin_required
 def see_requests():
     """
-        LIVE, STABLE
+        DONE
         See all pending requests for enrollment.
         GET /admin/enrolled/requests
 
@@ -49,7 +49,7 @@ def see_requests():
 @admin_required
 def see_enrolled(sid):
     """
-        LIVE
+        DONE
         See all students enrolled for subject.
         POST /admin/enrolled/subjects/:sid
 
@@ -87,7 +87,7 @@ def see_enrolled(sid):
 @admin_required
 def add_user_to_subject(uid,sid):
     """
-        LIVE, STABLE
+        DONE
         Enroll user in subject.
         POST /admin/enrolled/users/:id/subjects/:sid
 
@@ -95,7 +95,7 @@ def add_user_to_subject(uid,sid):
         Expected to be handled by frontend:
             404 - No such user/subject
             400 - No such request
-            400 - Database error
+            500 - Database error
             200 - Already enrolled!
     """
 
@@ -122,7 +122,7 @@ def add_user_to_subject(uid,sid):
         
         except Exception as e:
             print(e)
-            return jsonify(msg = "Database error!"), 400
+            return jsonify(msg = "Database error!"), 500
         
     return jsonify(msg="No such user or subject found!"), 404
 
@@ -131,7 +131,7 @@ def add_user_to_subject(uid,sid):
 @admin_required
 def remove_user_from_subject(uid,sid):
     """
-        LIVE, STABLE
+        DONE
         Un-enroll user in subject.
         DELETE /admin/enrolled/users/:id/subjects/:sid
 
@@ -139,7 +139,7 @@ def remove_user_from_subject(uid,sid):
         Expected to be handled by frontend:
             404 - No such user/subject
             200 - User already not enrolled
-            400 - Database error
+            500 - Database error
     """
 
     r = Requested.query.filter(Requested.user_id == uid, Requested.subject_id == sid).scalar()
@@ -162,7 +162,7 @@ def remove_user_from_subject(uid,sid):
         
         except Exception as e:
             print(e)
-            return jsonify(msg = "Database error!"), 400
+            return jsonify(msg = "Database error!"), 500
         
     return jsonify(msg = "No such user or subject found!"), 400
 
