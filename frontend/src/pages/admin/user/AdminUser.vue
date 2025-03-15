@@ -6,6 +6,8 @@
 
     import UserCard from './components/UserCard.vue';
     import Loader from '@/components/Loader.vue';
+    import NavButton from '@/components/NavButton.vue';
+    import { RouterLink } from 'vue-router';
 
     const props = defineProps(['uid']);
     
@@ -46,14 +48,12 @@
                 <div class="d-flex flex-column w-100 align-items-center">
                     <div class="subject-info" v-for="subject in user.subjects">
                         <div>
-                            <h5 class="subject-heading">{{ subject.name }}</h5>
+                            <RouterLink :to="`/admin/subjects/${subject.id}`">
+                                <h5 class="subject-heading">{{ subject.name }}</h5>
+                            </RouterLink>
                         </div>
                         <div>
-                            <h5>
-                                <button class="dropdown">	
-                                    &#9656;
-                                </button>
-                            </h5>
+                            <NavButton :url="`${props.uid}/subjects/${subject.id}`" color="primary" text="See overview!"/>
                         </div>
                     </div>
                 </div>
@@ -91,7 +91,7 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     padding: 1em;
     width: 90%;
     border-bottom: 1px solid light-dark(var(--dark-color),var(--light-color));
@@ -112,7 +112,7 @@
     padding-right: 0.3em;
 }
 .heading{
-    color: var(--secondary-color);
+    color: light-dark(var(--dark-color), var(--light-color));
 }
 .dropdown{
     display: flex;

@@ -2,6 +2,7 @@
 import { defineProps } from 'vue';
 import { RouterLink } from 'vue-router';
 const props = defineProps(['user','active']);
+import NavButton from '@/components/NavButton.vue';
 </script>
 
 <template>
@@ -10,7 +11,7 @@ const props = defineProps(['user','active']);
             <div class="profile-div">
     
             </div>
-    
+
             <div class="info-div">
                 <h1 v-if="active == true">
                     <RouterLink :to="'/admin/users/'+user.id">
@@ -21,6 +22,10 @@ const props = defineProps(['user','active']);
                     {{ props.user.name }}
                 </h1>
                 <div class="email-div">{{props.user.email}}</div>
+            </div>
+
+            <div class="mt-1">
+                <NavButton color="primary" text="See Responses" :url="`${props.user.id}/responses`"/>
             </div>
         </div>
     </div>
