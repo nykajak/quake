@@ -1,8 +1,9 @@
 from api import app,db,bcrypt,jwt
 from api.models import *
 from flask import request, jsonify
-from flask_jwt_extended import jwt_required,current_user
+from flask_jwt_extended import jwt_required,current_user,get_jwt,create_access_token,get_jwt_identity,set_access_cookies
 from sqlalchemy.exc import IntegrityError
+from datetime import datetime,timedelta
 
 @jwt.user_lookup_loader
 def user_lookup_callback(_jwt_header, jwt_data):
@@ -15,6 +16,21 @@ def page_not_found(e):
     return resp,404
 
 # Optionally add error handler for 401 - unauthorised errors
+
+@app.after_request
+def refresh_tokens(response):
+    try:
+        exp_timestamp = get_jwt()["exp"]
+        now = datetime.now()
+
+        target_timestamp = datetime.timestamp(now + timedelta(minutes=30))
+        if target_timestamp > exp_timestamp:
+            access_token = create_access_token(identity=get_jwt_identity())
+            set_access_cookies(response, access_token)
+        return response
+
+    except (RuntimeError, KeyError):
+        return response
 
 @app.get("/")
 @jwt_required(optional=True)
