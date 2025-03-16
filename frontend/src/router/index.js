@@ -49,10 +49,16 @@ import AdminQuestionResponses from '@/pages/admin/response/AdminQuestionResponse
 import AdminSubjectScore from '@/pages/admin/scores/AdminSubjectScore.vue'
 import AdminChapterScore from '@/pages/admin/scores/AdminChapterScore.vue'
 import AdminQuizScore from '@/pages/admin/scores/AdminQuizScore.vue'
+import Test from '@/pages/Test.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    {
+      name: "test",
+      path: "/test",
+      component: Test
+    },
     {
       name: "home",
       path: "/",
