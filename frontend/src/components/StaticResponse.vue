@@ -27,10 +27,13 @@
                 </button>
             </div>
 
-            <div>
+            <div v-if="props.response.dated">
                 {{ props.response.dated.day }}/{{ props.response.dated.month }}/{{ props.response.dated.year }}
                 at
                 {{ props.response.dated.hour }}:{{ props.response.dated.minute }}
+            </div>
+            <div class="not-attempted" v-else>
+                Not Attempted!
             </div>
         </div>
         <StaticQuestion :description="props.response.question.description"/>
@@ -53,5 +56,9 @@
     color: var(--light-color);
     padding-left: 1em;
     padding-right: 1em;
+}
+
+.not-attempted{
+    color: var(--error-color);
 }
 </style>

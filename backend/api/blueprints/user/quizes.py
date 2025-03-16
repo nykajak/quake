@@ -10,23 +10,35 @@ user_quiz_routes = Blueprint('user_quiz_routes', __name__)
 @user_required
 def user_questions(sid,cid,qid):
     # TO DO - results could be paginated?
+    user = get_current_user()
     quiz = Quiz.query.filter(Quiz.id == qid).scalar()
     if quiz is None:
         return jsonify(msg = "No such quiz found!"), 400
     
     current_datetime = datetime.datetime.now()
 
-    # if (current_datetime > quiz.dated + datetime.timedelta(minutes=quiz.duration)):
-    #     return jsonify(msg = "Quiz attempt time expired!"), 400
     
     if (current_datetime < quiz.dated):
         return jsonify(msg = "Quiz has not started!"), 400
     
-    quiz = Quiz.query.filter(Quiz.id == qid).scalar()
-    remaining_time = quiz.dated + datetime.timedelta(minutes = quiz.duration) - datetime.datetime.now()
-    
-    seconds = int(remaining_time.total_seconds())
-    return jsonify(payload = [x.serialise(required=("unsafe")) for x in quiz.questions], quiz = quiz.serialise(), time = seconds)
+    if (current_datetime < quiz.dated + datetime.timedelta(minutes=quiz.duration)):
+        return jsonify(payload = [{"question":x.serialise(required=("unsafe"))} for x in quiz.questions], quiz = quiz.serialise())
+
+    payload = []
+    query = quiz.questions
+    for question in query:
+        temp_dict = {}
+
+        response = question.responses.filter(Response.user_id == user.id).all()
+        if len(response):
+            temp_dict = response[0].serialise()
+        else:
+            temp_dict = {"marked": -1}
+        temp_dict["question"] = question.serialise()
+
+        payload.append(temp_dict)
+
+    return jsonify(payload = payload, quiz = quiz.serialise())
 
 
 @user_quiz_routes.get("/<qid>")
