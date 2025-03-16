@@ -1,12 +1,16 @@
 <script setup>
 
 import { api } from '@/api';
+import { useRouter } from 'vue-router';
 
 const props = defineProps(['sid','cid'])
+const router = useRouter()
 
 async function createQuiz(e){
     let res = await api.post(`/admin/subjects/${props.sid}/chapters/${props.cid}/quizes/`,new FormData(e.target));
-    return res.data
+    router.push({
+        'path': `/admin/subjects/${props.sid}/chapters/${props.cid}/quizes/${res.data.payload}`
+    })
 }
 
 </script>

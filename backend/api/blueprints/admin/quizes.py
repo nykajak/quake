@@ -317,6 +317,6 @@ def add_quiz(sid,cid):
         q = Quiz(chapter_id = cid, dated = x, duration = int(duration), description = description)
         db.session.add(q)
         db.session.commit()
-        return jsonify(msg="Quiz added!"),200
+        return jsonify(msg="Quiz added!", payload = q.id),200
     
     return jsonify(msg="Subject or chapter not found!"),400

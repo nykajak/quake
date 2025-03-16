@@ -37,7 +37,9 @@ fetchQuiz().then(data => {
 
 async function editQuiz(e){
     let res = await api.put(`/admin/subjects/${props.sid}/chapters/${props.cid}/quizes/${props.qid}`,new FormData(e.target));
-    return res.data
+    router.push({
+        'path': `/admin/subjects/${props.sid}/chapters/${props.cid}/quizes/${props.qid}`
+    })
 }
 
 </script>
