@@ -30,11 +30,6 @@ fetchQuestions()
 <template>
     <div class="d-flex flex-column align-items-center w-100">
         <div class="d-flex flex-column align-items-center w-100">
-            <h3>Questions</h3>
-            <div class="option-div">
-                <NavButton text="Modify questions" :url="`${props.qid}/search`" color="primary"/>
-                <NavButton text="View responses" :url="`${props.qid}/responses`" color="secondary"/>
-            </div>
             
             <div class="d-flex gap-2 align-items-center">
                 Questions per page: <PerPage/>
