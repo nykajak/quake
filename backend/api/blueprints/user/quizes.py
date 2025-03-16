@@ -2,6 +2,7 @@ from flask import Blueprint,jsonify,request
 from flask_jwt_extended import jwt_required,get_current_user
 from api.models import *
 from api.blueprints.user import user_required
+from api.blueprints.pagination import pagination_validation
 
 user_quiz_routes = Blueprint('user_quiz_routes', __name__)
 
@@ -9,7 +10,17 @@ user_quiz_routes = Blueprint('user_quiz_routes', __name__)
 @jwt_required()
 @user_required
 def user_questions(sid,cid,qid):
-    # TO DO - results could be paginated?
+    
+    page = request.args.get("page",1)
+    per_page = request.args.get("per_page",5)
+    
+    return_val,validation = pagination_validation(page,per_page)
+    if validation != 200:
+        return validation
+    
+    page, per_page = return_val
+    MAX_QUESTIONS_PER_PAGE = 10
+
     user = get_current_user()
     quiz = Quiz.query.filter(Quiz.id == qid).scalar()
     if quiz is None:
@@ -25,7 +36,7 @@ def user_questions(sid,cid,qid):
         return jsonify(payload = [{"question":x.serialise(required=("unsafe"))} for x in quiz.questions], quiz = quiz.serialise())
 
     payload = []
-    query = quiz.questions
+    query = quiz.questions.paginate(page = page, per_page = per_page, max_per_page = MAX_QUESTIONS_PER_PAGE)
     for question in query:
         temp_dict = {}
 
@@ -38,7 +49,7 @@ def user_questions(sid,cid,qid):
 
         payload.append(temp_dict)
 
-    return jsonify(payload = payload, quiz = quiz.serialise())
+    return jsonify(payload = payload, quiz = quiz.serialise(), pages = query.pages)
 
 
 @user_quiz_routes.get("/<qid>")
