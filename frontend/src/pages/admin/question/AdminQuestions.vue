@@ -5,6 +5,7 @@ import { ref } from 'vue';
 import { RouterLink, useRoute } from 'vue-router';
 import Pagination from '@/components/Pagination.vue';
 import PerPage from '@/components/PerPage.vue';
+import NavButton from '@/components/NavButton.vue';
 
 import StaticQuestion from '@/components/StaticQuestion.vue';
 
@@ -28,7 +29,10 @@ fetchQuestions()
     <div v-if="questions" class="d-flex flex-column flex-grow-1 pt-4">
         <div class="d-flex flex-column align-items-center gap-4">
             <div class="d-flex align-items-center gap-2">
-                Entries per page: <PerPage/>
+                Questions per page: <PerPage/>
+            </div>
+            <div>
+                <NavButton url="questions/add" color="primary" text="Add new question"/>
             </div>
             <div class="d-flex p-2 w-100 justify-content-center" v-for="question in questions">
                 <RouterLink class="w-100" :to="`/admin/subjects/${props.sid}/chapters/${props.cid}/questions/${question.id}`">
