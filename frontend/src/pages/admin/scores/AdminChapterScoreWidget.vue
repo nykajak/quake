@@ -8,7 +8,7 @@
     import { ref } from 'vue'
     import { api } from '@/api'
 
-    const props = defineProps(['uid','sid','cid'])
+    const props = defineProps(['uid','sid','cid','active'])
 
     const correctResponses = ref(null);
     const wrongResponses = ref(null);
@@ -72,11 +72,15 @@
 <template>
     <div v-if="chapter" class="d-flex flex-column w-100 justify-content-between align-items-center p-5">
         <h2 class="d-flex flex-grow-1 mb-3">
-            <RouterLink :to="`${props.sid}/chapters/${chapter.id}`">
+            <RouterLink v-if="props.active" :to="`${props.sid}/chapters/${chapter.id}`">
                 {{chapter.name}}
             </RouterLink>
+
+            <template v-else>
+                {{chapter.name}}
+            </template>
         </h2>
-        <div class="d-flex w-50 justify-content-between">
+        <div class="d-flex w-75 justify-content-between">
             <Accuracy :correct-responses="correctResponses" :wrong-responses="wrongResponses" :color1="color1" :color2="color2"/>
             <Coverage :attempted-questions="attemptedQuestions" :unattempted-questions="unattemptedQuestions" :color1="color1" :color2="color2" />
         </div>

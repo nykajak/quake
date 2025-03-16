@@ -66,7 +66,7 @@
 
         <div v-if="subject.chapters" class="chapters">
             <div class="d-flex flex-column align-items-start m-2 w-100" v-for="chapter in subject.chapters">
-                <AdminChapterScoreWidget :key="chapter.id" :uid='props.uid' :sid='props.sid' :cid='chapter.id'/>
+                <AdminChapterScoreWidget :active="true" :key="chapter.id" :uid='props.uid' :sid='props.sid' :cid='chapter.id'/>
             </div>
         </div>
     
