@@ -6,6 +6,7 @@ import { useRouter } from 'vue-router';
 
 import StaticOptions from '../../../components/StaticOptions.vue';
 import StaticQuestion from '../../../components/StaticQuestion.vue';
+import NavButton from '@/components/NavButton.vue';
 
 const router = useRouter();
 
@@ -28,13 +29,8 @@ fetchQuestion().then((data)=>{
         <StaticOptions :question="question"/>
 
         <div class="d-flex justify-content-center mt-4">
-            <button id="edit-button" @click="router.push(
-                {
-                    'path': `/admin/subjects/${props.sid}/chapters/${props.cid}/questions/${props.qid}/edit`
-                }
-            )">
-                Edit Question
-            </button>
+            <NavButton :url="`${props.qid}/edit`" text="Edit Question" color="primary"/>
+            <NavButton :url="`${props.qid}/responses`" text="See Responses" color="secondary"/>
         </div>
     </div>
 
