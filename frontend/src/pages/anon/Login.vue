@@ -6,10 +6,11 @@ import { api } from '@/api';
 
 import AnonHeader from './components/AnonHeader.vue';
 import BrandImageDiv from './components/BrandImageDiv.vue';
+import Message from '@/components/Message.vue';
 
 const router = useRouter()
 const LoginMsg = ref("");
-const LoginStatus = ref(0);
+const LoginStatus = ref(-1);
 
 async function validateForm(e){
     try{
@@ -25,6 +26,7 @@ async function validateForm(e){
         }
     }
     catch(err){
+        console.log(err)
         LoginMsg.value = err.response.data.msg;
         LoginStatus.value = 0;
     }
@@ -34,6 +36,13 @@ async function validateForm(e){
 
 <template>
     <AnonHeader></AnonHeader>
+
+    <Message v-if="LoginStatus === 0" level="danger" :hide-function="()=>{
+        LoginStatus = -1; 
+        LoginMsg = ``;
+    }">
+        {{ LoginMsg }}
+    </Message>
     
     <div class="content">
         <div class="content-container">

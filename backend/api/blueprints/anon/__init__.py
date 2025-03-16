@@ -37,7 +37,7 @@ def login():
         set_access_cookies(response,access_token)
         return response,200
 
-    return jsonify(msg="Authentication failed!"),401
+    return jsonify(msg="Authentication failed!"),400
 
 @anon_routes.post("/logout")
 def logout():
@@ -68,7 +68,7 @@ def register():
     confirm_password = request.form.get("confirm",None)
 
     if username is None or password is None or email is None or confirm_password is None:
-        return jsonify(msg="Malformed request: Check if all fields included"),401
+        return jsonify(msg="Malformed request: Check if all fields included"),400
     
     if password != confirm_password:
         return jsonify(msg="Password and confirm pasword does not match!"),400

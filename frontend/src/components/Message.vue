@@ -15,13 +15,16 @@
 </script>
 
 <template>
-    <div class="d-flex justify-content-center">
+    <div class="containerMessage">
         <div :class="['outerMessage',props.level]">
             <div class="innerMessage">
                 <slot></slot>
             </div>
             <div class="closeButtonDiv">
-                <button class="closeButton" @click="props.hideFunction">
+                <button class="closeButton" @click="()=>{
+                    time = 5;
+                    props.hideFunction()
+                }">
                     x   
                 </button>
             </div>
@@ -30,6 +33,13 @@
 </template>
 
 <style>
+.containerMessage{
+    position: absolute;
+    top:5px;
+    left: 0;
+    justify-content: center;
+}
+
 .outerMessage{
     display: flex;
     width: fit-content;
@@ -39,7 +49,6 @@
     margin: 0.2em;
     border-radius: 10px;
     gap: 1em;
-    z-index: 2;
 }
 
 .info{
@@ -60,6 +69,7 @@
     flex-grow: 1;
     justify-content: center;
     color: var(--light-color);
+    z-index: 2;
 }
 
 .closeButtonDiv{
@@ -67,6 +77,7 @@
     align-items: center;
     justify-content: center;
     color: var(--light-color);
+    z-index: 2;
 }
 
 
