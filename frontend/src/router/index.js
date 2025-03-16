@@ -48,6 +48,7 @@ import AdminUserResponses from '@/pages/admin/response/AdminUserResponses.vue'
 import AdminQuestionResponses from '@/pages/admin/response/AdminQuestionResponses.vue'
 import AdminSubjectScore from '@/pages/admin/scores/AdminSubjectScore.vue'
 import AdminChapterScore from '@/pages/admin/scores/AdminChapterScore.vue'
+import AdminQuizScore from '@/pages/admin/scores/AdminQuizScore.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -159,6 +160,11 @@ const router = createRouter({
         {
           path: "users/:uid/subjects/:sid/chapters/:cid",
           component: AdminChapterScore,
+          props: true,
+        },
+        {
+          path: "users/:uid/subjects/:sid/chapters/:cid/quizes/:qid",
+          component: AdminQuizScore,
           props: true,
         },
         {

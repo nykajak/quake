@@ -29,19 +29,19 @@ def admin_view_responses():
     MAX_RESPONSES_PER_PAGE = 5
 
     r = Response.query
-    params = ['user','quiz','question']
+    params = set(['user','quiz','question'])
 
     if user_id is not None:
         r = r.filter(Response.user_id == user_id)
-        del params[0]
+        params.remove('user')
 
     if quiz_id is not None:
         r = r.filter(Response.quiz_id == quiz_id)
-        del params[1]
+        params.remove('quiz')
 
     if question_id is not None:
         r = r.filter(Response.question_id == question_id)
-        del params[2]
+        params.remove('question')
 
     r = r.paginate(page = page, per_page = per_page, max_per_page = MAX_RESPONSES_PER_PAGE)
     return jsonify(payload = [x.serialise(required = params) for x in r], pages = r.pages), 200
