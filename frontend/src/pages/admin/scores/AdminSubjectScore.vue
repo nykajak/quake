@@ -37,12 +37,10 @@
             res = await api.get(`/admin/scores/users/${props.uid}/subjects/${props.sid}`)
             correctResponses.value = res.data.correct
             wrongResponses.value = res.data.count - res.data.correct
-            console.log(res.data)
 
             res = await api.get(`/admin/scores/users/${props.uid}/subjects/${props.sid}/coverage`)
             attemptedQuestions.value = res.data.attempted
             unattemptedQuestions.value = res.data.count - res.data.attempted
-            console.log(res.data)
         }
         catch(err){
             console.log(err);
