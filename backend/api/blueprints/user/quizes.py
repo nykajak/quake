@@ -40,7 +40,7 @@ def user_questions(sid,cid,qid):
     for question in query:
         temp_dict = {}
 
-        response = question.responses.filter(Response.user_id == user.id).all()
+        response = question.responses.filter(Response.user_id == user.id,Response.quiz_id == quiz.id).all()
         if len(response):
             temp_dict = response[0].serialise()
         else:
