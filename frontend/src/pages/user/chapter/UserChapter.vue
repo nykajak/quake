@@ -77,7 +77,7 @@
                 <div>
                     <h4>
                         <RouterLink :to="`/user/subjects/${props.sid}/chapters/${props.cid}/quizes/${quiz.id}`">
-                            {{quiz.description}}
+                            {{quiz.description ?? 'No description given!'}}
                         </RouterLink>
                     </h4>
                 </div>
