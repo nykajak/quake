@@ -16,8 +16,8 @@ def user_questions(sid,cid,qid):
     
     current_datetime = datetime.datetime.now()
 
-    if (current_datetime > quiz.dated + datetime.timedelta(minutes=quiz.duration)):
-        return jsonify(msg = "Quiz attempt time expired!"), 400
+    # if (current_datetime > quiz.dated + datetime.timedelta(minutes=quiz.duration)):
+    #     return jsonify(msg = "Quiz attempt time expired!"), 400
     
     if (current_datetime < quiz.dated):
         return jsonify(msg = "Quiz has not started!"), 400
