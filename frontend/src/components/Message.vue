@@ -36,7 +36,8 @@
 .containerMessage{
     position: absolute;
     top:5px;
-    left: 0;
+    left: 50%;
+    transform: translate(-50%,0%);
     justify-content: center;
 }
 
