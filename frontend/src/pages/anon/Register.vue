@@ -6,6 +6,7 @@ import { api } from '@/api';
 
 import AnonHeader from './components/AnonHeader.vue';
 import BrandImageDiv from './components/BrandImageDiv.vue';
+import Message from '@/components/Message.vue';
 
 const router = useRouter()
 const RegisterMsg = ref("");
@@ -29,6 +30,13 @@ async function validateForm(e){
 
 <template>
     <AnonHeader></AnonHeader>
+
+    <Message v-if="RegisterStatus === 0" level="danger" :hide-function="()=>{
+        RegisterStatus = -1; 
+        RegisterMsg = ``;
+    }">
+        {{ RegisterMsg }}
+    </Message>
 
     <div class="content-container">
         <BrandImageDiv/>
@@ -59,11 +67,6 @@ async function validateForm(e){
                 <div :class="{'form-div':true, 'form-error-div':RegisterStatus === 0 && RegisterMsg !== '', 'form-success-div':RegisterStatus === 1}">
                     <input type="password" name="confirm" placeholder="Confirm password" required>
                 </div>
-        
-                <div v-if="RegisterMsg!==''" :class="['form-div',RegisterStatus == 0 ? 'error-div' : 'success-div']">
-                    {{RegisterMsg}}
-                </div>
-        
         
                 <div class="form-div">
                     <button type="submit">Register</button>
