@@ -28,9 +28,7 @@
         }
         catch(err){
             console.log(err);
-            router.push({
-                "path": `/user/subjects/${props.sid}`
-            });
+            router.go(-1);
         }
     }
     
