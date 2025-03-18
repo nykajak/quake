@@ -1,8 +1,9 @@
 <script setup>
     import { ref } from 'vue';
     import { api } from '@/api';
-    import { RouterLink } from 'vue-router';
+
     import NavButton from '@/components/NavButton.vue';
+    import Loader from '@/components/Loader.vue';
 
     const props = defineProps(['sid','cid','qid'])
     const quiz = ref(null);
@@ -62,6 +63,8 @@
             </div>
         </div>
     </div>
+
+    <Loader v-else/>
 </template>
 
 <style scoped>

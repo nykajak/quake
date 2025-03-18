@@ -1,16 +1,16 @@
 <script setup>
 
-import router from '@/router';
 import { ref, onMounted } from 'vue';
 import { api } from '@/api';
-import { useRoute } from 'vue-router';
+import { useRoute,useRouter } from 'vue-router';
 
 import StaticOption from '@/components/StaticOption.vue';
 import StaticQuestion from '@/components/StaticQuestion.vue';
-import QuizNavigation from './QuizNavigation.vue';
+import QuizNavigation from './components/QuizNavigation.vue';
 import Loader from '@/components/Loader.vue';
 
 const route = useRoute();
+const router = useRouter();
 const props = defineProps(['sid','cid','quiz_id','question_id']);
 
 const correct = ref(-2);
@@ -44,6 +44,7 @@ async function submitResponse(){
     }
     catch(err){
         console.log(err)
+        router.go(-1);
     }
 }
 
@@ -62,7 +63,7 @@ let interval_id = setInterval(() => {
 </script>
 
 <template>
-    <template v-if="time">
+    <template v-if="time > 0">
         <div class="d-flex justify-content-end p-2">
             {{formatTime(time)}}
         </div>
