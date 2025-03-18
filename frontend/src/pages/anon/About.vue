@@ -18,7 +18,7 @@
             <div class="question">
                 <h1 class="question-text">Q. What does Quake have to offer?</h1>
                 <p>
-                    It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).
+                    Quake is a novel solution for applicants to give mock quizes for a plethora of subjects to assess their readiness and point out areas requiring improvement for competitive examinations. Multiple choice question based quizes at regular intervals ensure that concepts remain fresh in memory. Quake boasts a carefully curated list of questions as well as instant feedback and reviews for user performance on a quiz by quiz basis. A world of learning awaits you!
                 </p>
             </div>
             <div class="options">
