@@ -10,7 +10,7 @@ import Message from '@/components/Message.vue';
 
 const router = useRouter()
 const RegisterMsg = ref("");
-const RegisterStatus = ref(0);
+const RegisterStatus = ref(-1);
 
 async function validateForm(e){
     try{
