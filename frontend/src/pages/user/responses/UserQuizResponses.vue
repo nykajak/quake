@@ -7,6 +7,7 @@
     import StaticResponse from '@/components/StaticResponse.vue';
     import Pagination from '@/components/Pagination.vue';
     import PerPage from '@/components/PerPage.vue';
+    import Loader from '@/components/Loader.vue';
 
     const props = defineProps(['sid','cid','qid'])
     const route = useRoute();
@@ -24,15 +25,18 @@
 </script>
 
 <template>
-    <div class="d-flex w-100 justify-content-center align-items-center gap-2 mt-2">
-        Number of questions per page: <PerPage/>
-    </div>
-    <div v-if="responses" class="d-flex flex-column flex-grow-1 mt-1">
-        <div v-for="response in responses">
-            <StaticResponse :response="response"/>
+    <template v-if="responses">
+        <div class="d-flex w-100 justify-content-center align-items-center gap-2 mt-2">
+            Number of questions per page: <PerPage/>
         </div>
-        <Pagination :url="route.fullPath" :pages="pages"/>
-    </div>
+        <div class="d-flex flex-column flex-grow-1 mt-1">
+            <div v-for="response in responses">
+                <StaticResponse :response="response"/>
+            </div>
+            <Pagination :url="route.fullPath" :pages="pages"/>
+        </div>
+    </template>
+    <Loader v-else/>
 </template>
 
 <style scoped>
