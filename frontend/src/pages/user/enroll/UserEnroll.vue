@@ -4,7 +4,6 @@ import { api } from '@/api';
 
 const subjects = ref(null);
 const requests = ref(null);
-const reload = ref(0);
 
 async function fetchSubjects(){
     let res = await api.get(`/user/subjects/all`);
@@ -16,8 +15,7 @@ async function fetchRequests(){
     requests.value = res.data.payload;
 }
 
-fetchSubjects()
-fetchRequests()
+Promise.all([fetchSubjects(),fetchRequests()])
 </script>
 
 <template>
@@ -36,8 +34,7 @@ fetchRequests()
                     }
                 }
             );
-            fetchSubjects();
-            fetchRequests()
+            Promise.all([fetchSubjects(),fetchRequests()])
             }">
                 <h3>
                     {{ subject.name }}
