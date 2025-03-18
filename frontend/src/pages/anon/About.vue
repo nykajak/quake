@@ -16,9 +16,12 @@
         
         <div class="content2">
             <div class="question">
-                <h1 class="question-text">Q. What does Quake have to offer?</h1>
+                <h1 class="question-text">What does Quake have to offer?</h1>
                 <p>
-                    Quake is a novel solution for applicants to give mock quizes for a plethora of subjects to assess their readiness and point out areas requiring improvement for competitive examinations. Multiple choice question based quizes at regular intervals ensure that concepts remain fresh in memory. Quake boasts a carefully curated list of questions as well as instant feedback and reviews for user performance on a quiz by quiz basis. A world of learning awaits you!
+                    &nbsp;&nbsp;&nbsp;&nbsp;Quake is a novel solution for applicants to give mock quizes for a plethora of subjects to assess their readiness and point out areas requiring improvement for competitive examinations. Multiple choice question based quizes at regular intervals ensure that concepts remain fresh in memory. 
+                </p>
+                <p>
+                    &nbsp;&nbsp;&nbsp;&nbsp;Quake boasts a carefully curated list of questions as well as instant feedback and reviews for user performance on a quiz by quiz basis. A world of learning awaits you!
                 </p>
             </div>
             <div class="options">
@@ -70,11 +73,11 @@
 
 
 #correct-option{
-    border: 1px solid green;
+    background-color: green;
 }
 
 #correct-text{
-    color: green;
+    color: var(--light-color);
 }
 
 #correct-letter{
@@ -82,7 +85,12 @@
 }
 
 .question-text{
-    font-size: 2.5em;
+    font-size: 2.7em;
+    color: var(--secondary-color);
+}
+
+p{
+    font-size: 1.2em;
 }
 
 .content2{
@@ -108,6 +116,7 @@
     justify-content: flex-start;
     padding: 1em;
     border: 1px solid light-dark(var(--dark-color),var(--light-color));
+    background-color: var(--secondary-color);
     border-radius: 5px;
     margin: 1em 0 0;
 }
@@ -120,7 +129,9 @@
     border-radius: 100%;
     width: 2em;
     height: 2em;
-    border: 1px solid light-dark(var(--dark-color),var(--light-color));
+    background-color: var(--secondary-color);
+    color: var(--light-color);
+    border: 1px solid var(--light-color);
 }
 
 .option-text{
@@ -130,7 +141,7 @@
     padding-left: 1em;
     flex-grow: 1;
     text-align: start;
-    color : light-dark(var(--dark-color), var(--light-color));
+    color: var(--light-color);
 }
 
 </style>
