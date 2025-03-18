@@ -1,6 +1,6 @@
 <script setup>
     import { useRouter, useRoute } from 'vue-router';
-    const props = defineProps(['length','beforeSubmit'])
+    const props = defineProps(['length','beforeSubmit','current'])
     const router = useRouter();
     const route = useRoute();
 </script>
@@ -9,7 +9,7 @@
     <div class="d-flex flex-row flex-wrap justify-content-center align-items-center">
         <div class="d-flex flex-column p-2" v-for="n in length">
             <div>
-                <button class="nav-button" @click="
+                <button :class="props.current == n ? 'current-button': 'nav-button'" @click="
                     beforeSubmit();
                     router.push(
                         {
@@ -31,5 +31,13 @@
     color: var(--light-color);
     border: none;
     border-radius: 5px;
+}
+
+.current-button{
+    width: 2.5em;
+    color: var(--light-color);
+    border: none;
+    border-radius: 5px;
+    background-color: var(--primary-color);
 }
 </style>

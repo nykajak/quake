@@ -107,7 +107,7 @@ let interval_id = setInterval(() => {
             </div>
         </div>
 
-        <QuizNavigation :length="num" :beforeSubmit="submitResponse"/>
+        <QuizNavigation :length="num" :beforeSubmit="submitResponse" :current="props.question_id"/>
     </template>
     <Loader v-else/>
 
