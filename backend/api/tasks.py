@@ -1,9 +1,7 @@
 from celery import Celery
 
-celery = Celery("tasks", backend = "redis://localhost:6379/1", broker="redis://localhost:6379/2")
+app = Celery('tasks', broker='redis://localhost/0', backend='redis://localhost/1')
 
-@celery.task
-def add(a,b):
-    return a + b
-
-result = add.delay(3,2)
+@app.task
+def add(x, y):
+    return x + y
