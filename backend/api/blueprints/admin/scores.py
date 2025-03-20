@@ -70,6 +70,10 @@ def get_score_summary_chapter(uid,sid,cid):
 @admin_required
 def get_score_summary_quiz(uid,sid,cid,qid):
 
+    score = Score.query.filter(Score.user_id == uid, Score.quiz_id == qid).scalar()
+    if score:
+        return jsonify(correct_count = score.correct_count, response_count = score.attempted_count, question_count = score.question_count),200
+
     # Fetch no of questions in a quiz
     question_count_query = Quiz.query.filter(Quiz.id == qid).scalar().questions
     question_count = question_count_query.count()
@@ -83,5 +87,9 @@ def get_score_summary_quiz(uid,sid,cid,qid):
     # Fetch no of correct responses
     response_correct_query = response_count_query.filter(Response.marked == Question.correct)
     correct_count = response_correct_query.count()
+
+    score = Score(user_id = uid, quiz_id = qid, attempted_count = response_count, question_count = question_count, correct_count = correct_count)
+    db.session.add(score)
+    db.session.commit()
     
     return jsonify(correct_count = correct_count, response_count = response_count, question_count = question_count),200
