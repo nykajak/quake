@@ -245,15 +245,12 @@ class Score(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key = True)
     quiz_id = db.Column(db.Integer, db.ForeignKey('quizes.id'), primary_key = True)
     total = db.Column(db.Integer, nullable = False)
-    start_time = db.Column(db.DateTime, nullable = False)
-    end_time = db.Column(db.DateTime, nullable = False)
+    attempted = db.Column(db.Integer, nullable = False)
 
     def serialise(self,required = ()):
         res = {
-            "id": self.id,
             "total": self.total,
-            "start_time": self.start_time,
-            "end_time": self.end_time
+            "attempted": self.attempted
         }
 
         if len(required) == 0:
