@@ -4,6 +4,7 @@
     import Coverage from './components/Coverage.vue'
 
     import { RouterLink } from 'vue-router'
+    import Loader from '@/components/Loader.vue'
 
     import { ref } from 'vue'
     import { api } from '@/api'
@@ -80,6 +81,7 @@
             <Coverage :attempted-questions="attemptedQuestions" :unattempted-questions="unattemptedQuestions" :color1="color1" :color2="color2" />
         </div>
     </div>
+<Loader v-else/>
 </template>
 
 <style scoped>
