@@ -12,7 +12,6 @@
 
     const correctResponses = ref(null);
     const wrongResponses = ref(null);
-
     const attemptedQuestions = ref(null);
     const unattemptedQuestions = ref(null);
 
@@ -50,12 +49,10 @@
         try{
             let res;
             res = await api.get(`/admin/scores/users/${props.uid}/subjects/${props.sid}/chapters/${props.cid}`)
-            correctResponses.value = res.data.correct
-            wrongResponses.value = res.data.count - res.data.correct
-
-            res = await api.get(`/admin/scores/users/${props.uid}/subjects/${props.sid}/chapters/${props.cid}/coverage`)
-            attemptedQuestions.value = res.data.attempted
-            unattemptedQuestions.value = res.data.count - res.data.attempted
+            correctResponses.value = res.data.correct_count
+            wrongResponses.value = res.data.response_count - res.data.correct_count
+            attemptedQuestions.value = res.data.seen_count
+            unattemptedQuestions.value = res.data.question_count - res.data.seen_count
         }
         catch(err){
             console.log(err);

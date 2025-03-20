@@ -244,13 +244,15 @@ class Score(db.Model):
 
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key = True)
     quiz_id = db.Column(db.Integer, db.ForeignKey('quizes.id'), primary_key = True)
-    total = db.Column(db.Integer, nullable = False)
-    attempted = db.Column(db.Integer, nullable = False)
+    correct_count = db.Column(db.Integer, nullable = False)
+    attempted_count = db.Column(db.Integer, nullable = False)
+    question_count = db.Column(db.Integer, nullable = False)
 
     def serialise(self,required = ()):
         res = {
-            "total": self.total,
-            "attempted": self.attempted
+            "correct_count": self.correct_count,
+            "attempted_count": self.attempted_count,
+            "question_count":self.question_count
         }
 
         if len(required) == 0:

@@ -44,6 +44,5 @@ CORS(app,supports_credentials=True)
 db.init_app(app)
 app.app_context().push()
 
-import api.tasks
 import api.routes
 # Rewrite this file to support multiple config types
