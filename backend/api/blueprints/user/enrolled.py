@@ -4,12 +4,17 @@ from api.models import *
 from api.blueprints.user import user_required
 from sqlalchemy.exc import IntegrityError
 
+# Base URL: /user/enrolled
 user_enrolled_routes = Blueprint('user_enrolled_routes', __name__)
 
 @user_enrolled_routes.post("/")
 @jwt_required()
 @user_required
 def enroll_course():
+    """
+        Send request to enroll in subject
+        POST /user/enrolled/
+    """
     user = get_current_user()
     sid = request.form.get("subject_id", None)
 

@@ -20,32 +20,38 @@ Promise.all([fetchSubjects(),fetchRequests()])
 
 <template>
     <div v-if="subjects" class="d-flex flex-column align-items-center mt-4">
-        <h2>
+        <h2 class="heading">
             Send a register request!
         </h2>
         <div class="d-flex flex-column mb-4 align-items-center" v-for="subject in subjects">
-            <button class="subject-button" @click="async () =>{
-                let res = await api.post(`/user/enrolled/`, {
-                    subject_id: subject.id
-                }, 
-                {
-                    headers: {
-                        'Content-Type': 'multipart/form-data'
-                    }
-                }
-            );
-            Promise.all([fetchSubjects(),fetchRequests()])
-            }">
+            <div class="d-flex align-items-center gap-1">
                 <h3>
                     {{ subject.name }}
                 </h3>
-            </button>
-            {{ subject.description }}
+                <button class="subject-button" @click="async () =>{
+                    let res = await api.post(`/user/enrolled/`, {
+                        subject_id: subject.id
+                    }, 
+                    {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    }
+                );
+                Promise.all([fetchSubjects(),fetchRequests()])
+                }">
+                    Enroll
+                </button>
+            </div>
+
+            <div class="description">
+                {{ subject.description ?? 'No description provided!' }}
+            </div>
         </div>
     </div>
 
-    <div v-if="requests" class="d-flex flex-column align-items-center mt-4">
-        <h2>
+    <div v-if="requests" class="d-flex flex-column align-items-center mt-3">
+        <h2 class="heading">
             See pending requests!
         </h2>
 
@@ -54,10 +60,13 @@ Promise.all([fetchSubjects(),fetchRequests()])
         </div>
 
         <div v-else>
-            <div class="d-flex flex-column align-items-center" v-for="subject in requests">
-                <h3 class="mb-3">
+            <div class="d-flex flex-column align-items-center mb-3" v-for="subject in requests">
+                <h3>
                     {{ subject.name }}
                 </h3>
+                <div class="description">
+                    {{ subject.description ?? 'No description provided!' }}
+                </div>
             </div>
         </div>
     </div>
@@ -65,8 +74,19 @@ Promise.all([fetchSubjects(),fetchRequests()])
 
 <style scoped>
 .subject-button{
-    background-color: light-dark(var(--light-color),var(--dark-color));
-    color: var(--secondary-color);
+    display: flex;
+    background-color: var(--primary-color);
+    color: var(--light-color);
     border: none;
+    height: 1.5em;
+    align-items: center;
+}
+
+.heading{
+    color: var(--secondary-color);
+}
+
+.description{
+    color: var(--contrast-color);
 }
 </style>
