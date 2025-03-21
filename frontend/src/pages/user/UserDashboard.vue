@@ -5,6 +5,8 @@ import { RouterView } from 'vue-router';
 
 import UserHeader from './components/UserHeader.vue';
 import Loader from '@/components/Loader.vue';
+import UserCard from '../admin/user/components/UserCard.vue';
+import NavButton from '@/components/NavButton.vue';
 
 import { api } from '@/api';
 
@@ -34,7 +36,10 @@ fetchUser();
     
         <template v-else>
             <div class="d-flex flex-column flex-grow-1 align-items-center mt-3">
-                <h3>Welcome back {{ user.name }}!</h3>
+                <UserCard :user="user"/>
+                <h3>Welcome back!</h3>
+                <br>
+                <NavButton url="/user/subjects" text="Get Started!" color="primary"/>
             </div>
         </template>
     </template>
