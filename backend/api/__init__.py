@@ -6,7 +6,7 @@ from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager
 from celery import Celery
 from api.database import db
-from api.workers import celery, ContextTask
+from api import workers
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 
@@ -27,22 +27,27 @@ app.config['MAIL_USERNAME'] = 'f4e30739ab6564'
 app.config['MAIL_PASSWORD'] = '39722368c4cadc'
 app.config['MAIL_DEFAULT_SENDER'] = 'your_email@example.com'
 
-#
+# Celery settings
 app.config['CELERY_BROKER_URL'] = 'redis://localhost:6379/1'
 app.config['CELERY_RESULT_BACKEND'] = 'redis://localhost:6379/2'
 
 jwt = JWTManager(app)
 bcrypt = Bcrypt(app)
 mail = Mail(app)
+celery = workers.celery
 celery.conf.update(
     broker_url = app.config['CELERY_BROKER_URL'],
-    result_backend = app.config['CELERY_RESULT_BACKEND']
+    result_backend = app.config['CELERY_RESULT_BACKEND'],
+    timezone = 'Asia/Kolkata',
+    enable_utc = False
 )
-celery.Task = ContextTask
+
+celery.Task = workers.ContextTask
 
 CORS(app,supports_credentials=True)
 db.init_app(app)
 app.app_context().push()
 
 import api.routes
+import api.tasks
 # Rewrite this file to support multiple config types

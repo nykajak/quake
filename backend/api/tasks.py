@@ -7,24 +7,10 @@ from api.workers import celery
 from datetime import datetime, timedelta
 from celery.schedules import crontab
 
-@celery.on_after_configure.connect
-def setup_periodic_tasks(sender, **kwargs):
-    sender.add_periodic_task(
-        30,
-        add.s(3,2)
-    )
-
-@celery.task()
-def add(a,b):
-    return a + b
-
 @celery.task()
 def sendEmail():
-    # today = datetime.now()
-    # tomorrow = today + timedelta(days = 1)
-
-    today = datetime(day=1,month=1,year=2025)
-    tomorrow = datetime(day=1,month=2,year=2025)
+    today = datetime.now()
+    tomorrow = today + timedelta(days = 1)
 
     query = db.session.query(Quiz,Chapter,Subject).join(Chapter, Chapter.id == Quiz.chapter_id).join(Subject, Subject.id == Chapter.subject_id)
     query = query.filter(Quiz.dated < tomorrow, Quiz.dated > today)
@@ -50,7 +36,8 @@ def sendEmail():
             msg_str = "\n".join(msg)
             msg = Message("Daily reminder from Quake",sender="jakyn@gmail.com",recipients=[user.email])
             msg.body = msg_str
-            mail.send(msg)
+            print(msg)
+            # mail.send(msg)
 
 @celery.task()
 def make_summary():
@@ -109,3 +96,15 @@ def make_summary():
         msg = Message("Daily reminder from Quake",sender="jakyn@gmail.com",recipients=[user.email])
         msg.body = msg_str
         mail.send(msg)
+
+@celery.on_after_finalize.connect
+def setup_periodic_tasks(sender, **kwargs):
+    sender.add_periodic_task(
+        crontab(hour=0, minute=1),
+        sendEmail.s(),
+    )
+
+    sender.add_periodic_task(
+        crontab(day_of_month=1),
+        make_summary.s()
+    )
