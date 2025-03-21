@@ -59,15 +59,21 @@
                 <h1>
                     {{chapter.name}}
                 </h1>
+                <p class="text-center">
+                    {{chapter.description}}
+                </p>
             </div>
         </div>
 
-        <div class="d-flex w-100 justify-content-center gap-2">
+        <div class="d-flex w-100 justify-content-center gap-2 mt-2">
+            <h4>
+                Showing all {{ filter }} quizes
+            </h4>
+        </div>
+
+        <div class="d-flex w-100 justify-content-center gap-2 mt-2">
             Past: <input type="radio" v-model="filter" value="past">
             Pending: <input type="radio" v-model="filter" value="pending">
-        </div>
-        <div class="d-flex w-100 align-items-center justify-content-center mb-2 gap-1 mt-2">
-            Quizes per page: <PerPage/>
         </div>
 
         <div class="results-div">
@@ -87,7 +93,12 @@
                     </p>
                 </div>
             </div>
-            <Pagination :url="route.fullPath" :pages="pages"/>
+        </div>
+        <div class="d-flex justify-content-center gap-2">
+            <PerPage/>
+            <div>
+                <Pagination :url="route.fullPath" :pages="pages"/>
+            </div>
         </div>
     </div>
 
@@ -105,6 +116,7 @@
 .results-div{
     display: flex;
     flex-direction: column;
+    flex-grow:1;
     margin-top:1em;
     gap:1em;
 }

@@ -5,13 +5,17 @@ from api.blueprints.user import user_required
 from datetime import datetime
 from api.blueprints.pagination import pagination_validation
 
+# Base URL: /user/subjects/<sid>/chapters
 user_chapter_routes = Blueprint('user_chapter_routes', __name__)
 
 @user_chapter_routes.get("/<cid>")
 @jwt_required()
 @user_required
 def user_specific_chapter(sid,cid):
-
+    """
+        Fetch all quizes associated with chapter
+        GET /user/subjects/<sid>/chapters/<cid>
+    """
     filter_ = request.args.get("filter", "pending")
     page = request.args.get("page", 1)
     per_page = request.args.get("per_page", 3)

@@ -21,8 +21,8 @@ watch(selected, (old,_new) => {
 </script>
 
 <template>
-    <div class="d-flex">
-        <select v-model="selected" class="w-100 p-1">
+    <div class="d-flex align-items-center">
+        <select v-model="selected" class="dropdown-style">
             <option>1</option>
             <option>3</option>
             <option>5</option>
@@ -32,4 +32,10 @@ watch(selected, (old,_new) => {
 </template>
 
 <style scoped>
+    .dropdown-style{
+        width: 100%;
+        padding: 0.2em;
+        height: 2em;
+        text-align: center;
+    }
 </style>
