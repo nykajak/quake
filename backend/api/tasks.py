@@ -3,10 +3,22 @@ from flask_mail import Message
 from flask import render_template_string
 from api import db,mail
 from api.models import *
-# from api.workers import celery
+from api.workers import celery
 from datetime import datetime, timedelta
+from celery.schedules import crontab
 
-# @celery.task()
+@celery.on_after_configure.connect
+def setup_periodic_tasks(sender, **kwargs):
+    sender.add_periodic_task(
+        30,
+        add.s(3,2)
+    )
+
+@celery.task()
+def add(a,b):
+    return a + b
+
+@celery.task()
 def sendEmail():
     # today = datetime.now()
     # tomorrow = today + timedelta(days = 1)
@@ -40,6 +52,7 @@ def sendEmail():
             msg.body = msg_str
             mail.send(msg)
 
+@celery.task()
 def make_summary():
     """
        For each user, create a report of summary of quiz attempts within last month
@@ -96,6 +109,3 @@ def make_summary():
         msg = Message("Daily reminder from Quake",sender="jakyn@gmail.com",recipients=[user.email])
         msg.body = msg_str
         mail.send(msg)
-
-# make_summary()
-# sendEmail()
