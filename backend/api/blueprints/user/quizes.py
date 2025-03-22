@@ -10,7 +10,9 @@ user_quiz_routes = Blueprint('user_quiz_routes', __name__)
 @jwt_required()
 @user_required
 def user_questions(sid,cid,qid):
+    """
     
+    """
     page = request.args.get("page",1)
     per_page = request.args.get("per_page",5)
     

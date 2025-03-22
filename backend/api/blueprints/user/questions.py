@@ -4,13 +4,17 @@ from api.models import *
 from api.blueprints.user import user_required
 from datetime import datetime,timedelta
 
+# Base URL: /user/subjects/<sid>/chapters/<cid>/quizes/<quiz_id>/questions/
 user_question_routes = Blueprint('user_question_routes', __name__)
-
 
 @user_question_routes.get("/<question_id>")
 @jwt_required()
 @user_required
-def user_fetch_response(sid,cid,quiz_id,question_id):
+def user_fetch_question_response(sid,cid,quiz_id,question_id):
+    """
+        Returns the response and the question on query
+        GET /user/subjects/<sid>/chapters/<cid>/quizes/<quiz_id>/questions/<question_id>
+    """
     user = get_current_user()
 
     quiz = Quiz.query.filter(Quiz.id == quiz_id).scalar()
@@ -32,6 +36,10 @@ def user_fetch_response(sid,cid,quiz_id,question_id):
 @jwt_required()
 @user_required
 def user_answer_question(sid,cid,quiz_id,question_id):
+    """
+        Answers the question on query
+        POST /user/subjects/<sid>/chapters/<cid>/quizes/<quiz_id>/questions/<question_id>
+    """
     user = get_current_user()
     marked = request.form.get("marked",-1)
     
