@@ -1,7 +1,7 @@
 from collections import defaultdict
 from flask_mail import Message
 from flask import render_template
-from api import db,mail
+from api import db,mail,app
 from api.models import *
 from api.workers import celery
 from datetime import datetime, timedelta
@@ -94,6 +94,40 @@ def make_summary():
         msg.html = render_template("./report.html",user_name = user.name, no_quizes = len(quiz_set), quizes = quizes, accuracy = accuracy)
         mail.send(msg)
 
+# @celery.task()
+# def compute_score(qid):
+#     # Fetch no of questions in a quiz
+#     quiz = Quiz.query.filter(Quiz.id == qid).scalar()
+#     chapter = quiz.chapter
+#     subject = quiz.chapter.subject
+
+#     question_count_query = quiz.questions
+#     question_count = question_count_query.count()
+
+#     response_count_query = db.session.query(Response, Quiz, Question)
+#     response_count_query = response_count_query.join(Quiz, Quiz.id == Response.quiz_id).join(Question, Question.id == Response.question_id)
+#     for user in subject.users:
+#         # Fetch no of responses for a quiz by some user
+#         response_count_query = response_count_query.filter(Quiz.id == qid, Response.user_id == user.id)
+#         response_count = response_count_query.count()
+
+#         # Fetch no of correct responses
+#         response_correct_query = response_count_query.filter(Response.marked == Question.correct)
+#         correct_count = response_correct_query.count()
+
+#         score = Score(user_id = user.id, quiz_id = qid, attempted_count = response_count, question_count = question_count, correct_count = correct_count)
+#         db.session.add(score)
+#         db.session.commit()
+
+
+@celery.task()
+def export_csv():
+    msg = Message("Testing csv",sender="jakyn@gmail.com",recipients=["test@gmail.com"])
+    with app.open_resource("./static/test.csv") as fp:
+        msg.attach("test.csv", "text/csv", fp.read())
+    msg.body = "See attached!"
+    mail.send(msg)
+
 @celery.on_after_finalize.connect
 def setup_periodic_tasks(sender, **kwargs):
     sender.add_periodic_task(
@@ -104,4 +138,9 @@ def setup_periodic_tasks(sender, **kwargs):
     sender.add_periodic_task(
         crontab(day_of_month=1),
         make_summary.s()
+    )
+
+    sender.add_periodic_task(
+        crontab(hour=11, minute = 13),
+        export_csv.s()
     )
