@@ -57,74 +57,102 @@ def make_summary():
         mapping[quiz.chapter.subject].add(quiz)
 
     # Iterate over each user and detect attempted quizes
-    for user in User.query.filter(User.is_admin == 0):
-        quiz_set = set()
-        for subject in user.subjects:
-            quiz_set = quiz_set.union(mapping[subject])
+    with mail.connect() as conn:
+        for user in User.query.filter(User.is_admin == 0):
+            quiz_set = set()
+            for subject in user.subjects:
+                quiz_set = quiz_set.union(mapping[subject])
 
-        quizes = []
-        if quiz_set:
-            accuracy = 0
-            num_questions = 0
-            for quiz in quiz_set:
+            quizes = []
+            if quiz_set:
+                accuracy = 0
+                num_questions = 0
+                for quiz in quiz_set:
 
-                query = db.session.query(Response, Question).join(Question, Question.id == Response.question_id)
-                query = query.filter(Response.quiz_id == quiz.id)
-                question_count = query.count()
-                query = query.filter(Response.user_id == user.id)
-                response_count = query.count()
-                query = query.filter(Response.marked == Question.correct)
-                correct_count = query.count()
+                    query = db.session.query(Response, Question).join(Question, Question.id == Response.question_id)
+                    query = query.filter(Response.quiz_id == quiz.id)
+                    question_count = query.count()
+                    query = query.filter(Response.user_id == user.id)
+                    response_count = query.count()
+                    query = query.filter(Response.marked == Question.correct)
+                    correct_count = query.count()
 
-                quizes.append({
-                    "id": quiz.id,
-                    "question_count": question_count,
-                    "response_count": response_count,
-                    "correct_count": correct_count,
-                })
-                
-                if question_count > 0:
-                    accuracy += correct_count
-                    num_questions += question_count
+                    quizes.append({
+                        "id": quiz.id,
+                        "question_count": question_count,
+                        "response_count": response_count,
+                        "correct_count": correct_count,
+                    })
+                    
+                    if question_count > 0:
+                        accuracy += correct_count
+                        num_questions += question_count
 
-            accuracy = accuracy / num_questions
-            accuracy = f"{accuracy * 100:.2f}"
+                accuracy = accuracy / num_questions
+                accuracy = f"{accuracy * 100:.2f}"
 
-        msg = Message("Monthly report from Quake",sender="jakyn@gmail.com",recipients=[user.email])
-        msg.html = render_template("./report.html",user_name = user.name, no_quizes = len(quiz_set), quizes = quizes, accuracy = accuracy)
-        mail.send(msg)
-
-# @celery.task()
-# def compute_score(qid):
-#     # Fetch no of questions in a quiz
-#     quiz = Quiz.query.filter(Quiz.id == qid).scalar()
-#     chapter = quiz.chapter
-#     subject = quiz.chapter.subject
-
-#     question_count_query = quiz.questions
-#     question_count = question_count_query.count()
-
-#     response_count_query = db.session.query(Response, Quiz, Question)
-#     response_count_query = response_count_query.join(Quiz, Quiz.id == Response.quiz_id).join(Question, Question.id == Response.question_id)
-#     for user in subject.users:
-#         # Fetch no of responses for a quiz by some user
-#         response_count_query = response_count_query.filter(Quiz.id == qid, Response.user_id == user.id)
-#         response_count = response_count_query.count()
-
-#         # Fetch no of correct responses
-#         response_correct_query = response_count_query.filter(Response.marked == Question.correct)
-#         correct_count = response_correct_query.count()
-
-#         score = Score(user_id = user.id, quiz_id = qid, attempted_count = response_count, question_count = question_count, correct_count = correct_count)
-#         db.session.add(score)
-#         db.session.commit()
-
+            msg = Message("Monthly report from Quake",sender="jakyn@gmail.com",recipients=[user.email])
+            msg.html = render_template("./report.html",user_name = user.name, no_quizes = len(quiz_set), quizes = quizes, accuracy = accuracy)
+            conn.send(msg)
 
 @celery.task()
-def export_csv():
+def export_csv(uid):
+    user = User.query.filter(User.is_admin == 0, User.id == uid).scalar()
+    
+    if user is None:
+        return
+
+    quizes = db.session.query(Quiz)
+    quizes = quizes.join(Quiz.chapter).join(Chapter.subject)
+    quizes = quizes.filter(Subject.id.in_([x.id for x in user.subjects]))
+
+    with open(f"./api/static/test.csv","w") as f:
+        f.write("Quiz_ID,Correct,Attempted,No_Of_Questions,Accuracy\n")
+        for quiz in quizes:
+            score = Score.query.filter(Score.user_id == uid, Score.quiz_id == quiz.id).scalar()
+            if score:
+                if score.question_count > 0:
+                    accuracy = score.correct_count / score.question_count
+                    accuracy = f"{accuracy:.2f}"
+                else:
+                    accuracy = 0
+                line = f"{quiz.id},{score.correct_count},{score.attempted_count},{score.question_count},{accuracy}"
+                line += "\n"
+                f.write(line)
+                continue
+
+            # Fetch no of questions in a quiz
+            question_count_query = Quiz.query.filter(Quiz.id == quiz.id).scalar().questions
+            question_count = question_count_query.count()
+
+            # Fetch no of responses for a quiz by some user
+            response_count_query = db.session.query(Response, Quiz, Question)
+            response_count_query = response_count_query.join(Quiz, Quiz.id == Response.quiz_id).join(Question, Question.id == Response.question_id)
+            response_count_query = response_count_query.filter(Quiz.id == quiz.id, Response.user_id == uid)
+            response_count = response_count_query.count()
+
+            # Fetch no of correct responses
+            response_correct_query = response_count_query.filter(Response.marked == Question.correct)
+            correct_count = response_correct_query.count()
+
+            score = Score(user_id = uid, quiz_id = quiz.id, attempted_count = response_count, question_count = question_count, correct_count = correct_count)
+            db.session.add(score)
+            db.session.commit()
+
+            if score.question_count > 0:
+                accuracy = score.correct_count / score.question_count
+                accuracy = f"{accuracy:.2f}"
+            else:
+                accuracy = 0
+
+            line = f"{quiz.id},{score.correct_count},{score.attempted_count},{score.question_count},{accuracy}"
+            line += "\n"
+            f.write(line)
+
+
     msg = Message("Testing csv",sender="jakyn@gmail.com",recipients=["test@gmail.com"])
-    with app.open_resource("./static/test.csv") as fp:
-        msg.attach("test.csv", "text/csv", fp.read())
+    with app.open_resource(f"./static/test.csv") as fp:
+        msg.attach("report.csv", "text/csv", fp.read())
     msg.body = "See attached!"
     mail.send(msg)
 
@@ -141,6 +169,6 @@ def setup_periodic_tasks(sender, **kwargs):
     )
 
     sender.add_periodic_task(
-        crontab(hour=11, minute = 13),
-        export_csv.s()
+        crontab(hour=15, minute = 31),
+        export_csv.s(2)
     )
