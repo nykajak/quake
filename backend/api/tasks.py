@@ -102,9 +102,10 @@ def export_csv(uid):
     if user is None:
         return
 
+    current_date = datetime.now()
     quizes = db.session.query(Quiz)
     quizes = quizes.join(Quiz.chapter).join(Chapter.subject)
-    quizes = quizes.filter(Subject.id.in_([x.id for x in user.subjects]))
+    quizes = quizes.filter(Subject.id.in_([x.id for x in user.subjects]), Quiz.dated < current_date)
 
     with open(f"./api/static/test.csv","w") as f:
         f.write("Quiz_ID,Correct,Attempted,No_Of_Questions,Accuracy\n")
@@ -166,9 +167,4 @@ def setup_periodic_tasks(sender, **kwargs):
     sender.add_periodic_task(
         crontab(day_of_month=1),
         make_summary.s()
-    )
-
-    sender.add_periodic_task(
-        crontab(hour=15, minute = 31),
-        export_csv.s(2)
     )
