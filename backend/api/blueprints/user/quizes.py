@@ -67,11 +67,25 @@ def user_quiz_view(sid,cid,qid):
 
     if (current_datetime > quiz.dated + datetime.timedelta(minutes=quiz.duration)):
         # Quiz expired
-        query = db.session.query(Response, Question, User, Quiz).join(Question,Response.question_id == Question.id).join(User,Response.user_id == User.id).join(Quiz,Response.quiz_id == Quiz.id).filter(Quiz.id == qid, User.id == user.id)        
-        if query.count() > 0:
-            query = query.filter(Response.marked == Question.correct)
-            return jsonify(payload=quiz.serialise(),active=None, count = quiz.questions.count(), correct = query.count()), 200
-        return jsonify(payload=quiz.serialise(),active=None, count = quiz.questions.count(), correct = query.count(), attempted = False), 200
+        score = Score.query.filter(Score.user_id == user.id, Score.quiz_id == qid).scalar()
+        if score:
+            return jsonify(correct_count = score.correct_count, response_count = score.attempted_count, question_count = score.question_count),200
+
+        response_count_query = db.session.query(Response)
+        response_count_query = response_count_query.join(Response.question).join(Response.quiz).join(Response.user)
+        response_count_query = response_count_query.filter(Quiz.id == qid, User.id == user.id)
+        response_count = response_count_query.count()
+
+        correct_count_query = response_count_query.filter(Response.marked == Question.correct)
+        correct_count = correct_count_query.count()
+
+        question_count = quiz.questions.count()
+
+        score = Score(user_id = user.id, quiz_id = qid, attempted_count = response_count, question_count = question_count, correct_count = correct_count)
+        db.session.add(score)
+        db.session.commit()
+
+        return jsonify(payload=quiz.serialise(),active = False, correct_count = correct_count, response_count = response_count, question_count = question_count), 200
     
     elif (current_datetime < quiz.dated):
         # Quiz yet to start
