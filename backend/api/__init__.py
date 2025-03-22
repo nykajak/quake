@@ -1,5 +1,6 @@
 import os
 from flask import Flask
+from flask_caching import Cache
 from flask_mail import Mail
 from flask_cors import CORS
 from flask_bcrypt import Bcrypt
@@ -31,9 +32,14 @@ app.config['MAIL_DEFAULT_SENDER'] = 'your_email@example.com'
 app.config['CELERY_BROKER_URL'] = 'redis://localhost:6379/1'
 app.config['CELERY_RESULT_BACKEND'] = 'redis://localhost:6379/2'
 
+# Cache settings
+app.config["CACHE_TYPE"] = "SimpleCache"
+app.config["CACHE_DEFAULT_TIMEOUT"] = 300
+
 jwt = JWTManager(app)
 bcrypt = Bcrypt(app)
 mail = Mail(app)
+cache = Cache(app)
 celery = workers.celery
 celery.conf.update(
     broker_url = app.config['CELERY_BROKER_URL'],
