@@ -110,3 +110,9 @@ def admin_add_chapter(sid):
         return jsonify(msg = "Database error encountered!"), 500
     
     return jsonify(msg = "Chapter creation successful!", payload = c.serialise()), 200
+
+@admin_chapter_routes.delete("/<cid>")
+@jwt_required()
+@admin_required
+def admin_delete_chapter(sid,cid):
+    pass

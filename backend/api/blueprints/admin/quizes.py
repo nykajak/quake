@@ -320,3 +320,9 @@ def add_quiz(sid,cid):
         return jsonify(msg="Quiz added!", payload = q.id),200
     
     return jsonify(msg="Subject or chapter not found!"),400
+
+@admin_quiz_routes.delete("/<qid>")
+@jwt_required()
+@admin_required
+def admin_quiz_delete():
+    pass

@@ -3,6 +3,7 @@ from flask_jwt_extended import jwt_required
 from api.models import *
 from api.blueprints.admin import admin_required
 from api.blueprints.pagination import pagination_validation
+from datetime import datetime
 
 # Base URL: /admin/subjects/<sid>/chapters/<cid>/questions
 admin_question_routes = Blueprint('admin_question_routes', __name__)
@@ -195,3 +196,30 @@ def add_question(sid,cid):
         return jsonify(msg ="Database error"), 400
 
     return jsonify(msg="Question created successfully!", payload = q.id), 200
+
+@admin_question_routes.delete("/<qid>")
+@jwt_required()
+@admin_required
+def admin_delete_question(sid,cid,qid):
+    pass
+    # Verify that question is not in any past quizes. if yes, deletion impossible
+    # current_date = datetime.now()
+    
+    # question_ids_query = db.session.query(Question.id)
+    # question_ids_query = question_ids_query.join(Question.quizes)
+
+    # past_question_ids_query = question_ids_query.filter(Quiz.dated < current_date).distinct()
+    # past_question_ids = set(x[0] for x in past_question_ids_query)
+    
+    # if int(qid) in past_question_ids:
+    #     return jsonify(msg = "Question cannot be deleted as it is in a past quiz!"), 400
+    
+    # pending_question_ids_query = question_ids_query.filter(Quiz.dated > current_date).distinct()
+    # pending_question_ids = set(x[0] for x in pending_question_ids_query)
+
+    # if int(qid) in pending_question_ids:
+    #     db.session.query(problem).filter(problem.columns[0] == qid)
+
+    # return jsonify("Test"),200
+    # If question in any pending quizes, remove question from those quizes
+    # Delete question

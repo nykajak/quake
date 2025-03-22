@@ -126,3 +126,9 @@ def add_subject():
     
     except IntegrityError as e:
         return jsonify(msg="Subject already exists!"),400
+    
+@admin_subject_routes.delete("/<sid>")
+@jwt_required()
+@admin_required
+def admin_delete_subject():
+    pass
