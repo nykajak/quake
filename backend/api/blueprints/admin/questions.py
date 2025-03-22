@@ -218,9 +218,8 @@ def admin_delete_question(sid,cid,qid):
     
     # Force score creation for each user
     query = Score.query.filter(Score.quiz_id.in_(quiz_ids))
-    users = [x.user_id for x in query]
+    res = [(x.user_id,x.quiz_id) for x in query]
     query = query.delete()
-    for user in User.query.filter(User.id.in_(users)):
-        for quiz_id in quiz_ids:
-            get_score_summary_quiz(user.id,sid,cid,quiz_id)
+    for user_id,quiz_id in res:
+        get_score_summary_quiz(user_id,sid,cid,quiz_id)
     return jsonify("Question deletion success!"), 200
