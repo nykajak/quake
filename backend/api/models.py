@@ -26,9 +26,9 @@ class User(db.Model):
     is_admin = db.Column(db.Integer, default = 0, nullable = False)
     # Date of joining?
 
-    subjects = db.relationship('Subject', secondary = registered, backref=db.backref('users', lazy='dynamic'), lazy='dynamic')
-    responses = db.relationship('Response', backref="user", lazy='dynamic')
-    scores = db.relationship('Score', backref = 'user', lazy='dynamic')
+    subjects = db.relationship('Subject', secondary = registered, back_populates='users', lazy='dynamic')
+    responses = db.relationship('Response', back_populates="user", lazy='dynamic')
+    scores = db.relationship('Score', back_populates = 'user', lazy='dynamic')
 
     def serialise(self,required = ()):
         res = {
@@ -61,7 +61,8 @@ class Subject(db.Model):
     name = db.Column(db.String(80),unique = True, nullable = False)
     description = db.Column(db.String(128))
 
-    chapters = db.relationship('Chapter', backref='subject', lazy='dynamic', cascade="all, delete")
+    users = db.relationship('User', secondary = registered, back_populates='subjects', lazy='dynamic')
+    chapters = db.relationship('Chapter', back_populates='subject', lazy='dynamic', cascade="all, delete")
 
     def serialise(self,required = ()):
         res = {
@@ -92,8 +93,9 @@ class Chapter(db.Model):
     name = db.Column(db.String(80), nullable = False)
     description = db.Column(db.String(128))
 
-    quizes = db.relationship('Quiz', backref = "chapter", lazy='dynamic', cascade="all, delete")
-    questions = db.relationship("Question", backref = "chapter", lazy='dynamic', cascade="all, delete")
+    subject = db.relationship('Subject', back_populates='chapters')
+    quizes = db.relationship('Quiz', back_populates = "chapter", lazy='dynamic', cascade="all, delete")
+    questions = db.relationship("Question", back_populates = "chapter", lazy='dynamic', cascade="all, delete")
 
     def serialise(self,required = ()):
         res = {
@@ -126,9 +128,10 @@ class Quiz(db.Model):
     duration = db.Column(db.Integer, nullable = False)
     description = db.Column(db.String(128))
 
-    questions = db.relationship('Question', secondary = problem, backref = 'quizes', lazy='dynamic', cascade="all, delete")
-    responses = db.relationship('Response', backref='quiz', lazy='dynamic', cascade="all, delete")
-    scores = db.relationship('Score', backref = 'quiz', lazy='dynamic', cascade="all, delete")
+    chapter = db.relationship('Chapter', back_populates = "quizes")
+    scores = db.relationship('Score', back_populates = 'quiz', lazy='dynamic', cascade="all, delete")
+    responses = db.relationship('Response', back_populates='quiz', lazy='dynamic', cascade="all, delete")
+    questions = db.relationship('Question', secondary = problem, back_populates = 'quizes', lazy='dynamic')
 
     def serialise(self,required = ()):
         res = {
@@ -173,7 +176,9 @@ class Question(db.Model):
     options = db.Column(db.String(256), nullable = False)
     correct = db.Column(db.Integer, nullable = False)
 
-    responses = db.relationship('Response', backref='question', lazy='dynamic',cascade="all, delete")
+    chapter = db.relationship("Chapter", back_populates = "questions")
+    quizes = db.relationship('Quiz', secondary = problem, back_populates = 'questions', lazy='dynamic')
+    responses = db.relationship('Response', back_populates='question', lazy='dynamic',cascade="all, delete")
 
     def serialise(self,required = ()):
         res = {
@@ -207,6 +212,10 @@ class Response(db.Model):
     question_id = db.Column(db.Integer, db.ForeignKey('questions.id'), primary_key = True)
     marked = db.Column(db.Integer, nullable = False)
     answered_at = db.Column(db.DateTime, nullable = False)
+
+    user = db.relationship('User', back_populates="responses")
+    quiz = db.relationship('Quiz', back_populates="responses")
+    question = db.relationship('Question', back_populates="responses")
 
     def serialise(self,required = ()):
         res = {
@@ -245,6 +254,9 @@ class Score(db.Model):
     correct_count = db.Column(db.Integer, nullable = False)
     attempted_count = db.Column(db.Integer, nullable = False)
     question_count = db.Column(db.Integer, nullable = False)
+
+    user = db.relationship('User', back_populates = 'scores')
+    quiz = db.relationship('Quiz', back_populates = 'scores')
 
     def serialise(self,required = ()):
         res = {

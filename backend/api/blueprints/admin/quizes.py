@@ -321,7 +321,7 @@ def add_quiz(sid,cid):
     
     return jsonify(msg="Subject or chapter not found!"),400
 
-@admin_quiz_routes.get("/<qid>/delete")
+@admin_quiz_routes.delete("/<qid>")
 @jwt_required()
 @admin_required
 def admin_quiz_delete(sid,cid,qid):

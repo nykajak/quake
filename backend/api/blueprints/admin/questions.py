@@ -207,7 +207,6 @@ def admin_delete_question(sid,cid,qid):
         return jsonify(msg = "No such question found!"), 404
     
     try:
-        problem.delete().where(problem.c.question_id == qid)
         db.session.delete(question)
         db.session.commit()
 

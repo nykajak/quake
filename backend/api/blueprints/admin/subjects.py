@@ -130,5 +130,17 @@ def add_subject():
 @admin_subject_routes.delete("/<sid>")
 @jwt_required()
 @admin_required
-def admin_delete_subject():
-    pass
+def admin_delete_subject(sid):
+    subject = Subject.query.filter(Subject.id == sid).scalar()
+
+    if subject is None:
+        return jsonify(msg= "No such subject found!"),404
+    
+    try: 
+        db.session.delete(subject)
+        db.session.commit()
+    except Exception as e:
+        print(e)
+        return jsonify(msg = "subject deletion failed!"),400
+    
+    return jsonify(msg="subject deletion success!"),200
