@@ -61,7 +61,7 @@ class Subject(db.Model):
     name = db.Column(db.String(80),unique = True, nullable = False)
     description = db.Column(db.String(128))
 
-    chapters = db.relationship('Chapter', backref='subject', lazy='dynamic')
+    chapters = db.relationship('Chapter', backref='subject', lazy='dynamic', cascade="all, delete")
 
     def serialise(self,required = ()):
         res = {
@@ -92,8 +92,8 @@ class Chapter(db.Model):
     name = db.Column(db.String(80), nullable = False)
     description = db.Column(db.String(128))
 
-    quizes = db.relationship('Quiz', backref = "chapter", lazy='dynamic')
-    questions = db.relationship("Question", backref = "chapter", lazy='dynamic')
+    quizes = db.relationship('Quiz', backref = "chapter", lazy='dynamic', cascade="all, delete")
+    questions = db.relationship("Question", backref = "chapter", lazy='dynamic', cascade="all, delete")
 
     def serialise(self,required = ()):
         res = {
@@ -127,8 +127,8 @@ class Quiz(db.Model):
     description = db.Column(db.String(128))
 
     questions = db.relationship('Question', secondary = problem, backref = 'quizes', lazy='dynamic')
-    responses = db.relationship('Response', backref='quiz', lazy='dynamic')
-    scores = db.relationship('Score', backref = 'quiz', lazy='dynamic')
+    responses = db.relationship('Response', backref='quiz', lazy='dynamic', cascade="all, delete")
+    scores = db.relationship('Score', backref = 'quiz', lazy='dynamic', cascade="all, delete")
 
     def serialise(self,required = ()):
         res = {
@@ -174,7 +174,7 @@ class Question(db.Model):
     correct = db.Column(db.Integer, nullable = False)
     marks = db.Column(db.Integer, nullable = False)
 
-    responses = db.relationship('Response', backref='question', lazy='dynamic')
+    responses = db.relationship('Response', backref='question', lazy='dynamic',cascade="all, delete")
 
     def serialise(self,required = ()):
         res = {

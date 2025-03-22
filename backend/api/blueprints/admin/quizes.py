@@ -324,5 +324,19 @@ def add_quiz(sid,cid):
 @admin_quiz_routes.delete("/<qid>")
 @jwt_required()
 @admin_required
-def admin_quiz_delete():
-    pass
+def admin_quiz_delete(sid,cid,qid):
+    quiz = Quiz.query.filter(Quiz.id == qid).scalar()
+
+    if quiz is None:
+        return jsonify(msg = "No such quiz found!"), 404
+    
+    try:
+        problem.delete().where(problem.c.question_id == qid)
+        db.session.delete(quiz)
+        db.session.commit()
+
+    except Exception as e:
+        print(e)
+        return jsonify("Quiz deletion failed!"), 400
+    
+    return jsonify("Quiz deletion success!"), 200
