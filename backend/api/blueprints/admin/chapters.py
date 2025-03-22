@@ -111,8 +111,18 @@ def admin_add_chapter(sid):
     
     return jsonify(msg = "Chapter creation successful!", payload = c.serialise()), 200
 
-@admin_chapter_routes.delete("/<cid>")
+@admin_chapter_routes.get("/<cid>/delete")
 @jwt_required()
 @admin_required
 def admin_delete_chapter(sid,cid):
-    pass
+    chapter = Chapter.query.filter(Chapter.id == cid)
+
+    if chapter is None:
+        return jsonify(msg= "No such chapter found!"),404
+    
+    try:
+        db.session.delete(chapter)
+        db.session.commit()
+    except Exception as e:
+        print(e)
+        return jsonify(msg = "Chapter deletion failed!"),400

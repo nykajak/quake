@@ -126,7 +126,7 @@ class Quiz(db.Model):
     duration = db.Column(db.Integer, nullable = False)
     description = db.Column(db.String(128))
 
-    questions = db.relationship('Question', secondary = problem, backref = 'quizes', lazy='dynamic')
+    questions = db.relationship('Question', secondary = problem, back_populates = 'quizes', lazy='dynamic', cascade="all, delete")
     responses = db.relationship('Response', backref='quiz', lazy='dynamic', cascade="all, delete")
     scores = db.relationship('Score', backref = 'quiz', lazy='dynamic', cascade="all, delete")
 

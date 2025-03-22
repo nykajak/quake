@@ -321,7 +321,7 @@ def add_quiz(sid,cid):
     
     return jsonify(msg="Subject or chapter not found!"),400
 
-@admin_quiz_routes.delete("/<qid>")
+@admin_quiz_routes.get("/<qid>/delete")
 @jwt_required()
 @admin_required
 def admin_quiz_delete(sid,cid,qid):
@@ -331,7 +331,6 @@ def admin_quiz_delete(sid,cid,qid):
         return jsonify(msg = "No such quiz found!"), 404
     
     try:
-        problem.delete().where(problem.c.question_id == qid)
         db.session.delete(quiz)
         db.session.commit()
 
