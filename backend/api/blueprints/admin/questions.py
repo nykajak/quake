@@ -4,6 +4,7 @@ from api.models import *
 from api.blueprints.admin import admin_required
 from api.blueprints.pagination import pagination_validation
 from datetime import datetime
+from api.blueprints.admin.scores import get_score_summary_quiz
 
 # Base URL: /admin/subjects/<sid>/chapters/<cid>/questions
 admin_question_routes = Blueprint('admin_question_routes', __name__)
@@ -202,6 +203,7 @@ def add_question(sid,cid):
 @admin_required
 def admin_delete_question(sid,cid,qid):
     question = Question.query.filter(Question.id == qid).scalar()
+    quiz_ids = [x.id for x in question.quizes.filter(Quiz.dated < datetime.now())]
 
     if question is None:
         return jsonify(msg = "No such question found!"), 404
@@ -214,4 +216,11 @@ def admin_delete_question(sid,cid,qid):
         print(e)
         return jsonify("Question deletion failed!"), 400
     
+    # Force score creation for each user
+    query = Score.query.filter(Score.quiz_id.in_(quiz_ids))
+    users = [x.user_id for x in query]
+    query = query.delete()
+    for user in User.query.filter(User.id.in_(users)):
+        for quiz_id in quiz_ids:
+            get_score_summary_quiz(user.id,sid,cid,quiz_id)
     return jsonify("Question deletion success!"), 200
