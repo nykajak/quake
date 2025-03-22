@@ -126,7 +126,7 @@ class Quiz(db.Model):
     duration = db.Column(db.Integer, nullable = False)
     description = db.Column(db.String(128))
 
-    questions = db.relationship('Question', secondary = problem, back_populates = 'quizes', lazy='dynamic', cascade="all, delete")
+    questions = db.relationship('Question', secondary = problem, backref = 'quizes', lazy='dynamic', cascade="all, delete")
     responses = db.relationship('Response', backref='quiz', lazy='dynamic', cascade="all, delete")
     scores = db.relationship('Score', backref = 'quiz', lazy='dynamic', cascade="all, delete")
 
@@ -172,7 +172,6 @@ class Question(db.Model):
     description = db.Column(db.String(512), nullable = False)
     options = db.Column(db.String(256), nullable = False)
     correct = db.Column(db.Integer, nullable = False)
-    marks = db.Column(db.Integer, nullable = False)
 
     responses = db.relationship('Response', backref='question', lazy='dynamic',cascade="all, delete")
 
@@ -181,7 +180,6 @@ class Question(db.Model):
             "id": self.id,
             "description": self.description,
             "options": self.options.split("#"),
-            "marks": self.marks,
             "correct": self.correct
         }
 
