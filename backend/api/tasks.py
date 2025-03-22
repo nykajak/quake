@@ -5,6 +5,7 @@ from api import db,mail
 from api.models import *
 from api.workers import celery
 from datetime import datetime, timedelta
+from calendar import monthrange
 from celery.schedules import crontab
 
 @celery.task()
@@ -36,9 +37,7 @@ def sendEmail():
             msg_str = "\n".join(msg)
             msg = Message("Daily reminder from Quake",sender="jakyn@gmail.com",recipients=[user.email])
             msg.body = msg_str
-
-            print(msg)
-            # mail.send(msg)
+            mail.send(msg)
 
 @celery.task()
 def make_summary():
@@ -46,9 +45,10 @@ def make_summary():
        For each user, create a report of summary of quiz attempts within last month
     """
 
-    # Bounding dates (currently hardcoded!)
-    start_of_month = datetime(day=1,month=1,year=2025)
-    end_of_month = datetime(day=1,month=2,year=2025)
+    # Bounding dates
+    start_of_month = datetime.now()
+    days_in_month = monthrange(month=start_of_month.month,year=start_of_month.year)[1]
+    end_of_month = start_of_month + timedelta(days = days_in_month)
 
     # Find all quizes in current month and map it to subject
     quizes = Quiz.query.filter(Quiz.dated < end_of_month, Quiz.dated > start_of_month)
@@ -92,9 +92,7 @@ def make_summary():
 
         msg = Message("Monthly report from Quake",sender="jakyn@gmail.com",recipients=[user.email])
         msg.html = render_template("./report.html",user_name = user.name, no_quizes = len(quiz_set), quizes = quizes, accuracy = accuracy)
-        print(msg.html)
-        # mail.send(msg)
-        # break
+        mail.send(msg)
 
 @celery.on_after_finalize.connect
 def setup_periodic_tasks(sender, **kwargs):

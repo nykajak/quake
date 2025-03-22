@@ -50,4 +50,6 @@ app.app_context().push()
 
 import api.routes
 import api.tasks
+
+# import api.test
 # Rewrite this file to support multiple config types
