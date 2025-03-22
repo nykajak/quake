@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report</title>
+</head>
+<body>
+    <h3>
+        Hi {{user_name}}, here's your monthly report!
+    </h3>
+    You had {{no_quizes}} quizes due this month. Let's see how you did!
+
+
+    {% for quiz in quizes %}
+        <br>
+        <h4> Quiz #{{quiz.id}} </h4>
+        <p>
+            No of questions in quiz: {{quiz.question_count}} <br>
+            No of questions attempted: {{quiz.response_count}} <br>
+            No of correct answers: {{quiz.correct_count}} <br>
+        </p>    
+    {% endfor %}
+    <br>
+    Your accuracy this month was: {{accuracy}}%!
+</body>
+</html>

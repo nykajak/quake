@@ -1,6 +1,6 @@
 from collections import defaultdict
 from flask_mail import Message
-from flask import render_template_string
+from flask import render_template
 from api import db,mail
 from api.models import *
 from api.workers import celery
@@ -36,6 +36,7 @@ def sendEmail():
             msg_str = "\n".join(msg)
             msg = Message("Daily reminder from Quake",sender="jakyn@gmail.com",recipients=[user.email])
             msg.body = msg_str
+
             print(msg)
             # mail.send(msg)
 
@@ -61,10 +62,7 @@ def make_summary():
         for subject in user.subjects:
             quiz_set = quiz_set.union(mapping[subject])
 
-        msg = []
-        msg.append(f"Hi {user.name}, here's your monthly report!")
-        msg.append(f"You had {len(quiz_set)} quizes due this month. Let's see how you did!")
-        
+        quizes = []
         if quiz_set:
             accuracy = 0
             num_questions = 0
@@ -78,24 +76,25 @@ def make_summary():
                 query = query.filter(Response.marked == Question.correct)
                 correct_count = query.count()
 
-                msg.append("")
-                msg.append(f"Quiz #{quiz.id}")
-                msg.append(f"No of questions in quiz: {question_count}")
-                msg.append(f"No of questions attempted: {response_count}")
-                msg.append(f"No of correct answers: {correct_count}")
+                quizes.append({
+                    "id": quiz.id,
+                    "question_count": question_count,
+                    "response_count": response_count,
+                    "correct_count": correct_count,
+                })
                 
                 if question_count > 0:
                     accuracy += correct_count
                     num_questions += question_count
 
             accuracy = accuracy / num_questions
-            msg.append("")
-            msg.append(f"Your accuracy this month was: {accuracy * 100:.2f}%!")
+            accuracy = f"{accuracy * 100:.2f}"
 
-        msg_str = "\n".join(msg)
-        msg = Message("Daily reminder from Quake",sender="jakyn@gmail.com",recipients=[user.email])
-        msg.body = msg_str
-        mail.send(msg)
+        msg = Message("Monthly report from Quake",sender="jakyn@gmail.com",recipients=[user.email])
+        msg.html = render_template("./report.html",user_name = user.name, no_quizes = len(quiz_set), quizes = quizes, accuracy = accuracy)
+        print(msg.html)
+        # mail.send(msg)
+        # break
 
 @celery.on_after_finalize.connect
 def setup_periodic_tasks(sender, **kwargs):
