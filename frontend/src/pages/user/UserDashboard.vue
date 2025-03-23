@@ -39,7 +39,10 @@ fetchUser();
                 <UserCard :user="user"/>
                 <h3>Welcome back!</h3>
                 <br>
-                <NavButton url="/user/subjects" text="Get Started!" color="primary"/>
+                <div class="d-flex">
+                    <NavButton url="/user/subjects" text="Get Started!" color="primary"/>
+                    <NavButton url="/user/summary" text="Summary page" color="secondary"/>
+                </div>
             </div>
         </template>
     </template>

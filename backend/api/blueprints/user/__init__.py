@@ -33,11 +33,13 @@ from api.blueprints.user.chapters import user_chapter_routes
 from api.blueprints.user.quizes import user_quiz_routes
 from api.blueprints.user.questions import user_question_routes
 from api.blueprints.user.responses import user_response_routes
+from api.blueprints.user.summary import user_summary_routes
 
 # Registering all blueprints
 user_routes.register_blueprint(user_subject_routes, url_prefix = '/subjects')
 user_routes.register_blueprint(user_enrolled_routes, url_prefix = '/enrolled')
 user_routes.register_blueprint(user_response_routes, url_prefix = '/responses')
+user_routes.register_blueprint(user_summary_routes, url_prefix = '/summary')
 user_subject_routes.register_blueprint(user_chapter_routes, url_prefix = '/<sid>/chapters')
 user_chapter_routes.register_blueprint(user_quiz_routes, url_prefix = '/<cid>/quizes')
 user_quiz_routes.register_blueprint(user_question_routes, url_prefix = '/<quiz_id>/questions')

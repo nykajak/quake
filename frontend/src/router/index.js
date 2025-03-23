@@ -50,6 +50,7 @@ import AdminSubjectScore from '@/pages/admin/scores/AdminSubjectScore.vue'
 import AdminChapterScore from '@/pages/admin/scores/AdminChapterScore.vue'
 import AdminQuizScore from '@/pages/admin/scores/AdminQuizScore.vue'
 import Test from '@/pages/Test.vue'
+import UserSummary from '@/pages/user/summary/UserSummary.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -89,6 +90,10 @@ const router = createRouter({
         return {"name" : "login"};
       },
       children: [
+        {
+          path:"summary",
+          component: UserSummary,
+        },
         {
           path:"subjects",
           component: UserSubjects,

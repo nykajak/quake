@@ -107,7 +107,7 @@ def export_csv(uid):
     quizes = quizes.join(Quiz.chapter).join(Chapter.subject)
     quizes = quizes.filter(Subject.id.in_([x.id for x in user.subjects]), Quiz.dated < current_date)
 
-    with open(f"./api/static/test.csv","w") as f:
+    with open(f"./api/static/report_{user.id}.csv","w") as f:
         f.write("Quiz_ID,Correct,Attempted,No_Of_Questions,Accuracy\n")
         for quiz in quizes:
             score = Score.query.filter(Score.user_id == uid, Score.quiz_id == quiz.id).scalar()
@@ -149,12 +149,25 @@ def export_csv(uid):
             line = f"{quiz.id},{score.correct_count},{score.attempted_count},{score.question_count},{accuracy}"
             line += "\n"
             f.write(line)
-
-
-    msg = Message("Testing csv",sender="jakyn@gmail.com",recipients=["test@gmail.com"])
-    with app.open_resource(f"./static/test.csv") as fp:
-        msg.attach("report.csv", "text/csv", fp.read())
-    msg.body = "See attached!"
+    
+    msg = Message("Attempt summary report generated!", sender="jakyn@gmail.com", recipients = [user.email])
+    html_body = """
+        <html>
+            <head>
+                <title>
+                    Attempt summary report generated!
+                </title>
+            </head>
+            <body>
+                <p>
+                    Your request for an attemt summary has been processed and your results are waiting for you!
+                    <br>
+                    Simply login and proceed to your summary page! Happy quizzing!
+                </p>
+            </body>
+        </html>
+    """
+    msg.html = html_body
     mail.send(msg)
 
 @celery.on_after_finalize.connect
