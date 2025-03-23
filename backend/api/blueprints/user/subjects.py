@@ -2,6 +2,7 @@ from flask import Blueprint,jsonify
 from flask_jwt_extended import jwt_required, get_current_user
 from api.models import *
 from api.blueprints.user import user_required
+from api import cache
 
 user_subject_routes = Blueprint('user_subject_routes', __name__)
 
@@ -33,13 +34,18 @@ def user_subjects():
 @user_required
 def user_specific_subject(sid):
     # TO DO - Make users be able to access subject metadata (only) for all subjects
+
     u = get_current_user()
-    s = Subject.query.filter(Subject.id == sid).scalar()
+    @cache.memoize(10)
+    def fetch_subject(sid,u):
+        s = Subject.query.filter(Subject.id == sid).scalar()
 
-    if s is None:
-        return jsonify(msg = "Subject not found!"), 400
-    
-    if s not in u.subjects:
-        return jsonify(msg = "User not registered for subject!"),400
+        if s is None:
+            return jsonify(msg = "Subject not found!"), 400
+        
+        if s not in u.subjects:
+            return jsonify(msg = "User not registered for subject!"),400
 
-    return jsonify(payload=s.serialise('chapters')),200
+        return jsonify(payload=s.serialise('chapters')),200
+
+    return fetch_subject(sid,u)
