@@ -10,22 +10,17 @@ from api.blueprints.pagination import pagination_validation
 # Base URL: /admin/subjects/<sid>/chapters/<cid>/quizes
 admin_quiz_routes = Blueprint('admin_quiz_routes', __name__)
 
-# TO DO - Delete a quiz?
-
 @admin_quiz_routes.get("/")
 @jwt_required()
 @admin_required
 def all_quizes(sid,cid):
     """
-        LIVE, STABLE
+        STABLE - 24/03/2025
         See quizes of a particular chapter.
         GET /admin/subjects/:sid/chapters/:cid/quizes
 
-        Expected on success: Chapter information with paginated list of quizes per filter
-        Expected to be handled by frontend:
-            200 - Empty payload, frontend should render some message
-            400 - Invalid filter passed
-            404 - Subject/Chapter not found
+        Expected on success: Payload - paginated list of quizes after applying filter
+        Additional information: Quizes split into two categories - past and pending
     """
 
     # User input from query string
@@ -47,12 +42,15 @@ def all_quizes(sid,cid):
     current_datetime = datetime.now()
     quizes = Quiz.query.filter(Quiz.chapter_id == int(cid))
 
+    # Note: Consider removing support for all filter?
     payload = []
     if filter_ == "all":
         payload = [q.serialise() for q in Quiz.query.filter(Quiz.chapter_id == cid)]
         return jsonify(payload = payload), 200
 
-
+    # Note: Changes to be made with regards to time based filtering
+    # finish_time > current should be pending, finish_time < current should be past
+    
     if filter_ == "pending":
         # Has not ended - start time > current
         quizes = quizes.filter(Quiz.dated > current_datetime)
@@ -70,15 +68,12 @@ def all_quizes(sid,cid):
 @admin_required
 def edit_quiz(sid,cid,qid):
     """
-        LIVE
         Edit specific quiz.
         PUT /admin/subjects/:sid/chapters/:cid/quizes/:qid
 
-        Expected on success: Quiz information edited
-        Expected to be handled by frontend:
-            400 - Db errors
-            400 - Validation errors
-            404 - Subject/Chapter not found
+        Expected on success: Quiz information edited (if valid)
+        Additional information: Quizes handled differently based on past/pending.
+        Fields - duration and dated of past quizes cannot be changed!
     """
 
     # User input from form
@@ -92,7 +87,8 @@ def edit_quiz(sid,cid,qid):
     # Checking existence of quiz in given chapter and subject
     if q and q.chapter.subject_id == int(sid):
         if dated:
-            if current_date < q.dated:
+            # Changes to dated cannot be made once quiz has ended
+            if current_date < q.dated + timedelta(minutes = q.duration):
                 # Do not touch - Specific date format
                 quiz_date = datetime(
                     year=int(dated[:4]),
@@ -114,7 +110,8 @@ def edit_quiz(sid,cid,qid):
             except ValueError as e:
                 return jsonify(msg="Bad request: Duration must be an integer!"), 400
             
-            if current_date < q.dated:
+            # Changes to duration cannot be made once quiz has ended
+            if current_date < q.dated + timedelta(minutes = q.duration):
                 if duration > 0:
                     q.duration = duration
                 
@@ -122,7 +119,7 @@ def edit_quiz(sid,cid,qid):
                     return jsonify(msg="Bad request: Duration must be non-zero and positive!"), 400
             else:
                 return jsonify(msg = 'Cannot change duration of a past quiz'),400
-                
+        
         if description:
             q.description = description
         
@@ -144,15 +141,12 @@ def edit_quiz(sid,cid,qid):
 @admin_required
 def specific_quiz(sid,cid,qid):
     """
-        LIVE STABLE
         See specific quiz details.
         GET /admin/subjects/:sid/chapters/:cid/quizes/:qid
 
-        Expected on success: Quiz information
-        Expected to be handled by frontend:
-            404 - Subject/Chapter not found
+        Expected on success: Serialised quiz information. (only)
     """
-
+    # Note: Could be a join?
     q = Quiz.query.filter(Quiz.id == qid, Quiz.chapter_id == cid).scalar()
     if q and q.chapter.subject_id == int(sid):
         return jsonify(payload = q.serialise())
@@ -164,14 +158,10 @@ def specific_quiz(sid,cid,qid):
 @admin_required
 def specific_quiz_questions(sid,cid,qid):
     """
-        LIVE
         See questions in quiz by filter.
         GET /admin/subjects/:sid/chapters/:cid/quizes/:qid
 
         Expected on success: Quiz question information filtered and paginated
-        Expected to be handled by frontend:
-            404 - Subject/Chapter not found
-            400 - Invalid filter
     """
 
     # User input through query_string
@@ -188,6 +178,7 @@ def specific_quiz_questions(sid,cid,qid):
     page, per_page = return_val
     MAX_QUESTIONS_PER_PAGE = 10
     
+    # Note: Could be a join?
     q = Quiz.query.filter(Quiz.id == qid, Quiz.chapter_id == cid).scalar()
 
     if not (q and q.chapter.subject_id == int(sid)):
@@ -237,21 +228,32 @@ def specific_quiz_questions(sid,cid,qid):
 @jwt_required()
 @admin_required
 def add_question_to_quiz(sid,cid,qid):
+    """
+        STABLE - 24/03/2025
+        Add question to quiz.
+        POST /admin/subjects/:sid/chapters/:cid/quizes/:qid/questions/add
+
+        Expected on success: Question added to quiz in backend via problem.
+        Additional information: Past quizes cannot have questions added!
+    """
     question_id = request.form.get("question_id",None)
 
     if question_id is None:
         return jsonify(msg="Malformed request!"),400
 
+    # Validation - Can only add questions before end of quiz
+    current_time = datetime.now()
+    if quiz.dated + timedelta(minutes=quiz.duration) < current_time:
+        return jsonify(msg="Unable to add questions to a past quiz!"), 400
+    
     question = Question.query.filter(Question.id == question_id).scalar()
     quiz = Quiz.query.filter(Quiz.id == qid).scalar()
 
-    current_time = datetime.now()
-    if quiz.dated < current_time:
-        return jsonify(msg="Unable to add questions to a past quiz!"), 400
-
+    # Validation - Existence
     if question is None or quiz is None:
         return jsonify(msg="Quiz or question not found!"),404
 
+    # Validation - Must be same chapter
     if question.chapter.id != quiz.chapter.id:
         return jsonify(msg="Cannot add question from different chapter!"),400
 
@@ -263,18 +265,30 @@ def add_question_to_quiz(sid,cid,qid):
 @jwt_required()
 @admin_required
 def remove_question_from_quiz(sid,cid,qid):
+    """
+        STABLE - 24/03/2025
+        Remove question from quiz.
+        POST /admin/subjects/:sid/chapters/:cid/quizes/:qid/questions/remove
+
+        Expected on success: Question removed from quiz in backend via problem.
+        Additional information: Past quizes cannot have questions removed unless
+        question is deleted!
+    """
     question_id = request.form.get("question_id",None)
 
-    question = Question.query.filter(Question.id == question_id).scalar()
-    quiz = Quiz.query.filter(Quiz.id == qid).scalar()
-
+    # Validation - Can only remove questions before end of quiz
     current_time = datetime.now()
     if quiz.dated < current_time:
         return jsonify(msg="Unable to remove questions from a past quiz!"), 400
 
+    question = Question.query.filter(Question.id == question_id).scalar()
+    quiz = Quiz.query.filter(Quiz.id == qid).scalar()
+
+    # Validation - Existence
     if question is None or quiz is None:
         return jsonify(msg="Quiz or question not found!"),404
 
+    # Validation - Chapters must match
     if question.chapter.id != quiz.chapter.id:
         return jsonify(msg="Cannot perform operation on question from different chapter!"),400
     
@@ -295,22 +309,27 @@ def add_quiz(sid,cid):
         Add new quiz.
         POST /admin/subjects/:sid/chapters/:cid/quizes
 
-        Request Body: dated, duration, description
-
-        Expected on success: Quiz object created in db
+        Expected on success: Quiz object added to db.
+        Additionak information: Quiz validation for dates is strict - No backdated
+        quizes.
     """
 
-    c = Chapter.query.filter(Chapter.id == cid, Chapter.subject_id == sid).scalar()
-    if c:
-        dated = request.form.get("dated",None)
-        duration = request.form.get("duration",None)
-        description = request.form.get("description",None)
+    # Form data
+    dated = request.form.get("dated",None)
+    duration = request.form.get("duration",None)
+    description = request.form.get("description",None)
 
+    c = Chapter.query.filter(Chapter.id == cid, Chapter.subject_id == sid).scalar()
+
+    # Validation - Existence
+    if c:
         if dated is None or duration is None:
             return jsonify(msg="Malformed request!"),400    
 
         x = datetime(year=int(dated[:4]),month=int(dated[5:7]),day=int(dated[8:10]),hour=int(dated[11:13]),minute=int(dated[14:16]))
         current_time = datetime.now()
+
+        # Validation - Quiz dated cannot be in the past!
         if x < current_time:
             return jsonify(msg="Cannot create quiz in the past!"),400
 
@@ -325,12 +344,22 @@ def add_quiz(sid,cid):
 @jwt_required()
 @admin_required
 def admin_quiz_delete(sid,cid,qid):
-    quiz = Quiz.query.filter(Quiz.id == qid).scalar()
+    """
+        Delete specific quiz.
+        DELETE /admin/subjects/:sid/chapters/:cid/quizes
 
+        Expected on success: Specific quiz object removed.
+        Additional information: Entry removed from problem table on
+        deletion.
+    """
+
+    quiz = Quiz.query.filter(Quiz.id == qid).scalar()
+    # Validation - Existence
     if quiz is None:
         return jsonify(msg = "No such quiz found!"), 404
     
     try:
+        # Cascade deletion deletes entries in problem
         db.session.delete(quiz)
         db.session.commit()
 
