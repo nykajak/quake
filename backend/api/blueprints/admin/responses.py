@@ -6,16 +6,23 @@ from api.blueprints.pagination import pagination_validation
 
 admin_response_routes = Blueprint('admin_response_routes', __name__)
 
-# TO DO - Statistics associated with responses
-
 @admin_response_routes.get("/")
 @jwt_required()
 @admin_required
 def admin_view_responses():
-    # TO DO - A more powerful way of filtering responses (using input fields in frontend?)
+    """
+        STABLE - 24/03/2025
+        See all responses given combination of user_id,quiz_id,question_id.
+        GET /admin/subjects/:sid/chapters/:cid/quizes
+
+        Expected on success: Payload - paginated list of responses, serialised with
+        required params only.
+        Additional information: Response payload can or cannot have specific fields.
+        Maybe change it to a uniform interface?
+    """
     
     page = request.args.get("page", 1)
-    per_page = request.args.get("per_page", 3)
+    per_page = request.args.get("per_page", 5)
     user_id = request.args.get("user_id", None)
     quiz_id = request.args.get("quiz_id", None)
     question_id = request.args.get("question_id", None)
@@ -26,8 +33,9 @@ def admin_view_responses():
     
     page, per_page = return_val
     
-    MAX_RESPONSES_PER_PAGE = 5
+    MAX_RESPONSES_PER_PAGE = 10
 
+    # Filtering the required responses!
     r = Response.query
     params = set(['user','quiz','question'])
 
