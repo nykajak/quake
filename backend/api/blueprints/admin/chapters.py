@@ -1,4 +1,4 @@
-# STABLE
+# STABLE - 24/03/2025
 
 from flask import Blueprint,jsonify,request
 from flask_jwt_extended import jwt_required
@@ -8,20 +8,16 @@ from api.blueprints.admin import admin_required
 # Base URL: /admin/subjects/<sid>/chapters
 admin_chapter_routes = Blueprint('admin_chapter_routes', __name__)
 
-# TO DO - Remove a chapter?
-
 @admin_chapter_routes.get("/<cid>")
 @jwt_required()
 @admin_required
 def admin_view_specific_chapter(sid,cid):
     """
-        DONE
+        STABLE - 24/03/2025
         See particular chapter information.
         GET /admin/subjects/:sid/chapters/:cid
 
-        Expected on success: Chapter details
-        Expected to be handled by frontend:
-            404 - Frontend should show not found if chapter not found
+        Expected on success: Return specific chapter in serialised form as payload.
     """
     c = Chapter.query.filter(Chapter.id == cid, Chapter.subject_id == sid).scalar()
     if c:
@@ -34,14 +30,13 @@ def admin_view_specific_chapter(sid,cid):
 @admin_required
 def admin_edit_chapter(sid,cid):
     """
-        DONE
+        STABLE - 24/03/2025
         Edit particular chapter information.
         PUT /admin/subjects/:sid/chapters/:cid
 
-        Expected on success: Chapter details edited in backend
-        Expected to be handled by frontend:
-            404 - Frontend should show not found if chapter not found
-            500 - Frontend should gracefully handle db errors
+        Expected on success: Chapter details edited
+        Additional information: If name does not pass validation check then no 
+        edit happens for that attribute alone!
     """
 
     # User input from form
@@ -51,11 +46,11 @@ def admin_edit_chapter(sid,cid):
     c = Chapter.query.filter(Chapter.id == cid, Chapter.subject_id == sid).scalar()
     if c:
         # Validation for name - Length of name must be > 0
-        if name and len(name) > 0:
+        if name is not None and len(name) > 0:
             c.name = name
 
         # Validation for description not needed (empty is fine)
-        if description:
+        if description is not None:
             c.description = description
         
         # Catch any errors related to database
@@ -75,15 +70,12 @@ def admin_edit_chapter(sid,cid):
 @admin_required
 def admin_add_chapter(sid):
     """
-        DONE
+        STABLE - 24/03/2025
         Add a new empty chapter in some subject.
         POST /admin/subjects/:sid/chapters
 
-        Expected on success: Chapter creation in backend
-        Expected to be handled by frontend:
-            404 - Frontend should show not found if subject not found
-            400 - Validation errors
-            500 - Database errors
+        Expected on success: Chapter creation in backend and serialised chapter 
+        returned as payload.
     """
     
     # User input from form
@@ -93,6 +85,10 @@ def admin_add_chapter(sid):
     # Validation - name should be present
     if name is None:
         return jsonify(msg = "Malformed request! Missing name."), 400
+    
+    # Validation - description should be present
+    if description is None:
+        return jsonify(msg = "Malformed request! Missing description."), 400
     
     # Validation - subject found?
     s = Subject.query.filter(Subject.id == sid).scalar()
@@ -115,12 +111,25 @@ def admin_add_chapter(sid):
 @jwt_required()
 @admin_required
 def admin_delete_chapter(sid,cid):
-    chapter = Chapter.query.filter(Chapter.id == cid).scalar()
+    """
+        STABLE - 24/03/2025
+        Delete a specific chapter.
+        DELETE /admin/subjects/:sid/chapters/:cid
 
+        Expected on success: Chapter deletion in backend.
+        Additional information: When chapter is deleted, all quizes and
+        questions under it are also deleted. This triggers deletion of
+        all responses associated with quizes/questions, scores associated
+        with quizes belonging to given chapter.
+    """
+
+    # Validation: Check for existence of chapter
+    chapter = Chapter.query.filter(Chapter.id == cid).scalar()
     if chapter is None:
         return jsonify(msg= "No such chapter found!"),404
     
-    try: 
+    try:
+        # Delete cascade defined in models. Nothing to handle here! 
         db.session.delete(chapter)
         db.session.commit()
     except Exception as e:
