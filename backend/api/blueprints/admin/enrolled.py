@@ -1,3 +1,4 @@
+# STABLE - 24/03/2025
 from flask import Blueprint,jsonify,request
 from flask_jwt_extended import jwt_required
 from api.models import *
@@ -14,15 +15,15 @@ admin_enrolled_routes = Blueprint('admin_enrolled_routes', __name__)
 @admin_required
 def see_requests():
     """
-        DONE
+        STABLE - 24/03/2025
         See all pending requests for enrollment.
         GET /admin/enrolled/requests
 
-        Expected on success: Payload containing list of mappings to user and subject
-        Expected to be handled by frontend:
-            200 - Empty payload, frontend should render some message
-            400 - Bad request
+        Expected on success: Paginated payload containing list of mappings to serialised 
+        user and serialised subject
     """
+
+    # User input
     page = request.args.get("page",1)
     per_page = request.args.get("per_page",5)
     
@@ -49,14 +50,15 @@ def see_requests():
 @admin_required
 def see_enrolled(sid):
     """
-        DONE
+        STABLE - 24/03/2025
         See all students enrolled for subject.
         POST /admin/enrolled/subjects/:sid
 
-        Expected on success: Paginated list of users enrolled for subject
-        Expected to be handled by frontend:
-            200 - Empty payload, frontend should render some message
+        Expected on success: Paginated payload of list of serialised users enrolled 
+        for subject
     """
+
+    # User input from form
     userName = request.args.get("q",None)
     page = request.args.get("page", 1)
     per_page = request.args.get("per_page", 5)
@@ -87,18 +89,17 @@ def see_enrolled(sid):
 @admin_required
 def add_user_to_subject(uid,sid):
     """
-        DONE
+        STABLE - 24/03/2025
         Enroll user in subject.
         POST /admin/enrolled/users/:id/subjects/:sid
 
-        Expected on success: User gains access to subject
-        Expected to be handled by frontend:
-            404 - No such user/subject
-            400 - No such request
-            500 - Database error
-            200 - Already enrolled!
+        Expected on success: New entry in enrolled table, allowing user access
+        to particular subject.
+        Additional information: Requested object necessary for adding a user to
+        a subject. This is a replacement for a mock payment page.
     """
 
+    # If request for subject from user exists delete it and handle entry creation
     r = Requested.query.filter(Requested.user_id == uid, Requested.subject_id == sid).scalar()
     if r:
         db.session.delete(r)
@@ -107,7 +108,7 @@ def add_user_to_subject(uid,sid):
     else:
         return jsonify(msg = "Cannot enroll user in absence of request!"), 400
 
-    # Cannot enroll admin user
+    # Validation - Cannot enroll admin user
     u = User.query.filter(User.id == uid, User.is_admin == 0).scalar()
     s = Subject.query.filter(Subject.id == sid).scalar()
     
@@ -131,23 +132,23 @@ def add_user_to_subject(uid,sid):
 @admin_required
 def remove_user_from_subject(uid,sid):
     """
-        DONE
+        STABLE - 24/03/2025
         Un-enroll user in subject.
         DELETE /admin/enrolled/users/:id/subjects/:sid
 
-        Expected on success: User loses access to subject
-        Expected to be handled by frontend:
-            404 - No such user/subject
-            200 - User already not enrolled
-            500 - Database error
+        Expected on success: Delete entry from enrolled table, denying user access
+        to particular subject.
+        Additional information: This endpoint is also used to mark a request as denied
+        by deletion of Requested object only and returning a error code.
     """
 
+    # Delete requested object associated with said subject!
     r = Requested.query.filter(Requested.user_id == uid, Requested.subject_id == sid).scalar()
     if r:
         db.session.delete(r)
         db.session.commit()
     
-    # Admin user can't be enrolled!
+    # Validation - Admin user can't be enrolled!
     u = User.query.filter(User.id == uid, User.is_admin == 0).scalar()
     s = Subject.query.filter(Subject.id == sid).scalar()
 
