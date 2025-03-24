@@ -9,23 +9,18 @@ from api.blueprints.admin.scores import get_score_summary_quiz
 # Base URL: /admin/subjects/<sid>/chapters/<cid>/questions
 admin_question_routes = Blueprint('admin_question_routes', __name__)
 
-# TO DO - Delete a question?
-
 @admin_question_routes.get("/")
 @jwt_required()
 @admin_required
 def see_questions(sid,cid):
     """
-        LIVE
-        See questions for some chapter.
+        See questions that are part of some chapter.
         GET /admin/subjects/:sid/chapters/:cid/questions
 
-        Expected on success: Chapter information with paginated list of all questions
-        Expected to be handled by frontend:
-            200 - Empty payload, frontend should render some message
-            404 - Subject/Chapter not found
+        Expected on success: Paginated serialised payload {"questions":questions}
     """
 
+    # Note: Change response to payload = questions[]
     page = request.args.get("page", 1)
     per_page = request.args.get("per_page", 5)
 
@@ -49,21 +44,20 @@ def see_questions(sid,cid):
 @admin_required
 def edit_question(sid,cid,qid):
     """
-        LIVE, STABLE
         Edit specific question.
         PUT /admin/subjects/:sid/chapters/:cid/questions/:qid
 
         Expected on success: Question information updated.
-        Expected to be handled by frontend:
-            400 - Validation error!
-            400 - Database error!
-            404 - Subject/Chapter/Quiz not found
+        Additional information: Edit can partially succeed silently. (If valid)
+        Currently questions that are part of older quizes will still be edited,
+        making the score computed obsolete.
     """
+    # Note: Need to add recomputation for scores for previous quizes when updating
+    # correct or prevent editing for questions that have already been added to quizes
 
     # User data through form
     description = request.form.get("description",None)
     correct = request.form.get("correct",None)
-    marks = request.form.get("marks",None)
 
     # options[0], options[1], options[2], options[3] are options A,B,C,D respectively
     options = [request.form.get(f"options[{i}]",None) for i in range(0,4)]
@@ -76,16 +70,7 @@ def edit_question(sid,cid,qid):
             # Validation - Question description must be non empty
             if description and len(description) > 0:
                 q.description = description
-            
-            if marks:
-                # Validation - marks should be integral > 0 
-                try:
-                    if int(marks) > 0:
-                        q.marks = marks
-                
-                except ValueError as e:
-                    return jsonify(msg = "Bad request: Marks should be integral and greater than 0!"), 400
-
+        
             if correct:
                 # Validation - correct should be integral x, 0 <= x <= 3
                 try:
@@ -122,15 +107,12 @@ def edit_question(sid,cid,qid):
 @admin_required
 def specific_question(sid,cid,qid):
     """
-        LIVE, STABLE
         See specific question.
         GET /admin/subjects/:sid/chapters/:cid/questions/:qid
 
-        Expected on success: Question information retrieved.
-        Expected to be handled by frontend:
-            404 - Subject/Chapter/Quiz not found
+        Expected on success: Question information retrieved as payload.
     """
-
+    # Note: Perhaps replace with db.session.query with join? Avoids ambiguity!
     q = Question.query.filter(Question.id == qid, Question.chapter_id == cid).scalar()
     if q:
         if int(q.chapter.subject_id) == int(sid):
@@ -143,19 +125,16 @@ def specific_question(sid,cid,qid):
 @admin_required
 def add_question(sid,cid):
     """
-        LIVE, STABLE
+        STABLE - 24/03/2025
         Add new question.
         POST /admin/subjects/:sid/chapters/:cid/questions
 
-        Expected on success: Question creation in backend. Return of question_id to frontend as payload
-        Expected to be handled by frontend:
-            404 - Subject/Chapter/Quiz not found
+        Expected on success: Question creation in backend. Question_id as payload
     """
     
     # User input through form
     description = request.form.get("description", None)
     correct = request.form.get("correct", -1)
-    marks = request.form.get("marks", 1)
     
     options = []
     for i in range(4):
@@ -188,7 +167,7 @@ def add_question(sid,cid):
     
     # Checking for db errors
     try:
-        q = Question(description=description,options="#".join(options),correct = correct, marks = marks, chapter_id = cid)
+        q = Question(description=description,options="#".join(options),correct = correct, chapter_id = cid)
         db.session.add(q)
         db.session.commit()
 
@@ -202,6 +181,15 @@ def add_question(sid,cid):
 @jwt_required()
 @admin_required
 def admin_delete_question(sid,cid,qid):
+    """
+        Delete specific question.
+        DELETE /admin/subjects/:sid/chapters/:cid/questions/:qid
+
+        Expected on success: Question deletion from backend.
+        Additional information: Question being deleted causes all quizes to lose that
+        as a question, subsequently requiring recalculation of scores for past quizes
+        where it was a member. The quizes themselves aren't deleted.
+    """
     question = Question.query.filter(Question.id == qid).scalar()
     quiz_ids = [x.id for x in question.quizes.filter(Quiz.dated < datetime.now())]
 
@@ -209,13 +197,15 @@ def admin_delete_question(sid,cid,qid):
         return jsonify(msg = "No such question found!"), 404
     
     try:
+        # Delete cascade, as given in models.py
         db.session.delete(question)
         db.session.commit()
 
     except Exception as e:
         print(e)
         return jsonify("Question deletion failed!"), 400
-    
+
+    # Note: Consider making score computation a triggered backend job
     # Force score creation for each user
     query = Score.query.filter(Score.quiz_id.in_(quiz_ids))
     res = [(x.user_id,x.quiz_id) for x in query]
