@@ -306,6 +306,7 @@ def remove_question_from_quiz(sid,cid,qid):
 @admin_required
 def add_quiz(sid,cid):
     """
+        STABLE - 24/03/2025
         Add new quiz.
         POST /admin/subjects/:sid/chapters/:cid/quizes
 
@@ -345,6 +346,7 @@ def add_quiz(sid,cid):
 @admin_required
 def admin_quiz_delete(sid,cid,qid):
     """
+        STABLE - 24/03/2025
         Delete specific quiz.
         DELETE /admin/subjects/:sid/chapters/:cid/quizes
 
