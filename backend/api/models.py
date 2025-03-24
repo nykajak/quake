@@ -1,13 +1,16 @@
 from api.database import db
 import datetime
 
-# Registed relation to check if user registered for a particular course.
+# Note: Remove some of the various unused required options in serialise().
+# Note: Find optimal values for field lengths for certain models.
+
+# Registered relation to check if user registered for a particular course. (many to many)
 registered = db.Table("registered",
     db.Column("user_id",db.Integer,db.ForeignKey('users.id'), primary_key = True),
     db.Column("subject_id",db.Integer,db.ForeignKey('subjects.id'), primary_key = True),
 )
 
-# Problem relation to check if quiz contains some specific question.
+# Problem relation to check if quiz contains some specific question. (many to many)
 problem = db.Table("problem",
     db.Column("question_id",db.Integer,db.ForeignKey('questions.id'), primary_key = True),
     db.Column("quiz_id",db.Integer,db.ForeignKey('quizes.id'), primary_key = True),
@@ -15,22 +18,33 @@ problem = db.Table("problem",
 
 class User(db.Model):
     """
-        User model representing authorised users and admin.
+        User model representing users - both normal and admin.
     """
     __tablename__ = "users"
 
+    # Attributes
     id = db.Column(db.Integer,primary_key = True)
     name = db.Column(db.String(40),unique = True, nullable = False)
     email = db.Column(db.String(128),unique = True, nullable = False)
     password = db.Column(db.String(128), nullable = False)
     is_admin = db.Column(db.Integer, default = 0, nullable = False)
-    # Date of joining?
 
+    # Relationships
+    
+    # To Subject through registered - denoting enrollment - many to many
     subjects = db.relationship('Subject', secondary = registered, back_populates='users', lazy='dynamic')
+
+    # To Response - denoting ownership of response - one to many
     responses = db.relationship('Response', back_populates="user", lazy='dynamic')
+
+    # To Score - denoting ownership of score - one to many
     scores = db.relationship('Score', back_populates = 'user', lazy='dynamic')
 
     def serialise(self,required = ()):
+        """
+            Serialise method provided to return a json serialisable representation of user.
+            Does not allow serialisation of password or is_admin.
+        """
         res = {
             "id" : self.id,
             "name": self.name,
@@ -57,14 +71,23 @@ class Subject(db.Model):
     """
     __tablename__ = "subjects"
 
+    # Attributes
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(80),unique = True, nullable = False)
     description = db.Column(db.String(128))
 
+    # Relationships
+
+    # To User through registered - denoting enrollment - many to many
     users = db.relationship('User', secondary = registered, back_populates='subjects', lazy='dynamic')
+
+    # To Chapter - denoting children - one to many
     chapters = db.relationship('Chapter', back_populates='subject', lazy='dynamic', cascade="all, delete")
 
     def serialise(self,required = ()):
+        """
+            Serialise method provided to return a json serialisable representation of subject.
+        """
         res = {
             "id": self.id,
             "name": self.name,
@@ -88,16 +111,27 @@ class Chapter(db.Model):
     """
     __tablename__ = "chapters"
 
+    # Attributes
     id = db.Column(db.Integer, primary_key = True)
     subject_id = db.Column(db.Integer, db.ForeignKey("subjects.id"), nullable = False)
     name = db.Column(db.String(80), nullable = False)
     description = db.Column(db.String(128))
 
+    # Relationships
+
+    # To Subject - denoting container - many to one
     subject = db.relationship('Subject', back_populates='chapters')
+
+    # To Quiz - denoting children - one to many
     quizes = db.relationship('Quiz', back_populates = "chapter", lazy='dynamic', cascade="all, delete")
+
+    # To Question - denoting children - one to many
     questions = db.relationship("Question", back_populates = "chapter", lazy='dynamic', cascade="all, delete")
 
     def serialise(self,required = ()):
+        """
+            Serialise method provided to return a json serialisable representation of chapter.
+        """
         res = {
             "id": self.id,
             "name": self.name,
@@ -122,18 +156,31 @@ class Quiz(db.Model):
     """
     __tablename__ = "quizes"
 
+    # Attributes
     id = db.Column(db.Integer, primary_key = True)
     chapter_id = db.Column(db.Integer, db.ForeignKey('chapters.id'), nullable = False)
     dated = db.Column(db.DateTime, nullable = False)
     duration = db.Column(db.Integer, nullable = False)
     description = db.Column(db.String(128))
 
+    # Relationships
+
+    # To Chapter - denoting parent/container - many to one
     chapter = db.relationship('Chapter', back_populates = "quizes")
+
+    # To Score - denoting performance metric - one to many
     scores = db.relationship('Score', back_populates = 'quiz', lazy='dynamic', cascade="all, delete")
+
+    # To Response - denoting specific attempt details - one to many
     responses = db.relationship('Response', back_populates='quiz', lazy='dynamic', cascade="all, delete")
+
+    # To Question - denoting membership in quiz - many to many
     questions = db.relationship('Question', secondary = problem, back_populates = 'quizes', lazy='dynamic')
 
     def serialise(self,required = ()):
+        """
+            Serialise method provided to return a json serialisable representation of quiz.
+        """
         res = {
             "id": self.id,
             "dated": {
@@ -170,17 +217,28 @@ class Question(db.Model):
     """
     __tablename__ = "questions"
 
+    # Attributes
     id = db.Column(db.Integer, primary_key = True)
     chapter_id = db.Column(db.Integer, db.ForeignKey('chapters.id'), nullable = False)
     description = db.Column(db.String(512), nullable = False)
     options = db.Column(db.String(256), nullable = False)
     correct = db.Column(db.Integer, nullable = False)
 
+    # Relationships
+
+    # To Chapter - denoting parent/container - many to one
     chapter = db.relationship("Chapter", back_populates = "questions")
+    
+    # To Quiz - denoting being a part of - many to many
     quizes = db.relationship('Quiz', secondary = problem, back_populates = 'questions', lazy='dynamic')
+
+    # To Response - denoting target of response - one to many
     responses = db.relationship('Response', back_populates='question', lazy='dynamic',cascade="all, delete")
 
     def serialise(self,required = ()):
+        """
+            Serialise method provided to return a json serialisable representation of question.
+        """
         res = {
             "id": self.id,
             "description": self.description,
@@ -207,17 +265,28 @@ class Response(db.Model):
     """ 
     __tablename__ = "responses"
 
+    # Attributes
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key = True)
     quiz_id = db.Column(db.Integer, db.ForeignKey('quizes.id'), primary_key = True)
     question_id = db.Column(db.Integer, db.ForeignKey('questions.id'), primary_key = True)
     marked = db.Column(db.Integer, nullable = False)
     answered_at = db.Column(db.DateTime, nullable = False)
 
+    # Relationships
+
+    # To User - denoting attempter - many to one
     user = db.relationship('User', back_populates="responses")
+
+    # To Quiz - denoting attempt occasion - many to one
     quiz = db.relationship('Quiz', back_populates="responses")
+
+    # To Question - denoting attempt target - many to one
     question = db.relationship('Question', back_populates="responses")
 
     def serialise(self,required = ()):
+        """
+            Serialise method provided to return a json serialisable representation of response.
+        """
         res = {
             "marked": self.marked,
             "dated": {
@@ -246,19 +315,32 @@ class Response(db.Model):
 class Score(db.Model):
     """
         Score model representing the result of a quiz given by some user.
+        Note: Score model is usually just used as an aggregator to prevent 
+        repeated queries. Therefore changes to past quizes, including change 
+        in questions (only deletion allowed) requires recomputation of scores.
     """
     __tablename__ = "scores"
 
+    
+    # Attributes
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key = True)
     quiz_id = db.Column(db.Integer, db.ForeignKey('quizes.id'), primary_key = True)
     correct_count = db.Column(db.Integer, nullable = False)
     attempted_count = db.Column(db.Integer, nullable = False)
     question_count = db.Column(db.Integer, nullable = False)
 
+    # Relationships
+    
+    # To User - denoting attempter - many to one
     user = db.relationship('User', back_populates = 'scores')
+    
+    # To Quiz - denoting attempt occasion - many to one
     quiz = db.relationship('Quiz', back_populates = 'scores')
 
     def serialise(self,required = ()):
+        """
+            Serialise method provided to return a json serialisable representation of score.
+        """
         res = {
             "correct_count": self.correct_count,
             "attempted_count": self.attempted_count,
@@ -283,14 +365,23 @@ class Requested(db.Model):
 
     __tablename__ = "requested"
 
+    # Attributes
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key = True)
     subject_id = db.Column(db.Integer, db.ForeignKey('subjects.id'), primary_key = True)
     dated = db.Column(db.DateTime, nullable = False, default = datetime.datetime.now())
 
+    # Relationships
+    
+    # To Subject - denoting target of request - one to one
     subject = db.relationship('Subject', backref="requested")
+    
+    # To User - denoting issuer of request - one to one
     user = db.relationship('User', backref="requested")
 
     def serialise(self,required = ()):
+         """
+            Serialise method provided to return a json serialisable representation of requested.
+        """
          res = {
             "user_id": self.user_id,
             "subject_id": self.subject_id,
