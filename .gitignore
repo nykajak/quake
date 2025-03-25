@@ -5,9 +5,9 @@ questions.txt
 user_secrets.txt
 local_run.py
 database.json
-backend\celerybeat-schedule.bak
-backend\celerybeat-schedule.dat
-backend\celerybeat-schedule.dir
+backend/celerybeat-schedule.bak
+backend/celerybeat-schedule.dat
+backend/celerybeat-schedule.dir
 
 
 # Logs
