@@ -1,5 +1,3 @@
-# Stable API
-
 from flask import Blueprint,jsonify,request
 from flask_jwt_extended import jwt_required
 from api.models import *
@@ -7,22 +5,19 @@ from api.blueprints.admin import admin_required
 from sqlalchemy.exc import IntegrityError
 from api.blueprints.pagination import pagination_validation
 
+# Base URL : /admin/subjects
 admin_subject_routes = Blueprint('admin_subject_routes', __name__)
-
-# TO DO - Subject deletion?
 
 @admin_subject_routes.get("/")
 @jwt_required()
 @admin_required
 def all_subjects():
     """
-        DONE
+        STABLE - 25/03/2025
         See all subjects.
         GET /admin/subjects/
 
-        Query string args: page, per_page and q (for pagination and filtering)
-
-        Expected on success: List of all subjects according to query.
+        Expected on success: Paginated, serialised list of filtered subjects
     """
     page = request.args.get("page",1)
     per_page = request.args.get("per_page",5)
@@ -50,11 +45,11 @@ def all_subjects():
 @admin_required
 def specific_subject(id):
     """
-        DONE
+        STABLE - 25/03/2025
         See specific subject.
         GET /admin/subjects/:id
 
-        Expected on success: Specific subject details with chapter information
+        Expected on success: Payload is serailised subject with chapter (required)
     """
     s = Subject.query.filter(Subject.id == id).scalar()
     if s:
@@ -67,29 +62,30 @@ def specific_subject(id):
 @admin_required
 def edit_subject(id):
     """
-        DONE
         Edit subject.
         POST /admin/subjects
 
-        Request body: name,description
-
-        Expected on success: Modification of existing subject.
+        Expected on success: Edit details of subject object in db.
     """
 
     name = request.form.get("name", None)
     description = request.form.get("description", None)
 
+    # Valdiation - existence
     s = Subject.query.filter(Subject.id == id).scalar()
     if s:
+        # Validation - Name should be non empty
         try:
             if name and len(name) > 0:
                 s.name = name
             
-            if description:
+            # Validation - Description
+            if description is not None:
                 s.description = description
             
             db.session.commit()
 
+        # Note: Exception should be replace with a specific Exception class
         except Exception as e:
             return jsonify(msg="Subject with that name already exists!"),400
 
@@ -102,21 +98,18 @@ def edit_subject(id):
 @admin_required
 def add_subject():
     """
-        DONE
+        STABLE - 25/03/2025
         Add new subject.
         POST /admin/subjects
 
-        Request body: name,description
-
-        Expected on success: Creation of new Subject in db
+        Expected on success: Creation of new subject object in db
     """
     name = request.form.get("name",None)
     description = request.form.get("description",None)
     
-
+    # Validation : name is non empty
     if name is None or len(name) == 0:
         return jsonify(msg="Malformed request: Check if all fields included"),400
-    
     
     s = Subject(name = name, description = description)
     try:
@@ -131,14 +124,28 @@ def add_subject():
 @jwt_required()
 @admin_required
 def admin_delete_subject(sid):
-    subject = Subject.query.filter(Subject.id == sid).scalar()
+    """
+        STABLE - 25/03/2025
+        Add new subject.
+        DELETE /admin/subjects/:sid
 
+        Expected on success: Deletion of specific subject object from db.
+        Additional information: Deletion of subject deletes all chapters underneath
+        it along with all the quizes, questions underneath each chapter, all responses
+        for any quiz-question, any score objects, all enrollments to subject, and all 
+        requested entries.
+    """
+
+    subject = Subject.query.filter(Subject.id == sid).scalar()
+    # Validation - existence
     if subject is None:
         return jsonify(msg= "No such subject found!"),404
     
     try: 
+        # Cascade handles all the required logic!
         db.session.delete(subject)
         db.session.commit()
+    
     except Exception as e:
         print(e)
         return jsonify(msg = "subject deletion failed!"),400
