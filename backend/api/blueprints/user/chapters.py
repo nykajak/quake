@@ -18,7 +18,7 @@ def user_specific_chapter(sid,cid):
     """
     filter_ = request.args.get("filter", "pending")
     page = request.args.get("page", 1)
-    per_page = request.args.get("per_page", 3)
+    per_page = request.args.get("per_page", 5)
 
     return_val,validation = pagination_validation(page,per_page)
     if validation != 200:
