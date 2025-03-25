@@ -14,14 +14,26 @@ def user_fetch_question_response(sid,cid,quiz_id,question_id):
     """
         Returns the response and the question on query
         GET /user/subjects/<sid>/chapters/<cid>/quizes/<quiz_id>/questions/<question_id>
+
+        Expected on success: Returns the serialised question and serialised response for
+        a particular question for a particular user. If quiz has not ended yet, question
+        is sent in unsafe mode.
     """
     user = get_current_user()
 
+    # Validation - existence
     quiz = Quiz.query.filter(Quiz.id == quiz_id).scalar()
+    if quiz is None:
+        return jsonify(msg = "Quiz not found!"), 404
 
+    # Note: What should be done in case quiz has not started?
+    # Probably should return error message?
+
+    # Finding time left in quiz
     remaining_time = quiz.dated + timedelta(minutes = quiz.duration) - datetime.now()
     seconds = int(remaining_time.total_seconds())
 
+    # Note: Should finalise the actual things to be returned in response!
     query = quiz.questions
     num = query.count()
     question = [x for x in quiz.questions.offset(int(question_id) - 1).limit(1)][0]
@@ -37,8 +49,13 @@ def user_fetch_question_response(sid,cid,quiz_id,question_id):
 @user_required
 def user_answer_question(sid,cid,quiz_id,question_id):
     """
-        Answers the question on query
+        STABLE - 25/03/2025
+        Marks the user response to a particular quiz question.
         POST /user/subjects/<sid>/chapters/<cid>/quizes/<quiz_id>/questions/<question_id>
+
+        Expected on success: Constructs/modifies response object to reflect user answer.
+        Additional information: Should only work when quiz is active. If answer cleared
+        then response object will get deleted!
     """
     user = get_current_user()
     marked = request.form.get("marked",-1)
@@ -62,6 +79,7 @@ def user_answer_question(sid,cid,quiz_id,question_id):
         return jsonify(msg = "Quiz has not started!"), 400
 
     r = Response.query.filter(Response.user_id == user.id, Response.question_id == actual_question_id, Response.quiz_id == quiz_id).scalar()
+    # Answer cleared!
     if marked == -1:
         if r:
             db.session.delete(r)
@@ -69,12 +87,14 @@ def user_answer_question(sid,cid,quiz_id,question_id):
         return jsonify(msg = "Response deleted!"), 200
 
     elif 0 <= marked < 4:
+        # Answer added!
         if r is None:
             r = Response(user_id = user.id, quiz_id = quiz_id, question_id = actual_question_id, marked = marked, answered_at = datetime.now())
             db.session.add(r)
             db.session.commit()
             return jsonify(msg = "Response created!"), 200
 
+        # Answer modified!
         else:
             r.marked = marked
             r.answered_at = datetime.now()
