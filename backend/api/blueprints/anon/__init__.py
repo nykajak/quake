@@ -9,7 +9,7 @@ anon_routes = Blueprint('anon_routes', __name__)
 @anon_routes.post("/login")
 def login():
     """
-        DONE
+        STABLE - 25/03/2025
         Login for users and admin
         POST /login
 
@@ -42,7 +42,7 @@ def login():
 @anon_routes.post("/logout")
 def logout():
     """
-        DONE
+        STABLE - 25/03/2025
         Logout currently logged in user or admin
         POST /logout
         
@@ -55,11 +55,11 @@ def logout():
 @anon_routes.post("/register")
 def register():
     """
-        DONE
-        Register for users and admin
+        STABLE - 25/03/2025
+        Register a new user.
         POST /register
         
-        Expected on success: Register status msg.
+        Expected on success: Register confirmation msg.
     """
 
     username = request.form.get("username",None)
