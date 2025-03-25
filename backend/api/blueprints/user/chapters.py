@@ -13,8 +13,11 @@ user_chapter_routes = Blueprint('user_chapter_routes', __name__)
 @user_required
 def user_specific_chapter(sid,cid):
     """
-        Fetch all quizes associated with chapter
+        Fetch specific chapter and associated quizes!
         GET /user/subjects/<sid>/chapters/<cid>
+
+        Expected on success: Serialised, paginated list of serialised quizes - quizes
+        payload - chapter.serialise()
     """
     filter_ = request.args.get("filter", "pending")
     page = request.args.get("page", 1)
@@ -41,6 +44,7 @@ def user_specific_chapter(sid,cid):
         return jsonify(msg = "Bad request, filter does not exist"), 400
     
     if filter_ == 'pending':
+        # Note: Pending quizes are ones that have not ended yet. Should change this!
         query = c.quizes.filter(Quiz.dated > datetime.now()).paginate(page=page,per_page=per_page,max_per_page=MAX_QUIZES_PER_PAGE)
         quizes = [x.serialise() for x in query]
     else:
