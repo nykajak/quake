@@ -1,29 +1,24 @@
+# STABLE - 25/03/2025
+
 from flask import Blueprint,jsonify,request
 from flask_jwt_extended import jwt_required
 from api.models import *
 from api.blueprints.admin import admin_required
 from api.blueprints.pagination import pagination_validation
 
+# Base URL: /admin/users
 admin_user_routes = Blueprint('admin_user_routes', __name__)
-
-# Error handling and graceful fail states
 
 @admin_user_routes.get("/")
 @jwt_required()
 @admin_required
 def all_users():
     """
-        DONE
+        STABLE - 25/03/2025
         See all users.
         GET /admin/users/
 
-        Query string args: page, per_page and q (for filtering)
-
-        Expected on success: List of all users according to query.
-        Expected to be handled by frontend:
-            Error code 400 - Bad request
-            Error code 404 - If page that does not exist is queried
-            Empty list as payload
+        Expected on success: Serialised, paginated list of filtered users
     """
 
     page = request.args.get("page", 1)
@@ -41,7 +36,6 @@ def all_users():
     MAX_USERS_PER_PAGE = 10
 
     # Searching for all users
-
     if q:
         query = User.query.filter(
                 User.is_admin == 0, 
@@ -69,14 +63,11 @@ def all_users():
 @admin_required
 def specific_users(id):
     """
-        DONE
+        STABLE - 25/03/2025
         See specific user.
         GET /admin/users/:id
 
-        Expected on success: Specific user details with subject information
-        Expected to be handled by frontend:
-            Error code 404 - If no such user exists
-            Empty list of subjects returned
+        Expected on success: Serialised user details with subjects (non-paginated!)
     """
 
     # Admin user cannot be seen
@@ -84,41 +75,3 @@ def specific_users(id):
     if u:
         return jsonify(payload=u.serialise(required=['subjects']))
     return jsonify(msg="No such user found!"),404
-
-
-
-@admin_user_routes.get("/<id>/scores")
-@jwt_required()
-@admin_required
-def specific_users_scores(id):
-    """
-        Retreive user scores.
-        GET /admin/users/:id/scores
-
-        Expected on success: Summary of user scores
-    """
-    
-    # TO DO - Add functionality for getting summary of user scores!
-    u = User.query.filter(User.id == id).scalar()
-    if u:
-        return jsonify(payload=u.serialise(required = ("scores")))
-    return jsonify(msg="No such user found!"),400
-
-
-
-@admin_user_routes.get("/<id>/responses")
-@jwt_required()
-@admin_required
-def specific_users_responses(id):
-    """
-        Retreive user responses.
-        GET /admin/users/:id/responses
-
-        Expected on success: User details and list of user responses
-    """
-    
-    # TO DO - Implement pagination in user responses!    
-    u = User.query.filter(User.id == id).scalar()
-    if u:
-        return jsonify(payload=u.serialise(required = ("responses")))
-    return jsonify(msg="No such user found!"),400
