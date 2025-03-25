@@ -4,62 +4,24 @@ from api.models import *
 from api.blueprints.user import user_required
 from api.blueprints.pagination import pagination_validation
 
+# Base URL: /user/subjects/<sid>/chapters/<cid>/quizes
 user_quiz_routes = Blueprint('user_quiz_routes', __name__)
-
-@user_quiz_routes.get("/<qid>/questions")
-@jwt_required()
-@user_required
-def user_questions(sid,cid,qid):
-    """
-    
-    """
-    page = request.args.get("page",1)
-    per_page = request.args.get("per_page",5)
-    
-    return_val,validation = pagination_validation(page,per_page)
-    if validation != 200:
-        return validation
-    
-    page, per_page = return_val
-    MAX_QUESTIONS_PER_PAGE = 10
-
-    user = get_current_user()
-    quiz = Quiz.query.filter(Quiz.id == qid).scalar()
-    if quiz is None:
-        return jsonify(msg = "No such quiz found!"), 400
-    
-    current_datetime = datetime.datetime.now()
-
-    
-    if (current_datetime < quiz.dated):
-        return jsonify(msg = "Quiz has not started!"), 400
-    
-    if (current_datetime < quiz.dated + datetime.timedelta(minutes=quiz.duration)):
-        return jsonify(payload = [{"question":x.serialise(required=("unsafe"))} for x in quiz.questions], quiz = quiz.serialise())
-
-    payload = []
-    query = quiz.questions.paginate(page = page, per_page = per_page, max_per_page = MAX_QUESTIONS_PER_PAGE)
-    for question in query:
-        temp_dict = {}
-
-        response = question.responses.filter(Response.user_id == user.id,Response.quiz_id == quiz.id).all()
-        if len(response):
-            temp_dict = response[0].serialise()
-        else:
-            temp_dict = {"marked": -1}
-        temp_dict["question"] = question.serialise()
-
-        payload.append(temp_dict)
-
-    return jsonify(payload = payload, quiz = quiz.serialise(), pages = query.pages)
-
-
 @user_quiz_routes.get("/<qid>")
 @jwt_required()
 @user_required
 def user_quiz_view(sid,cid,qid):
+    """
+        Return quiz details.
+        GET /user/subjects/<sid>/chapters/<cid>/quizes/<quiz_id>
+
+        Expected on success: 
+    """
+
+    # Note: Figure out exactly what to return if quiz is pending, past, or in progress
+
     user = get_current_user()
     quiz = Quiz.query.filter(Quiz.id == qid).scalar()
+    # Validation - existence
     if quiz is None:
         return jsonify(msg = "No such quiz found!"), 400
     
