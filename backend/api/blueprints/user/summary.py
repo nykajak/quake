@@ -5,12 +5,19 @@ from api.blueprints.user import user_required
 from api.tasks import export_csv
 import os
 
+# Base URL: /user/summary
 user_summary_routes = Blueprint('user_summary_routes', __name__)
 
 @user_summary_routes.get("/")
 @jwt_required()
 @user_required
 def user_get_quiz_summary_csv():
+    """
+        Endpoint that provides .csv file to be downloaded.
+        GET /user/summary/
+
+        Expected on success: On navigation to link, download starts automatically!
+    """
     user = get_current_user()
     filename = 'static\\report_{uid}.csv'.format(uid = user.id)
 
@@ -20,6 +27,8 @@ def user_get_quiz_summary_csv():
             download_name=f'report_{user.name}.csv'
         )
         return res
+    
+    # Note: Exact exception should be provided!
     except Exception as e:
         print(e)
         return jsonify(msg = "File does not exist!"),404
@@ -28,6 +37,13 @@ def user_get_quiz_summary_csv():
 @jwt_required()
 @user_required
 def user_check_quiz_summary():
+    """
+        STABLE - 25/03/2025
+        Endpoint that checks for existence of .csv file to be downloaded.
+        GET /user/summary/check
+
+        Expected on success: 200 Ok status code with message
+    """
     user = get_current_user()
     
     base_path = os.getcwd()
@@ -41,6 +57,13 @@ def user_check_quiz_summary():
 @jwt_required()
 @user_required
 def user_generate_quiz_summary():
+    """
+        STABLE - 25/03/2025
+        Endpoint that queues a backend job to generate .csv file
+        GET /user/summary/generate
+
+        Expected on success: 200 Ok status code with message. Start of backend job #3
+    """
     user = get_current_user()
 
     base_path = os.getcwd()
