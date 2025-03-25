@@ -3,3 +3,4 @@ Quizzing application built as part of IITM BS Degree - Diploma level - MAD 2 pro
 
 # Milestones commited:
 - Milestone 0
+- Milestone 2
