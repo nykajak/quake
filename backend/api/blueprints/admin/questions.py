@@ -211,5 +211,6 @@ def admin_delete_question(sid,cid,qid):
     res = [(x.user_id,x.quiz_id) for x in query]
     query = query.delete()
     for user_id,quiz_id in res:
+        # Note: Bad/hacky use of view function!
         get_score_summary_quiz(user_id,sid,cid,quiz_id)
     return jsonify("Question deletion success!"), 200
