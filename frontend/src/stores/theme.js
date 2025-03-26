@@ -1,6 +1,7 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 
+// Store to keep track of user preference of theme.
 export const useThemeStore = defineStore('theme', () => {
   let theme = ref(localStorage.getItem("theme") || "dark")
 

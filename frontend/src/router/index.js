@@ -1,6 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { api } from '@/api'
 
+// Note: Organise imports and remove redundant pages!
+
 import NotFound from '@/pages/anon/NotFound.vue'
 
 import Login from '@/pages/anon/Login.vue'

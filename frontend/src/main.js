@@ -1,3 +1,4 @@
+// Creation of Vue app file left as is
 import './assets/main.css'
 
 import { createApp } from 'vue'
