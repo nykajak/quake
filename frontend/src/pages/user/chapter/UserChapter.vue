@@ -7,14 +7,13 @@
     import Pagination from '@/components/Pagination.vue';
     import PerPage from '@/components/PerPage.vue';
     
+    const props = defineProps(['sid','cid'])
     const router = useRouter();
     const route = useRoute();
-    const props = defineProps(['sid','cid'])
-    const chapter = ref({
-        "name": "Chapter"
-    });
-    const quizes = ref([]);
+    
+    const chapter = ref(null);
     const pages = ref(null);
+    const quizes = ref(null);
     const filter = ref(route.query.filter ?? 'pending')
 
     async function fetchQuizes(){
@@ -33,7 +32,7 @@
     }
     
     fetchQuizes();
-
+    
     watch(filter,(newVal,oldVal) =>{
         router.push({
             "to": route.fullPath,
@@ -77,7 +76,7 @@
         </div>
 
         <div class="results-div">
-            <div class="result-obj" v-for="quiz in quizes">
+            <div v-if="quizes !== null && quizes.length > 0" class="result-obj" v-for="quiz in quizes">
                 <div>
                     <h4>
                         <RouterLink :to="`/user/subjects/${props.sid}/chapters/${props.cid}/quizes/${quiz.id}`">
@@ -92,6 +91,14 @@
                         Duration: {{quiz.duration}} minutes
                     </p>
                 </div>
+            </div>
+
+            <div class="result-obj" v-else-if="quizes !== null && quizes.length === 0">
+                No quizes matching requirements found!
+            </div>
+
+            <div v-else class="result-obj">
+                Quiz fetching logic error!
             </div>
         </div>
         <div class="d-flex justify-content-center gap-2">
