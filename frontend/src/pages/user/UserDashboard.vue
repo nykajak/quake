@@ -42,6 +42,7 @@ fetchUser();
                 <div class="d-flex">
                     <NavButton url="/user/subjects" text="Get Started!" color="primary"/>
                     <NavButton url="/user/summary" text="Summary page" color="secondary"/>
+                    <NavButton url="/user/subjects/enroll" text="Enroll for subject" color="error"/>
                 </div>
             </div>
         </template>

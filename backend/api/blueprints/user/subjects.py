@@ -41,6 +41,7 @@ def user_subjects():
 
     page = request.args.get("page",1)
     per_page = request.args.get("per_page",5)
+    query_string = request.args.get("q", None)
 
     return_val,validation = pagination_validation(page,per_page)
     if validation != 200:
@@ -49,10 +50,18 @@ def user_subjects():
     page, per_page = return_val
 
     u = get_current_user()
-    subjects = u.subjects.paginate(page = page, per_page = per_page, max_per_page = 10)
+
+    if query_string is None:
+        subjects = u.subjects.paginate(page = page, per_page = per_page, max_per_page = 10)
+    else:
+        subjects = u.subjects.filter(Subject.name.startswith(query_string))
+        subjects = subjects.paginate(page = page, per_page = per_page, max_per_page = 10)
+
     u = u.serialise()
     u["subjects"] = [x.serialise() for x in subjects]
     return jsonify(payload=u, pages = subjects.pages),200
+    
+
 
 @user_subject_routes.get("/<sid>")
 @jwt_required()

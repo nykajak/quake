@@ -8,15 +8,29 @@ import Loader from '@/components/Loader.vue';
 import PerPage from '@/components/PerPage.vue';
 import Pagination from '@/components/Pagination.vue';
 
-const subjects = ref([]);
+const subjects = ref(null);
 const pages = ref(null);
 const router = useRouter();
 const route = useRoute()
 
+const query_string = ref(route.query.q ?? "")
+
+async function search(){
+    router.push({
+        "path": route.fullPath,
+        "query": {
+            ...route.query,
+            "page": 1,
+            "q": query_string.value,
+        }
+    })
+}
+
 async function fetchSubjects(){
     let page = route.query.page ?? 1;
     let per_page = route.query.per_page ?? 5;
-    let res = await api.get(`/user/subjects/?page=${page}&per_page=${per_page}`);
+    let q = route.query.q ?? "";
+    let res = await api.get(`/user/subjects/?page=${page}&per_page=${per_page}&q=${q}`);
     subjects.value = res.data.payload.subjects
     pages.value = res.data.pages
 }
@@ -26,13 +40,12 @@ fetchSubjects()
 
 <template>
     <div v-if="subjects" class="mt-3">
-        <div class="d-flex justify-content-center mb-4">
-            <button id="enroll" @click = "() =>{
-                router.push({
-                    'path': `/user/subjects/enroll`
-                })
-            }">
-                Enroll to course!
+        <div class="d-flex justify-content-center mb-3">
+            <div class="d-flex justify-content-center align-items-center gap-1">
+                Search enrolled: <input type="text" v-model="query_string">
+            </div>
+            <button id="search" @click="search">
+                Search
             </button>
         </div>
 
@@ -51,10 +64,9 @@ fetchSubjects()
 </template>
 
 <style scoped>
-#enroll{
-    background-color: var(--secondary-color);
+#search{
+    background-color: var(--primary-color);
     border: none;
-    border-radius: 5px;
     color: var(--light-color);
 }
 </style>
