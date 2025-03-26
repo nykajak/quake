@@ -7,6 +7,7 @@ import { useRouter } from 'vue-router';
 import StaticOptions from '../../../components/StaticOptions.vue';
 import StaticQuestion from '../../../components/StaticQuestion.vue';
 import NavButton from '@/components/NavButton.vue';
+import DeleteButton from '@/components/DeleteButton.vue';
 
 const router = useRouter();
 
@@ -31,6 +32,9 @@ fetchQuestion().then((data)=>{
         <div class="d-flex justify-content-center mt-4">
             <NavButton :url="`${props.qid}/edit`" text="Edit Question" color="primary"/>
             <NavButton :url="`${props.qid}/responses`" text="See Responses" color="secondary"/>
+            <DeleteButton :redirect="`/admin/subjects/${props.sid}/chapters/${props.cid}/questions/`" :url="`/admin/subjects/${props.sid}/chapters/${props.cid}/questions/${props.qid}`" color="error">
+                Delete question
+            </DeleteButton>
         </div>
     </div>
 

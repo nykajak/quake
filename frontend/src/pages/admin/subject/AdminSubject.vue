@@ -9,6 +9,7 @@
     import SubjectCard from './components/SubjectCard.vue';
     import ChapterCard from '../chapter/components/ChapterCard.vue';
     import NavButton from '@/components/NavButton.vue';
+    import DeleteButton from '@/components/DeleteButton.vue';
     import Loader from '@/components/Loader.vue';
 
     const router = useRouter();
@@ -48,6 +49,9 @@
             <NavButton text="See enrolled" :url="`/admin/subjects/${subject.id}/enrolled`" color="primary"/>
             <NavButton text="Add chapter" :url="`/admin/subjects/${subject.id}/chapters/add`" color="secondary"/>
             <NavButton text="Edit subject" :url="`/admin/subjects/${subject.id}/edit`" color="error"/>
+            <DeleteButton :redirect="`/admin/subjects/`" :url="`/admin/subjects/${props.sid}`" color="error">
+                Delete subject
+            </DeleteButton>
         </div>
         <div class="chapters">
             <h1 class="heading">Chapters</h1>

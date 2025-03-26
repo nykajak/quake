@@ -8,6 +8,7 @@ import ChapterCard from './components/ChapterCard.vue';
 
 import Loader from '@/components/Loader.vue';
 import NavButton from '@/components/NavButton.vue';
+import DeleteButton from '@/components/DeleteButton.vue';
 
 const props = defineProps(['sid','cid']);
 
@@ -54,6 +55,9 @@ fetchChapter()
             <NavButton text="Manage questions" :url="`/admin/subjects/${props.sid}/chapters/${props.cid}/questions`" color="primary"/>
             <NavButton text="Manage quizes" :url="`/admin/subjects/${props.sid}/chapters/${props.cid}/quizes`" color="secondary"/>
             <NavButton text="Edit chapter" :url="`/admin/subjects/${props.sid}/chapters/${props.cid}/edit`" color="error"/>
+            <DeleteButton :redirect="`/admin/subjects/${props.sid}`" :url="`/admin/subjects/${props.sid}/chapters/${props.cid}`" color="error">
+                Delete chapter
+            </DeleteButton>
         </div>
     </div>
 

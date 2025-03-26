@@ -3,6 +3,7 @@ import { ref } from 'vue';
 import { api } from '@/api';
 import AdminQuizQuestions from './components/AdminQuizQuestions.vue';
 import NavButton from '@/components/NavButton.vue';
+import DeleteButton from '@/components/DeleteButton.vue';
 
 const props = defineProps(['sid','cid','qid'])
 const quiz = ref(null);
@@ -32,6 +33,9 @@ fetchQuiz().then((data)=>{
             <NavButton text="Modify questions" :url="`${props.qid}/search`" color="primary"/>
             <NavButton text="View responses" :url="`${props.qid}/responses`" color="secondary"/>
             <NavButton text="Edit quiz" :url="`${props.qid}/edit`" color="error"/>
+            <DeleteButton :redirect="`/admin/subjects/${props.sid}/chapters/${props.cid}/quizes/`" :url="`/admin/subjects/${props.sid}/chapters/${props.cid}/quizes/${props.qid}`" color="error">
+                Delete quiz
+            </DeleteButton>
         </div>
         <AdminQuizQuestions :sid="props.sid" :cid="props.cid" :qid="props.qid"/>
     </div>
