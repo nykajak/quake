@@ -1,8 +1,9 @@
-from flask import Blueprint,jsonify
+from flask import Blueprint,jsonify, request
 from flask_jwt_extended import jwt_required, get_current_user
 from api.models import *
 from api.blueprints.user import user_required
 from api import cache
+from api.blueprints.pagination import pagination_validation
 
 # Base URL: /user/subjects
 user_subject_routes = Blueprint('user_subject_routes', __name__)
@@ -38,9 +39,20 @@ def user_subjects():
         that a user is enrolled in.
     """
 
-    # Note: Make this paginated?
+    page = request.args.get("page",1)
+    per_page = request.args.get("per_page",5)
+
+    return_val,validation = pagination_validation(page,per_page)
+    if validation != 200:
+        return validation
+    
+    page, per_page = return_val
+
     u = get_current_user()
-    return jsonify(payload=u.serialise('subjects')),200
+    subjects = u.subjects.paginate(page = page, per_page = per_page, max_per_page = 10)
+    u = u.serialise()
+    u["subjects"] = [x.serialise() for x in subjects]
+    return jsonify(payload=u, pages = subjects.pages),200
 
 @user_subject_routes.get("/<sid>")
 @jwt_required()
