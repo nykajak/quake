@@ -1,3 +1,4 @@
+<!-- Renders a static (non-editable) view of an option (could be clickable or not) -->
 <script setup>
     const props = defineProps(['optionNo', 'correctOption', 'optionText', 'clickable', 'marked'])
     const mapping = {

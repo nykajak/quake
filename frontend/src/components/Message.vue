@@ -1,8 +1,13 @@
+<!-- Renders a div which displays some important and transient message! -->
 <script setup>
     import { ref } from 'vue';
-    const props = defineProps(['text','hideFunction','level'])
-    let time = ref(5);
 
+    // hideFunction used to clear logic that renders Message
+    const props = defineProps(['hideFunction','level'])
+
+    let time = ref(5); // Time taken for message to vanish
+
+    // Interval to decrement time
     let id = setInterval(()=>{
         if (time.value > 0){
             time.value -= 1
@@ -18,7 +23,8 @@
     <div class="containerMessage">
         <div :class="['outerMessage',props.level]">
             <div class="innerMessage">
-                <slot></slot>
+                <!-- Content to be displayed! -->
+                <slot></slot> 
             </div>
             <div class="closeButtonDiv">
                 <button class="closeButton" @click="()=>{

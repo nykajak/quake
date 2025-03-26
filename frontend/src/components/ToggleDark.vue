@@ -1,3 +1,6 @@
+<!-- 
+ Renders an svg image to switch between light and dark mode.
+-->
 <script setup>
 </script>
 

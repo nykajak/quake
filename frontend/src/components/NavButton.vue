@@ -1,6 +1,7 @@
+<!-- Renders a button that navigates to another page! -->
 <script setup>
 import { useRouter } from 'vue-router';
-
+    // Note: Replace props.text with slot based rendering
     const props = defineProps(['text','url','color','active'])
     const router = useRouter();
 </script>

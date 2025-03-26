@@ -1,3 +1,4 @@
+<!-- Renders a static (non-editable) view of a question -->
 <script setup>
     const props = defineProps(['index', 'description'])
 </script>

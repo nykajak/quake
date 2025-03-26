@@ -1,22 +1,33 @@
+<!-- Renders a window of divs which ensures user can navigate to any page! -->
 <script setup>
 
 import { defineProps,ref } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 
+// Note: Consider eliminating props.url in favor of path from useRoute()
 const props = defineProps(['url','pages'])
 
 const router = useRouter();
 const route = useRoute();
 
-let startPage = 1;
+let startPage = 1; // Default start page is 1
+
+// If page no given detect start and end of window.
+// Strategy: Keep current page in the middle
 if (route.query.page){
     let page = Number(route.query.page)
+    
+    // If lower and upper bound are valid
     if (page - 2 >= 1 && page + 2 <= props.pages){
         startPage = page - 2;
     }
+
+    // If lower bound is invalid
     else if (page - 2 < 1){
         startPage = 1;
     }
+
+    // If upper bound is invalid
     else{
         startPage = Math.max(props.pages - 4,0);
     }

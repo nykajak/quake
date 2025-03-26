@@ -1,5 +1,6 @@
+<!-- Renders a button which logouts the current user! -->
 <script setup>
-import { useRouter,useRoute } from 'vue-router';
+import { useRouter } from 'vue-router';
 import { api } from '@/api';
 
 const router = useRouter()

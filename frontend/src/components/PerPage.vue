@@ -1,3 +1,4 @@
+<!-- Renders a dropdown that allows selection for per_page -->
 <script setup>
 
 import { ref, watch } from 'vue';
@@ -5,14 +6,16 @@ import { useRouter, useRoute } from 'vue-router';
 
 const route = useRoute();
 const router = useRouter();
-const selected = ref(route.query.per_page ?? 5);
+const selected = ref(route.query.per_page ?? 5); // Default value for per_page = 5
 
+
+// On change of selected value change route.query
 watch(selected, (old,_new) => {
     router.push({
         "path": route.path,
         "query": {
             ...route.query,
-            "page": 1,
+            "page": 1, // To prevent invalid page error!
             "per_page": old
         }
     })
