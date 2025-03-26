@@ -26,25 +26,25 @@
             </div>
             <div class="options">
                 <div class="option">
-                    <button class="option-letter">A</button>
+                    <div class="option-letter">A</div>
                     <div class="option-text">
                         Timed quizes and mock tests
                     </div>
                 </div>
                 <div class="option">
-                    <button class="option-letter">B</button>
+                    <div class="option-letter">B</div>
                     <div class="option-text">
                         Support for a wide range of exams
                     </div>
                 </div>
                 <div class="option">
-                    <button class="option-letter">C</button>
+                    <div class="option-letter">C</div>
                     <div class="option-text">
                         Feedback and course management help
                     </div>
                 </div>
                 <div class="option" id="correct-option">
-                    <button class="option-letter" id="correct-letter">D</button>
+                    <div class="option-letter" id="correct-letter">D</div>
                     <div class="option-text" id="correct-text">
                         All of the above
                     </div>
@@ -122,6 +122,7 @@ p{
 }
 
 .option-letter {
+    display: flex;
     font-weight: bold;
     text-align: center;
     justify-content: center;
