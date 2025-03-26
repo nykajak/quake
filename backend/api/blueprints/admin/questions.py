@@ -4,7 +4,7 @@ from api.models import *
 from api.blueprints.admin import admin_required
 from api.blueprints.pagination import pagination_validation
 from datetime import datetime
-from api.blueprints.admin.scores import get_score_summary_quiz
+from api.blueprints.admin.scores import get_score_summary_quiz,recompute_score_all
 
 # Base URL: /admin/subjects/<sid>/chapters/<cid>/questions
 admin_question_routes = Blueprint('admin_question_routes', __name__)
@@ -75,7 +75,19 @@ def edit_question(sid,cid,qid):
                 # Validation - correct should be integral x, 0 <= x <= 3
                 try:
                     if 0 <= int(correct) <= 3:
+                        prev_value = q.correct
                         q.correct = int(correct)
+
+                        if prev_value != int(correct):
+                            # Force score deletion for each user
+                            quiz_ids = [quiz.id for quiz in q.quizes]
+                            query = Score.query.filter(Score.quiz_id.in_(quiz_ids))
+                            query = query.delete()
+
+                            # Force score recomputation for each user
+                            for quiz_id in quiz_ids:
+                                recompute_score_all(quiz_id)
+
                     else:
                         return jsonify(msg = "Bad request: Correct should be value between 0-3 (inclusive)!"), 400
                 
@@ -99,7 +111,7 @@ def edit_question(sid,cid,qid):
                 return jsonify(msg="Database error!"), 400
 
             return jsonify(msg="Question edit success"), 200
-    
+
     return jsonify(msg="Subject, chapter or quiz not found!"),400
 
 @admin_question_routes.get("/<qid>")
@@ -205,12 +217,12 @@ def admin_delete_question(sid,cid,qid):
         print(e)
         return jsonify("Question deletion failed!"), 400
 
-    # Note: Consider making score computation a triggered backend job
-    # Force score creation for each user
+    # Force score deletion for each user
     query = Score.query.filter(Score.quiz_id.in_(quiz_ids))
-    res = [(x.user_id,x.quiz_id) for x in query]
     query = query.delete()
-    for user_id,quiz_id in res:
-        # Note: Bad/hacky use of view function!
-        get_score_summary_quiz(user_id,sid,cid,quiz_id)
+
+    # Force score recomputation for each user
+    for quiz_id in quiz_ids:
+        recompute_score_all(quiz_id)
+        
     return jsonify("Question deletion success!"), 200

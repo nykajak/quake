@@ -6,6 +6,42 @@ from api.blueprints.admin import admin_required
 # Base URL: /admin/scores
 admin_score_routes = Blueprint('admin_score_routes', __name__)
 
+def recompute_score_all(qid):
+    """
+        Recomputes all scores of all users for quiz with id qid.
+        Additional information: Deletion of scores to be done before call!
+    """
+    query_users = db.session.query(User)
+    query_users = query_users.join(User.subjects).join(Subject.chapters).join(Chapter.quizes)
+    query_users = query_users.filter(User.is_admin == 0)
+
+    question_count_query = Quiz.query.filter(Quiz.id == qid).scalar().questions
+    question_count = question_count_query.count()
+    
+    for user in query_users:
+        attempted_count, correct_count = recompute_score_one(qid, user.id)
+        score = Score(user_id = user.id, quiz_id = qid, attempted_count = attempted_count, question_count = question_count, correct_count = correct_count)
+        db.session.add(score)
+
+    db.session.commit()
+
+def recompute_score_one(qid, uid):
+    """
+        Recomputes the score of a user for quiz with id qid.
+    """
+
+    # Fetch no of responses for a quiz by some user
+    response_count_query = db.session.query(Response)
+    response_count_query = response_count_query.join(Response.quiz).join(Response.question)
+    response_count_query = response_count_query.filter(Quiz.id == qid, Response.user_id == uid)
+    attempted_count = response_count_query.count()
+
+    # Fetch no of correct responses
+    response_correct_query = response_count_query.filter(Response.marked == Question.correct)
+    correct_count = response_correct_query.count()
+
+    return attempted_count, correct_count
+
 @admin_score_routes.get("/users/<uid>/subjects/<sid>")
 @jwt_required()
 @admin_required
@@ -112,21 +148,12 @@ def get_score_summary_quiz(uid,sid,cid,qid):
     question_count_query = Quiz.query.filter(Quiz.id == qid).scalar().questions
     question_count = question_count_query.count()
 
-    # Note: Replace query with just Response / Question. No need for querying others!
-
-    # Fetch no of responses for a quiz by some user
-    response_count_query = db.session.query(Response, Quiz, Question)
-    response_count_query = response_count_query.join(Quiz, Quiz.id == Response.quiz_id).join(Question, Question.id == Response.question_id)
-    response_count_query = response_count_query.filter(Quiz.id == qid, Response.user_id == uid)
-    response_count = response_count_query.count()
-
-    # Fetch no of correct responses
-    response_correct_query = response_count_query.filter(Response.marked == Question.correct)
-    correct_count = response_correct_query.count()
+    # Fetch other statistics!
+    attempted_count, correct_count = recompute_score_one(qid,uid)
 
     # Construct a Score object
-    score = Score(user_id = uid, quiz_id = qid, attempted_count = response_count, question_count = question_count, correct_count = correct_count)
+    score = Score(user_id = uid, quiz_id = qid, attempted_count = attempted_count, question_count = question_count, correct_count = correct_count)
     db.session.add(score)
     db.session.commit()
     
-    return jsonify(correct_count = correct_count, response_count = response_count, question_count = question_count),200
+    return jsonify(correct_count = correct_count, response_count = attempted_count, question_count = question_count),200
