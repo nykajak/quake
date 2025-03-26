@@ -2,11 +2,13 @@
     
     import { ref } from 'vue';
     import { api } from '@/api';
-    import { useRoute } from 'vue-router';
+    import { useRouter } from 'vue-router';
 
     import StaticQuestion from '@/components/StaticQuestion.vue';
     import StaticOption from '@/components/StaticOption.vue';
     import QuizNavigation from '../quiz/components/QuizNavigation.vue';
+
+    const router = useRouter()
 
     const props = defineProps(['sid','cid','quiz_id','question_id'])
     const marked = ref(null);
@@ -14,10 +16,23 @@
     const pages = ref(null);
 
     async function fetchQuestion(){
-        let res = await api.get(`/user/subjects/${props.sid}/chapters/${props.cid}/quizes/${props.quiz_id}/questions/${props.question_id}`);
+        try{
+            let res = await api.get(`/user/subjects/${props.sid}/chapters/${props.cid}/quizes/${props.quiz_id}/questions/${props.question_id}`);
+
+        }
+        catch(err){
+            router.push({
+                "path": `/user/subjects/${props.sid}/chapters/${props.cid}/quizes/${props.quiz_id}`
+            })
+        }   
         marked.value = res.data.payload;
         question.value = res.data.question;
         pages.value = res.data.num;
+        if (res.data.time > 0){
+            router.push({
+                "path": `/user/subjects/${props.sid}/chapters/${props.cid}/quizes/${props.quiz_id}`
+            })
+        }
     }
     fetchQuestion()
 </script>

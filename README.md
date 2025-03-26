@@ -10,8 +10,8 @@ Quizzing application built as part of IITM BS Degree - Diploma level - MAD 2 pro
 - Milestone 9
 - Milestone 1
 - Milestone 3
+- Milestone 5
 
 # Milestones to be commited
-- Milestone 5: User view score of quiz interface pending!
 - Milestone 8: Search for quiz, subject pending!
 - Milestone 10: Adding caching to endpoints pending!
