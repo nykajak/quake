@@ -15,12 +15,25 @@
     const pages = ref(null);
     const quizes = ref(null);
     const filter = ref(route.query.filter ?? 'pending')
+    const query_str = ref(route.query.q ?? "")
+
+    async function search(){
+        router.push({
+            'path' : route.fullPath,
+            'query': {
+                ...route.query,
+                'page' : 1,
+                'q': query_str.value
+            }
+        })
+    }
 
     async function fetchQuizes(){
         let page = route.query.page ?? 1;
         let per_page = route.query.per_page ?? 3;
+        let q = route.query.q ?? "";
         try{
-            let res = await api.get(`/user/subjects/${props.sid}/chapters/${props.cid}?filter=${filter.value}&page=${page}&per_page=${per_page}`);
+            let res = await api.get(`/user/subjects/${props.sid}/chapters/${props.cid}?filter=${filter.value}&page=${page}&per_page=${per_page}&q=${q}`);
             quizes.value = res.data.quizes;
             chapter.value = res.data.payload;
             pages.value = res.data.pages;
@@ -73,6 +86,15 @@
         <div class="d-flex w-100 justify-content-center gap-2 mt-2">
             Past: <input type="radio" v-model="filter" value="past">
             Pending: <input type="radio" v-model="filter" value="pending">
+        </div>
+
+        <div class="d-flex justify-content-center align-items-center mt-2">
+            <div class="d-flex justify-content-center align-items-center gap-1">
+                Search by description: <input type="text" v-model="query_str">
+            </div>
+            <button id="search" @click="search">
+                Search
+            </button>
         </div>
 
         <div class="results-div">
