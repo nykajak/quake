@@ -1,6 +1,6 @@
 <script setup>
     import { useRouter, useRoute } from 'vue-router';
-    const props = defineProps(['length','beforeSubmit','current'])
+    const props = defineProps(['length','beforeSubmit','current','url'])
     const router = useRouter();
     const route = useRoute();
 </script>
@@ -13,7 +13,7 @@
                     beforeSubmit();
                     router.push(
                         {
-                            'path': `/user/subjects/${route.params.sid}/chapters/${route.params.cid}/quizes/${route.params.quiz_id}/questions/${n}`
+                            'path': `${props.url}/${n}`
                         }
                     )
                 ">

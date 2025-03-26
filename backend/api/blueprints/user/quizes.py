@@ -17,8 +17,6 @@ def user_quiz_view(sid,cid,qid):
         Expected on success: 
     """
 
-    # Note: Figure out exactly what to return if quiz is pending, past, or in progress
-
     user = get_current_user()
     quiz = Quiz.query.filter(Quiz.id == qid).scalar()
     # Validation - existence
@@ -31,7 +29,7 @@ def user_quiz_view(sid,cid,qid):
         # Quiz expired
         score = Score.query.filter(Score.user_id == user.id, Score.quiz_id == qid).scalar()
         if score:
-            return jsonify(correct_count = score.correct_count, response_count = score.attempted_count, question_count = score.question_count),200
+            return jsonify(payload=quiz.serialise(),correct_count = score.correct_count, response_count = score.attempted_count, question_count = score.question_count),200
 
         response_count_query = db.session.query(Response)
         response_count_query = response_count_query.join(Response.question).join(Response.quiz).join(Response.user)

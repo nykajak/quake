@@ -7,20 +7,26 @@
 
     const props = defineProps(['sid','cid','qid'])
     const quiz = ref(null);
-    const active = ref(null);
-    const accuracy = ref(null);
-    const attempted = ref(null);
+    const status = ref("pending");
+
+    const correct_count = ref(null);
+    const response_count = ref(null);
+    const question_count = ref(null);
 
     async function fetchQuiz() {
         let res = await api.get(`/user/subjects/${props.sid}/chapters/${props.cid}/quizes/${props.qid}`);
         quiz.value = res.data.payload
-        active.value = res.data.active;
-        if (res.data.count){
-            accuracy.value = [res.data.correct, res.data.count]
+        
+        let active = res.data.active;
+        if (active == true){
+            status.value = "ongoing";
         }
-        if(res.data.attempted){
-            attempted.value = res.data.attempted;
-            console.log(attempted.value)
+        
+        if (res.data.correct_count && res.data.response_count && res.data.question_count){
+            correct_count.value = res.data.correct_count
+            response_count.value = res.data.response_count
+            question_count.value = res.data.question_count
+            status.value = "past";
         }
     }
     fetchQuiz()
@@ -40,25 +46,28 @@
         </div>
 
         <div class="d-flex justify-content-center" v-if="quiz">
-            <div class="d-flex flex-column align-items-center" v-if="active === null">
+            <div class="d-flex flex-column align-items-center" v-if="status === 'past'">
                 <h3>Quiz status: Expired</h3>
-                <template v-if="attempted === null">
-                    {{accuracy[0]}} questions correct out of {{accuracy[1]}}
-                    <div class="mt-2">
-                        <NavButton :color="'primary'" :text="`View responses!`" :url="`${props.qid}/responses`"/>
-                    </div>
-                </template>
-                <template v-else>
-                    Quiz not attempted!
-                </template>
+                <div>
+                        Total questions: {{ question_count }}
+                </div>
+                <div>
+                    Attempted questions: {{ response_count }}
+                </div>
+                <div>
+                    Correct questions: {{ correct_count }}
+                </div>
+                <div class="mt-2">
+                    <NavButton :color="'primary'" :text="`View responses!`" :url="`${props.qid}/responses/1`"/>
+                </div>
             </div>
             
-            <div class="d-flex flex-column align-items-center" v-else-if="active === false">
+            <div class="d-flex flex-column align-items-center" v-else-if="status === 'pending'">
                 <h3>Quiz status: Pending</h3>
                 <NavButton :active="false" :color="'primary'" :text="`Quiz yet to start!`" :url="`${props.qid}/questions/1`"/>
             </div>
             
-            <div class="d-flex flex-column align-items-center" v-else-if="active === true">
+            <div class="d-flex flex-column align-items-center" v-else-if="status === 'ongoing'">
                 <NavButton :color="'primary'" :text="`Start quiz now!`" :url="`${props.qid}/questions/1`"/>
             </div>
         </div>

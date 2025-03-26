@@ -4,39 +4,43 @@
     import { api } from '@/api';
     import { useRoute } from 'vue-router';
 
-    import StaticResponse from '@/components/StaticResponse.vue';
-    import Pagination from '@/components/Pagination.vue';
-    import PerPage from '@/components/PerPage.vue';
-    import Loader from '@/components/Loader.vue';
+    import StaticQuestion from '@/components/StaticQuestion.vue';
+    import StaticOption from '@/components/StaticOption.vue';
+    import QuizNavigation from '../quiz/components/QuizNavigation.vue';
 
-    const props = defineProps(['sid','cid','qid'])
-    const route = useRoute();
-    const responses = ref(null);
+    const props = defineProps(['sid','cid','quiz_id','question_id'])
+    const marked = ref(null);
+    const question = ref(null);
     const pages = ref(null);
 
-    async function fetchData(){
-        let page = route.query.page ?? 1;
-        let per_page = route.query.per_page ?? 5;
-        let res = await api.get(`/user/subjects/${props.sid}/chapters/${props.cid}/quizes/${props.qid}/questions?page=${page}&per_page=${per_page}`)
-        responses.value = res.data.payload;
-        pages.value = res.data.pages;
+    async function fetchQuestion(){
+        let res = await api.get(`/user/subjects/${props.sid}/chapters/${props.cid}/quizes/${props.quiz_id}/questions/${props.question_id}`);
+        marked.value = res.data.payload;
+        question.value = res.data.question;
+        pages.value = res.data.num;
     }
-    fetchData();
+    fetchQuestion()
 </script>
 
 <template>
-    <template v-if="responses">
-        <div class="d-flex w-100 justify-content-center align-items-center gap-2 mt-2">
-            Number of questions per page: <PerPage/>
-        </div>
-        <div class="d-flex flex-column flex-grow-1 mt-1">
-            <div v-for="response in responses">
-                <StaticResponse :response="response"/>
+    <div v-if="question" class="d-flex w-100 flex-column align-self-center m-1 p-1">
+        <div class="question-container">
+            <div v-if="marked == -1">
+                Not attempted!
             </div>
-            <Pagination :url="route.fullPath" :pages="pages"/>
+            <StaticQuestion :index="props.question_id" :description="question.description"/>
         </div>
-    </template>
-    <Loader v-else/>
+
+        <div class="option-container">
+            <div class="d-flex flex-row justify-content-center flex-wrap w-100">
+                <template v-for="n in 4">
+                    <StaticOption :marked="marked" :optionNo="n-1" :correctOption="question.correct" :option-text="question.options[n-1]" />
+                </template>
+            </div>
+        </div>
+    </div>
+
+    <QuizNavigation :length="pages" :beforeSubmit="()=>{}" :current="props.question_id" :url="`/user/subjects/${props.sid}/chapters/${props.cid}/quizes/${props.quiz_id}/responses`"/>
 </template>
 
 <style scoped>

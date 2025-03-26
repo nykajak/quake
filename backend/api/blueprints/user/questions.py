@@ -25,24 +25,33 @@ def user_fetch_question_response(sid,cid,quiz_id,question_id):
     quiz = Quiz.query.filter(Quiz.id == quiz_id).scalar()
     if quiz is None:
         return jsonify(msg = "Quiz not found!"), 404
+    
+    current_datetime = datetime.now()
 
-    # Note: What should be done in case quiz has not started?
-    # Probably should return error message?
+    # Pending quiz
+    if current_datetime < quiz.dated:
+        return jsonify(msg = 'Cannot fetch question/response of pending quiz!'),400
+    
+    else:
+        # Finding time left in quiz
+        remaining_time = quiz.dated + timedelta(minutes = quiz.duration) - current_datetime
+        seconds = int(remaining_time.total_seconds())
 
-    # Finding time left in quiz
-    remaining_time = quiz.dated + timedelta(minutes = quiz.duration) - datetime.now()
-    seconds = int(remaining_time.total_seconds())
+        query = quiz.questions
+        num = query.count()
+        question = [x for x in quiz.questions.offset(int(question_id) - 1).limit(1)][0]
+        actual_question_id = question.id
 
-    # Note: Should finalise the actual things to be returned in response!
-    query = quiz.questions
-    num = query.count()
-    question = [x for x in quiz.questions.offset(int(question_id) - 1).limit(1)][0]
-    actual_question_id = question.id
+        r = Response.query.filter(Response.user_id == user.id, Response.question_id == actual_question_id, Response.quiz_id == quiz_id).scalar()
 
-    r = Response.query.filter(Response.user_id == user.id, Response.question_id == actual_question_id, Response.quiz_id == quiz_id).scalar()
-    if r:
-        return jsonify(payload = r.marked, question = question.serialise(required = ('unsafe')), num = num, time = seconds), 200
-    return jsonify(payload = -1, question = question.serialise(required = ('unsafe')), num = num, time = seconds), 200
+        if current_datetime < quiz.dated + timedelta(minutes = quiz.duration):
+            if r:
+                return jsonify(payload = r.marked, question = question.serialise(required = ('unsafe')), num = num, time = seconds), 200
+            return jsonify(payload = -1, question = question.serialise(required = ('unsafe')), num = num, time = seconds), 200
+
+        if r:
+            return jsonify(payload = r.marked, question = question.serialise(), num = num, time = seconds), 200
+        return jsonify(payload = -1, question = question.serialise(), num = num, time = seconds), 200
 
 @user_question_routes.post("/<question_id>")
 @jwt_required()

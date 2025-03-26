@@ -116,7 +116,7 @@ const router = createRouter({
           props: true
         },
         {
-          path:"subjects/:sid/chapters/:cid/quizes/:qid/responses",
+          path:"subjects/:sid/chapters/:cid/quizes/:quiz_id/responses/:question_id",
           component: UserQuizResponses,
           props: true
         },
