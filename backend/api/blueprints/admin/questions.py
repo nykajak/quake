@@ -4,6 +4,7 @@ from api.models import *
 from api.blueprints.admin import admin_required
 from api.blueprints.pagination import pagination_validation
 from datetime import datetime
+from api import cache
 from api.blueprints.admin.scores import get_score_summary_quiz,recompute_score_all
 
 # Base URL: /admin/subjects/<sid>/chapters/<cid>/questions
@@ -63,6 +64,7 @@ def edit_question(sid,cid,qid):
     if q:
         # Checking if question in correct subject
         if int(q.chapter.subject_id) == int(sid):
+            cache.delete_memoized(specific_question,sid,cid,qid)
 
             # Validation - Question description must be non empty
             if description and len(description) > 0:
@@ -114,6 +116,7 @@ def edit_question(sid,cid,qid):
 @admin_question_routes.get("/<qid>")
 @jwt_required()
 @admin_required
+@cache.memoize(10)
 def specific_question(sid,cid,qid):
     """
         See specific question.

@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 from sqlalchemy.orm.exc import StaleDataError
 from sqlalchemy import func
 from api.blueprints.pagination import pagination_validation
+from api import cache
 
 # Base URL: /admin/subjects/<sid>/chapters/<cid>/quizes
 admin_quiz_routes = Blueprint('admin_quiz_routes', __name__)
@@ -80,6 +81,7 @@ def edit_quiz(sid,cid,qid):
 
     # Checking existence of quiz in given chapter and subject
     if q and q.chapter.subject_id == int(sid):
+        cache.delete_memoized(specific_quiz, sid, cid, qid)
         if dated:
             # Changes to dated cannot be made once quiz has ended
             if current_date < q.dated + timedelta(minutes = q.duration):
@@ -133,6 +135,7 @@ def edit_quiz(sid,cid,qid):
 @admin_quiz_routes.get("/<qid>")
 @jwt_required()
 @admin_required
+@cache.memoize(10)
 def specific_quiz(sid,cid,qid):
     """
         See specific quiz details.

@@ -5,6 +5,7 @@ from flask_jwt_extended import jwt_required
 from api.models import *
 from api.blueprints.admin import admin_required
 from api.blueprints.pagination import pagination_validation
+from api import cache
 
 # Base URL: /admin/users
 admin_user_routes = Blueprint('admin_user_routes', __name__)
@@ -61,6 +62,7 @@ def all_users():
 @admin_user_routes.get("/<id>")
 @jwt_required()
 @admin_required
+@cache.memoize(10)
 def specific_users(id):
     """
         STABLE - 25/03/2025

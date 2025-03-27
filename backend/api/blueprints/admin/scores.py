@@ -2,6 +2,7 @@ from flask import Blueprint,jsonify,request
 from flask_jwt_extended import jwt_required
 from api.models import *
 from api.blueprints.admin import admin_required
+from api import cache
 
 # Base URL: /admin/scores
 admin_score_routes = Blueprint('admin_score_routes', __name__)
@@ -25,6 +26,7 @@ def recompute_score_all(qid):
 
     db.session.commit()
 
+@cache.memoize(10)
 def recompute_score_one(qid, uid):
     """
         Recomputes the score of a user for quiz with id qid.
@@ -45,6 +47,7 @@ def recompute_score_one(qid, uid):
 @admin_score_routes.get("/users/<uid>/subjects/<sid>")
 @jwt_required()
 @admin_required
+@cache.memoize(10)
 def get_score_summary_subject(uid,sid):
     """
         Return statistics of a particular user for a particular subject.
@@ -84,6 +87,7 @@ def get_score_summary_subject(uid,sid):
 @admin_score_routes.get("/users/<uid>/subjects/<sid>/chapters/<cid>")
 @jwt_required()
 @admin_required
+@cache.memoize(10)
 def get_score_summary_chapter(uid,sid,cid):
     """
         Return statistics of a particular user for a particular chapter.

@@ -2,6 +2,7 @@
 
 from flask import Blueprint,jsonify,request
 from flask_jwt_extended import jwt_required
+from api import cache
 from api.models import *
 from api.blueprints.admin import admin_required
 
@@ -11,6 +12,7 @@ admin_chapter_routes = Blueprint('admin_chapter_routes', __name__)
 @admin_chapter_routes.get("/<cid>")
 @jwt_required()
 @admin_required
+@cache.memoize(10)
 def admin_view_specific_chapter(sid,cid):
     """
         STABLE - 24/03/2025
@@ -45,6 +47,8 @@ def admin_edit_chapter(sid,cid):
 
     c = Chapter.query.filter(Chapter.id == cid, Chapter.subject_id == sid).scalar()
     if c:
+        cache.delete_memoized(admin_view_specific_chapter,sid,cid)
+
         # Validation for name - Length of name must be > 0
         if name is not None and len(name) > 0:
             c.name = name

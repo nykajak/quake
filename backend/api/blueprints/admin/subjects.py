@@ -4,6 +4,7 @@ from api.models import *
 from api.blueprints.admin import admin_required
 from sqlalchemy.exc import IntegrityError
 from api.blueprints.pagination import pagination_validation
+from api import cache
 
 # Base URL : /admin/subjects
 admin_subject_routes = Blueprint('admin_subject_routes', __name__)
@@ -43,6 +44,7 @@ def all_subjects():
 @admin_subject_routes.get("/<id>")
 @jwt_required()
 @admin_required
+@cache.memoize(10)
 def specific_subject(id):
     """
         STABLE - 25/03/2025
@@ -74,6 +76,7 @@ def edit_subject(id):
     # Valdiation - existence
     s = Subject.query.filter(Subject.id == id).scalar()
     if s:
+        cache.delete_memoize(specific_subject,id)
         # Validation - Name should be non empty
         try:
             if name and len(name) > 0:
