@@ -20,7 +20,6 @@ def see_questions(sid,cid):
         Expected on success: Paginated serialised payload {"questions":questions}
     """
 
-    # Note: Change response to payload = questions[]
     page = request.args.get("page", 1)
     per_page = request.args.get("per_page", 5)
 
@@ -35,7 +34,7 @@ def see_questions(sid,cid):
         MAX_QUESTIONS_PER_PAGE = 10
         query = c.questions.paginate(page = page, per_page = per_page, max_per_page = MAX_QUESTIONS_PER_PAGE)
         questions = [x.serialise() for x in query]
-        return jsonify(payload = {"questions":questions}, pages = query.pages), 200
+        return jsonify(payload = questions, pages = query.pages), 200
     
     return jsonify(msg="Subject or chapter not found!"), 400
 
@@ -52,8 +51,6 @@ def edit_question(sid,cid,qid):
         Currently questions that are part of older quizes will still be edited,
         making the score computed obsolete.
     """
-    # Note: Need to add recomputation for scores for previous quizes when updating
-    # correct or prevent editing for questions that have already been added to quizes
 
     # User data through form
     description = request.form.get("description",None)
@@ -124,11 +121,11 @@ def specific_question(sid,cid,qid):
 
         Expected on success: Question information retrieved as payload.
     """
-    # Note: Perhaps replace with db.session.query with join? Avoids ambiguity!
-    q = Question.query.filter(Question.id == qid, Question.chapter_id == cid).scalar()
+    
+    q = db.session.query(Question).join(Question.chapter).join(Chapter.subject)
+    q = q.filter(Question.id == qid, Chapter.id == cid, Subject.id == sid).scalar()
     if q:
-        if int(q.chapter.subject_id) == int(sid):
-            return jsonify(payload = q.serialise())
+        return jsonify(payload = q.serialise())
     
     return jsonify(msg="Subject, chapter or quiz not found!"),400
 

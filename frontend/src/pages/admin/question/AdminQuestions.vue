@@ -19,7 +19,7 @@ async function fetchQuestions(){
     let per_page = route.query.per_page ?? 5
     let res = await api.get(`/admin/subjects/${props.sid}/chapters/${props.cid}/questions/?page=${page}&per_page=${per_page}`)
     numPages.value = res.data.pages
-    questions.value = res.data.payload.questions;
+    questions.value = res.data.payload;
 }
 
 fetchQuestions()
