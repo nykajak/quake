@@ -42,14 +42,8 @@ def all_quizes(sid,cid):
     current_datetime = datetime.now()
     quizes = Quiz.query.filter(Quiz.chapter_id == int(cid))
 
-    # Note: Consider removing support for all filter?
-    payload = []
-    if filter_ == "all":
-        payload = [q.serialise() for q in Quiz.query.filter(Quiz.chapter_id == cid)]
-        return jsonify(payload = payload), 200
-
-    # Note: Changes to be made with regards to time based filtering
-    # finish_time > current should be pending, finish_time < current should be past
+    # Here pending refers to all quizes which have yet to start and past
+    # refers to all quizes that have already started
     
     if filter_ == "pending":
         # Has not ended - start time > current
@@ -146,9 +140,11 @@ def specific_quiz(sid,cid,qid):
 
         Expected on success: Serialised quiz information. (only)
     """
-    # Note: Could be a join?
-    q = Quiz.query.filter(Quiz.id == qid, Quiz.chapter_id == cid).scalar()
-    if q and q.chapter.subject_id == int(sid):
+
+    q = db.session.query(Quiz)
+    q = q.join(Quiz.chapter).join(Chapter.subject)
+    q = q.filter(Quiz.id == qid, Chapter.id == cid, Subject.id == cid).scalar()
+    if q:
         return jsonify(payload = q.serialise())
     
     return jsonify(msg="Subject, chapter or quiz not found!"),400
@@ -178,8 +174,9 @@ def specific_quiz_questions(sid,cid,qid):
     page, per_page = return_val
     MAX_QUESTIONS_PER_PAGE = 10
     
-    # Note: Could be a join?
-    q = Quiz.query.filter(Quiz.id == qid, Quiz.chapter_id == cid).scalar()
+    q = db.session.query(Quiz)
+    q = q.join(Quiz.chapter).join(Chapter.subject)
+    q = q.filter(Quiz.id == qid, Chapter.id == cid, Subject.id == cid).scalar()
 
     if not (q and q.chapter.subject_id == int(sid)):
         return jsonify(msg="Subject, chapter or quiz not found!"),400
