@@ -7,12 +7,12 @@ from api.workers import celery
 from datetime import datetime, timedelta
 from calendar import monthrange
 from celery.schedules import crontab
+import os
 
-# Note: Inspect the database interfacing code to optimise it.
-# Note: Better names for the tasks.
+from api.blueprints.admin.scores import recompute_score_one
 
 @celery.task()
-def sendEmail():
+def scheduledDailyReminder():
     """
         Scheduled task #1 - Send daily email to remind of upcoming all users of
         upcoming quizes for the day. Requires bulk sending of emails.
@@ -28,7 +28,6 @@ def sendEmail():
     query = db.session.query(Quiz,Chapter,Subject).join(Chapter, Chapter.id == Quiz.chapter_id).join(Subject, Subject.id == Chapter.subject_id)
     query = query.filter(Quiz.dated < tomorrow, Quiz.dated > today)
     
-    # Note: To be workshopped and improved!
     # Populating mapping to construct subject - chapter - quiz heirarchy
     pending_subjects = defaultdict(set)
     pending_quizes = defaultdict(set)
@@ -36,7 +35,8 @@ def sendEmail():
         pending_subjects[subject].add(chapter.name)
         pending_quizes[chapter].add(quiz)
 
-    # Note: Ensure the limit on number of emails that can be sent through one connection is high! (MAIL_MAX_EMAILS)
+    # Using default upper limit of infinity for MAIL_MAX_EMAILS
+    # Therefore connection will stay open until all emails sent
     # Best practice to be followed when bulk emailing.
     with mail.connect() as conn:
         for user in User.query.filter(User.is_admin == 0):
@@ -60,7 +60,7 @@ def sendEmail():
                 conn.send(msg)
 
 @celery.task()
-def make_summary():
+def scheduledMonthlyReport():
     """
         Scheduled task #2 - Create a summary of all quiz attempts in the last month per user
         in a html/pdf format and send it via email. Requires bulk sending of emails.
@@ -68,19 +68,19 @@ def make_summary():
         Trigger: Monthly at 1st of the month
     """
 
-    # Note: Ensure that quizes on 1st of the month and last of the month also counted!
     # Bounding dates for the month!
     start_of_month = datetime.now()
     days_in_month = monthrange(month=start_of_month.month,year=start_of_month.year)[1]
     end_of_month = start_of_month + timedelta(days = days_in_month)
 
     # Find all quizes in current month and map it to subject
-    quizes = Quiz.query.filter(Quiz.dated < end_of_month, Quiz.dated > start_of_month)
-    
-    # Note: this solution seems a little hacky - try using db.session.query and joins
+    quizes = db.session.query(Quiz,Subject)
+    quizes = quizes.join(Quiz.chapter).join(Chapter.subject)
+    quizes = quizes.filter(Quiz.dated < end_of_month, Quiz.dated > start_of_month)
+
     mapping = defaultdict(set)
-    for quiz in quizes:
-        mapping[quiz.chapter.subject].add(quiz)
+    for quiz,subject in quizes:
+        mapping[subject].add(quiz)
 
     # For bulk emailing
     with mail.connect() as conn:
@@ -95,33 +95,35 @@ def make_summary():
                 accuracy = 0
                 num_questions = 0
                 for quiz in quiz_set:
-                    
-                    # Note: Use of Score model could be made here! 
-                    # Note: Current implementation looks a little suspicious (too little joins?)
-                    query = db.session.query(Response, Question).join(Question, Question.id == Response.question_id)
-                    query = query.filter(Response.quiz_id == quiz.id)
-                    question_count = query.count()
-                    query = query.filter(Response.user_id == user.id)
-                    response_count = query.count()
-                    query = query.filter(Response.marked == Question.correct)
-                    correct_count = query.count()
+                    score = Score.query.filter(Score.user_id == user.id, Score.quiz_id == quiz.id).scalar()
+                    if score is None:                    
+                        question_count = quiz.questions.count()
+                        attempted_count, correct_count = recompute_score_one(quiz.id,user.id)
+                        score = Score(user_id = user.id, quiz_id = quiz.id, attempted_count = attempted_count, question_count = question_count, correct_count = correct_count)
+                        db.session.add(score)
+                        db.session.commit()
+
+                    else:
+                        attempted_count = score.attempted_count
+                        correct_count = score.correct_count
+                        question_count = score.question_count
 
                     quizes.append({
                         "id": quiz.id,
                         "question_count": question_count,
-                        "response_count": response_count,
+                        "response_count": attempted_count,
                         "correct_count": correct_count,
                     })
                     
-                    # Needed to ensure ZeroDivisionError does not occur
-                    # Note: Make accuracy default to a better value than 0? Maybe N/A?
                     if question_count > 0:
                         accuracy += correct_count
                         num_questions += question_count
 
-                # Note: Ensure ZeroDivisionError does not occur! Not done!
-                accuracy = accuracy / num_questions
-                accuracy = f"{accuracy * 100:.2f}"
+                if num_questions > 0:
+                    accuracy = accuracy / num_questions
+                    accuracy = f"{accuracy * 100:.2f}"
+                else:
+                    accuracy = "N/A"
 
             # Construction and sending of email
             msg = Message("Monthly report from Quake",sender="jakyn@gmail.com",recipients=[user.email])
@@ -130,7 +132,7 @@ def make_summary():
             conn.send(msg)
 
 @celery.task()
-def export_csv(uid):
+def triggeredFullReport(uid):
     """
         Triggered task #1 - Generate a summary of all quiz attempts (all-time) by given
         user in a csv format and store the file on the server. Then notify the user by
@@ -147,13 +149,12 @@ def export_csv(uid):
     # Only querying quizes from the past (before current datetime)
     current_date = datetime.now()
     quizes = db.session.query(Quiz)
-    quizes = quizes.join(Quiz.chapter).join(Chapter.subject)
+    quizes = quizes.join(Quiz.chapter).join(Chapter.subject).join(Subject.user)
+    quizes = quizes.filter(User.id == user.id).filter(Quiz.dated < current_date)
 
-    # Note: Should be a join between user and subjects!
-    quizes = quizes.filter(Subject.id.in_([x.id for x in user.subjects]), Quiz.dated < current_date)
-
-    # Note: Ensure that filename is always correct - no mixing up reports!
-    with open(f"./api/static/report_{user.id}.csv","w") as f:
+    base_path = os.getcwd()
+    filename = os.path.join(base_path,'api','static',f'report_{user.id}.csv')
+    with open(filename,"w") as f:
         f.write("Quiz_ID,Correct,Attempted,No_Of_Questions,Accuracy\n")
         for quiz in quizes:
             score = Score.query.filter(Score.user_id == uid, Score.quiz_id == quiz.id).scalar()
@@ -168,32 +169,19 @@ def export_csv(uid):
                 f.write(line)
                 continue
             
-            # Note: The following logic seems to be repeated - could be in a function!
+            score = Score.query.filter(Score.user_id == user.id, Score.quiz_id == quiz.id).scalar()
+            if score is None:                    
+                question_count = quiz.questions.count()
+                attempted_count, correct_count = recompute_score_one(quiz.id,user.id)
+                score = Score(user_id = user.id, quiz_id = quiz.id, attempted_count = attempted_count, question_count = question_count, correct_count = correct_count)
+                db.session.add(score)
+                db.session.commit()
 
-            # Fetch no of questions in a quiz
-            question_count_query = Quiz.query.filter(Quiz.id == quiz.id).scalar().questions
-            question_count = question_count_query.count()
-
-            # Fetch no of responses for a quiz by some user
-            response_count_query = db.session.query(Response, Quiz, Question)
-            response_count_query = response_count_query.join(Quiz, Quiz.id == Response.quiz_id).join(Question, Question.id == Response.question_id)
-            response_count_query = response_count_query.filter(Quiz.id == quiz.id, Response.user_id == uid)
-            response_count = response_count_query.count()
-
-            # Fetch no of correct responses
-            response_correct_query = response_count_query.filter(Response.marked == Question.correct)
-            correct_count = response_correct_query.count()
-
-            score = Score(user_id = uid, quiz_id = quiz.id, attempted_count = response_count, question_count = question_count, correct_count = correct_count)
-            db.session.add(score)
-            db.session.commit()
-
-            # Note: Requires a reasonable default for accuracy
             if score.question_count > 0:
                 accuracy = score.correct_count / score.question_count
                 accuracy = f"{accuracy:.2f}"
             else:
-                accuracy = 0
+                accuracy = "N/A"
 
             line = f"{quiz.id},{score.correct_count},{score.attempted_count},{score.question_count},{accuracy}"
             line += "\n"
@@ -227,11 +215,11 @@ def setup_periodic_tasks(sender, **kwargs):
     # Periodic task #1
     sender.add_periodic_task(
         crontab(hour=0, minute=1),
-        sendEmail.s(),
+        scheduledDailyReminder.s(),
     )
 
     # Periodic task #2
     sender.add_periodic_task(
         crontab(day_of_month=1),
-        make_summary.s()
+        scheduledMonthlyReport.s()
     )

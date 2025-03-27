@@ -2,7 +2,7 @@ from flask import Blueprint,jsonify,send_file
 from flask_jwt_extended import jwt_required,get_current_user
 from api.models import *
 from api.blueprints.user import user_required
-from api.tasks import export_csv
+from api.tasks import triggeredFullReport
 import os
 
 # Base URL: /user/summary
@@ -71,5 +71,5 @@ def user_generate_quiz_summary():
     if os.path.exists(file_path):
         os.remove(file_path)
 
-    export_csv.delay(user.id)
+    triggeredFullReport.delay(user.id)
     return jsonify(msg = "Report generation queued!"),200
