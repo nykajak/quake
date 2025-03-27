@@ -8,6 +8,12 @@ from api.blueprints.pagination import pagination_validation
 # Base URL: /user/subjects
 user_subject_routes = Blueprint('user_subject_routes', __name__)
 
+@cache.get(10)
+def query_specific_subject(uid, sid):
+    s = db.session.query(Subject).join(Subject.users)
+    s = s.filter(Subject.id == sid, User.id == uid).scalar()
+    return s
+
 @user_subject_routes.get("/all")
 @jwt_required()
 @user_required
@@ -78,14 +84,9 @@ def user_specific_subject(sid):
     """
     
     u = get_current_user()
-    @cache.memoize(10)
-    def fetch_subject(sid,uid):
-        s = db.session.query(Subject).join(Subject.users)
-        s = s.filter(Subject.id == sid, User.id == uid).scalar()
+    s = query_specific_subject(u.id, sid)
 
-        if s is None:
-            return jsonify(msg = "Subject not found!"), 400
+    if s is None:
+        return jsonify(msg = "Subject not found!"), 400
 
-        return jsonify(payload=s.serialise('chapters')),200
-
-    return fetch_subject(sid,u.id)
+    return jsonify(payload=s.serialise('chapters')),200
