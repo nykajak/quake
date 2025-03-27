@@ -45,7 +45,7 @@ def user_specific_chapter(sid,cid):
         return jsonify(msg = "Bad request, filter does not exist"), 400
 
     if filter_ == 'pending':
-        # Note: Pending quizes are ones that have not ended yet. Should change this!
+        # Pending quizes here are ones that haven't begun yet!
         query = c.quizes.filter(Quiz.dated > datetime.now())
         if query_str is not None:
             query = query.filter(Quiz.description.startswith(query_str))

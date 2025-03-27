@@ -28,8 +28,9 @@ def user_get_quiz_summary_csv():
         )
         return res
     
-    # Note: Exact exception should be provided!
+    # Exact exception cannot be provided (WinError?)
     except Exception as e:
+        print(e)
         print(e)
         return jsonify(msg = "File does not exist!"),404
     

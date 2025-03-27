@@ -85,8 +85,7 @@ def edit_subject(id):
             
             db.session.commit()
 
-        # Note: Exception should be replace with a specific Exception class
-        except Exception as e:
+        except IntegrityError as e:
             return jsonify(msg="Subject with that name already exists!"),400
 
         return jsonify(msg="Edit subject success"),200

@@ -36,7 +36,6 @@ from api.blueprints.user.enrolled import user_enrolled_routes
 from api.blueprints.user.chapters import user_chapter_routes
 from api.blueprints.user.quizes import user_quiz_routes
 from api.blueprints.user.questions import user_question_routes
-from api.blueprints.user.responses import user_response_routes
 from api.blueprints.user.summary import user_summary_routes
 
 # Subject related endpoints: /user/subjects
@@ -44,9 +43,6 @@ user_routes.register_blueprint(user_subject_routes, url_prefix = '/subjects')
 
 # Enrollment related endpoints: /user/enrolled
 user_routes.register_blueprint(user_enrolled_routes, url_prefix = '/enrolled')
-
-# Response related endpoints: /user/responses
-user_routes.register_blueprint(user_response_routes, url_prefix = '/responses')
 
 # Summary related endpoints: /user/summary
 user_routes.register_blueprint(user_summary_routes, url_prefix = '/summary')

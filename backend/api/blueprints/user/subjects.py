@@ -16,14 +16,17 @@ def available_subjects():
         Returns the list of subjects that user can enroll for
         GET /user/subjects/all
 
-        Expected on success: Returns the serialised, paginated list of subjects
+        Expected on success: Returns the serialised list of subjects
         that a user can enroll for.
     """
     u = get_current_user()
-    # Note: Figure out a way to display all subjects user is allwoed to enroll for efficiently
 
+    # Already enrolled!
     enrolled = [x.id for x in u.subjects]
+
+    # Already requested!
     requested = [x.subject_id for x in db.session.query(Requested).filter(Requested.user_id == u.id)]
+
     subjects = [x.serialise() for x in db.session.query(Subject).filter(Subject.id.notin_(enrolled),Subject.id.notin_(requested))]
     return jsonify(payload=subjects),200
 
@@ -73,19 +76,16 @@ def user_specific_subject(sid):
 
         Expected on success: Returns the serialised subject details (plus chapter)
     """
-    # Note: Should users get to see details of subjects they want to enroll in?
-    # Note: Function to be memoized should not have a mutable object param
+    
     u = get_current_user()
     @cache.memoize(10)
-    def fetch_subject(sid,u):
-        s = Subject.query.filter(Subject.id == sid).scalar()
+    def fetch_subject(sid,uid):
+        s = db.session.query(Subject).join(Subject.users)
+        s = s.filter(Subject.id == sid, User.id == uid).scalar()
 
         if s is None:
             return jsonify(msg = "Subject not found!"), 400
-        
-        if s not in u.subjects:
-            return jsonify(msg = "User not registered for subject!"),400
 
         return jsonify(payload=s.serialise('chapters')),200
 
-    return fetch_subject(sid,u)
+    return fetch_subject(sid,u.id)
