@@ -66,14 +66,14 @@ def get_score_summary_subject(uid,sid):
     question_count = question_count_query.count()
 
     # Fetch no of responses by user in subject
-    response_count_query = db.session.query(Response)
+    response_count_query = db.session.query(Response, Question)
     response_count_query = response_count_query.join(Response.question).join(Question.chapter).join(Chapter.subject)
     response_count_query = response_count_query.filter(Subject.id == sid,Response.user_id == uid)
     response_count = response_count_query.count()
 
     # Compute no of questions seen by user in subject
     questions_seen = set()
-    for r,q,c,s in response_count_query:
+    for r,q in response_count_query:
         questions_seen.add(q.id)
 
     questions_seen_count = len(questions_seen)

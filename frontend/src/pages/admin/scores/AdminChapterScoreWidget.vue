@@ -3,8 +3,7 @@
     import Accuracy from './components/Accuracy.vue'
     import Coverage from './components/Coverage.vue'
 
-    import { RouterLink } from 'vue-router'
-    import Loader from '@/components/Loader.vue'
+    import ChapterCard from '../chapter/components/ChapterCard.vue'
 
     import { ref } from 'vue'
     import { api } from '@/api'
@@ -13,11 +12,11 @@
 
     const correctResponses = ref(null);
     const wrongResponses = ref(null);
+    const unknownResponses = ref(10);
+
     const attemptedQuestions = ref(null);
     const unattemptedQuestions = ref(null);
-
-    const color1 = window.getComputedStyle(document.body).getPropertyValue('--tertiary-color');
-    const color2 = window.getComputedStyle(document.body).getPropertyValue('--error-color');
+    const unknownQuestions = ref(10);
 
     const chapter = ref(null);
     const errorMessage = ref(null);
@@ -52,36 +51,42 @@
             res = await api.get(`/admin/scores/users/${props.uid}/subjects/${props.sid}/chapters/${props.cid}`)
             correctResponses.value = res.data.correct_count
             wrongResponses.value = res.data.response_count - res.data.correct_count
+
+            if (correctResponses.value + wrongResponses.value > 0){
+                unknownResponses.value = 0;
+            }
+
             attemptedQuestions.value = res.data.seen_count
             unattemptedQuestions.value = res.data.question_count - res.data.seen_count
+
+            if (attemptedQuestions.value + unattemptedQuestions.value > 0){
+                unknownQuestions.value = 0;
+            }
         }
         catch(err){
             console.log(err);
         }
     }
 
-    fetchChapter()
-    fetchChapterStats()
+    Promise.all([fetchChapter(),fetchChapterStats()])
 
 </script>
 
 <template>
-    <div v-if="chapter" class="d-flex flex-column w-100 justify-content-between align-items-center p-5">
-        <h2 class="d-flex flex-grow-1 mb-3">
-            <RouterLink v-if="props.active" :to="`${props.sid}/chapters/${chapter.id}`">
-                {{chapter.name}}
-            </RouterLink>
+    <div class="d-flex flex-column w-100 justify-content-between align-items-center">
+        <ChapterCard v-if="chapter" :chapter="chapter"/>
+        <template v-else>
+            <ChapterCard :chapter="{
+                'id': 0,
+                'name':'Loading...  ',
+            }"/>
+        </template>
 
-            <template v-else>
-                {{chapter.name}}
-            </template>
-        </h2>
         <div class="d-flex w-75 justify-content-between">
-            <Accuracy :correct-responses="correctResponses" :wrong-responses="wrongResponses" :color1="color1" :color2="color2"/>
-            <Coverage :attempted-questions="attemptedQuestions" :unattempted-questions="unattemptedQuestions" :color1="color1" :color2="color2" />
+            <Accuracy :data="[correctResponses,wrongResponses,unknownResponses]"/>
+            <Coverage :data="[attemptedQuestions,unattemptedQuestions,unknownQuestions]"/>
         </div>
     </div>
-<Loader v-else/>
 </template>
 
 <style scoped>

@@ -20,6 +20,7 @@
         }" :options="{
             'responsive': true,
             maintainAspectRatio: true,
+            animation: false
         }" />
         <div class="d-flex mt-2">
             <h3>Attempt summary</h3>
