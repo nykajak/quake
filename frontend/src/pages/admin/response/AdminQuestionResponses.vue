@@ -3,15 +3,20 @@
     import { ref } from 'vue';
     import { useRoute } from 'vue-router';
     
-    import AdminQuestion from '../question/AdminQuestion.vue';
-    import StaticResponse from '@/components/StaticResponse.vue';
-    import Pagination from '@/components/Pagination.vue';
-    import PerPage from '@/components/PerPage.vue';
+    import AdminQuestionCard from '../question/components/AdminQuestionCard.vue';
+    import StaticOption from '@/components/StaticOption.vue';
+    import PaginationToolBar from '@/components/PaginationToolBar.vue';
 
     const props = defineProps(['sid','cid','qid'])
     const route = useRoute();
     const responses = ref(null);
+    const question = ref(null);
     const pages = ref(null);
+
+    async function fetchQuestion(){
+        let res = await api.get(`/admin/subjects/${props.sid}/chapters/${props.cid}/questions/${props.qid}`)
+        question.value = res.data.payload;
+    }
 
     async function fetchResponses(){
         let page = route.query.page ?? 1;
@@ -21,38 +26,43 @@
         pages.value = res.data.pages;
     }
 
-    fetchResponses()
+    Promise.all([fetchQuestion(),fetchResponses()])
 </script>
 
 <template>
-    <AdminQuestion :sid="props.sid" :cid="props.cid" :qid="props.qid"/>
-
-    <div class="d-flex w-100 justify-content-center mb-2 align-items-center gap-1">
-        Number of responses per page: <PerPage/>
+    <div class="d-flex flex-column mb-3">
+        <AdminQuestionCard v-if="question" :question="question"/>   
     </div>
 
-    <div v-if="responses">
+    <div class="d-flex flex-column flex-grow-1" v-if="responses">
         <template v-for="r in responses">
-            <div class="metadata">
-                <div>
-                    {{ r.user.name }} answered at {{ r.dated.hour }}:{{ r.dated.minute }} on {{ r.dated.day }}/{{ r.dated.month }}/{{ r.dated.year }}
+            <div class="mb-4">
+                <div class="metadata">
+                    <div>
+                        {{ r.user.name }} answered at {{ r.dated.hour }}:{{ r.dated.minute }} on {{ r.dated.day }}/{{ r.dated.month }}/{{ r.dated.year }}
+                    </div>
+        
+                    <div>
+                        Quiz #{{ r.quiz.id }}
+                    </div>
                 </div>
-    
-                <div>
-                    Quiz #{{ r.quiz.id }}
+        
+                <div class="option-div d-flex justify-content-center">
+                    <StaticOption :optionNo="r.marked" :correct-option="question.correct" :marked="r.marked" :option-text="question.options[r.marked]"/>
                 </div>
-            </div>
-    
-            <div>
-                {{ r.marked }}
             </div>
         </template>
     </div>
 
-    <Pagination :url="route.fullPath" :pages="pages"/>
+    <PaginationToolBar :num-pages="pages"/>
 </template>
 
 <style scoped>
+
+.option-div{
+    background-color: var(--secondary-color);
+}
+
 .metadata{
     display: flex;
     background-color: var(--primary-color);
