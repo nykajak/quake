@@ -2,7 +2,6 @@
 import { defineProps } from 'vue';
 import { RouterLink } from 'vue-router';
 const props = defineProps(['user','active']);
-import NavButton from '@/components/NavButton.vue';
 </script>
 
 <template>
@@ -39,8 +38,9 @@ import NavButton from '@/components/NavButton.vue';
     width: 100px;
     height: 100px;
     border-radius: 100%;
-    border: 1px solid light-dark(var(--dark-color),var(--light-color));
     margin-bottom: 1em;
+    background-image: url("../../../../assets/profile_pic.png");
+    background-size: contain;
 }
 
 .info-div{
