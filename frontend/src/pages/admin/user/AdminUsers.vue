@@ -54,11 +54,10 @@
         <div class="d-flex flex-grow-1 flex-column align-items-center">
 
             <!-- Display the search bar -->
-            <div class="d-flex flex-column user-sidebar w-25 justify-content-start align-items-center text-center">
-                <h3>Querying users</h3>
-                <div class="d-flex mb-2">
-                    <PerPage/>
-                    <input type="text" v-model="username" placeholder="Username">
+            <div class="d-flex flex-column user-sidebar w-75 justify-content-start align-items-center text-center">
+                <h3 id="heading-info">Showing user details</h3>
+                <div class="d-flex w-100 mb-2">
+                    <input class="d-flex flex-grow-1" type="text" v-model="username" placeholder="Username">
                     <button class="query-button" @click="router.push({
                         'path': 'users',
                         'query': {
@@ -66,12 +65,12 @@
                             'q': username,
                             'page': 1
                         }
-                    })">Submit</button>
+                    })">Search user</button>
                 </div>
             </div>
 
             <!-- Display search results -->
-            <div v-if="users !== null && users.length > 0" class="d-flex flex-column w-75">
+            <div v-if="users !== null && users.length > 0" class="result-container-div">
                 <div class="d-flex flex-column flex-grow-1 justify-content-center">
                     <div class="results-div">
                         <template v-for="user in users">
@@ -80,8 +79,11 @@
                     </div>
                 </div>
                 
-                <div class="d-flex justify-content-center">
-                    <Pagination :pages="numPages" :url="route.fullPath"/>
+                <div class="d-flex justify-content-center gap-2">
+                    <div>
+                        <Pagination :pages="numPages" :url="route.fullPath"/>
+                    </div>
+                    <PerPage/>
                 </div>
             </div>
 
@@ -101,11 +103,25 @@
 
 <style scoped>
 
+#heading-info{
+    font-size: 3em;
+    color: var(--secondary-color);
+    padding-bottom: 0.3em;
+}
+
 .error-div{
     display: flex;
     flex-direction: column;
     margin-top: 2rem;
     font-size: 2rem;
+}
+
+.result-container-div{
+    display: flex;
+    flex-grow: 1;
+    flex-direction: column;
+    width: 75%;
+    border: 1px solid light-dark(var(--dark-color),var(--light-color));
 }
 
 .results-div{
