@@ -3,7 +3,7 @@
 </script>
 
 <template>
-    <div class="d-flex flex-column w-100 flex-grow-1 mt-5 align-items-center">
+    <div class="d-flex flex-column w-100 mt-2 align-items-center">
         <h3 id="greeting-text">
             Welcome Jakyn!
         </h3>

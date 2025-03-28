@@ -17,8 +17,8 @@ const route = useRoute();
 
     <template v-else>
         <div class="d-flex flex-column flex-grow-1 align-items-center mt-3">
-            <AdminStats/>
             <AdminInfo/>
+            <AdminStats/>
         </div>
     </template>
 </template>

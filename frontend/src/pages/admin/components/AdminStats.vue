@@ -30,7 +30,7 @@
 </script>
 
 <template>
-    <div class="d-flex flex-column pt-3 gap-1 align-items-center justify-content-start w-100">
+    <div class="d-flex flex-column pt-3 gap-1 align-items-center flex-grow-1 justify-content-start mt-4 w-100">
         <div class="statisticContainer">
             <div class="statisticDiv">
                 <h2 class="headerText">
