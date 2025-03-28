@@ -6,6 +6,7 @@
     import UserCard from './components/UserCard.vue';
     import PaginationToolBar from '@/components/PaginationToolBar.vue';
     import Loader from '@/components/Loader.vue';
+    import SearchButton from '@/components/SearchButton.vue';
 
     const route = useRoute();
     const router = useRouter();
@@ -56,14 +57,9 @@
                 <h3 id="heading-info">Showing user details</h3>
                 <div class="d-flex w-100 mb-2">
                     <input class="d-flex flex-grow-1" type="text" v-model="username" placeholder="Username">
-                    <button class="query-button" @click="router.push({
-                        'path': 'users',
-                        'query': {
-                            ...route.query,
-                            'q': username,
-                            'page': 1
-                        }
-                    })">Search users</button>
+                    <SearchButton :query_str="username">
+                        Search users
+                    </SearchButton>
                 </div>
             </div>
 
@@ -126,12 +122,6 @@
 }
 .user-sidebar{
     margin-top: 1em;
-}
-
-.query-button{
-    border: 1px solid light-dark(var(--dark-color),var(--light-color));
-    background-color: var(--secondary-color);
-    color: var(--light-color);
 }
 
 input {

@@ -8,6 +8,8 @@
     import PaginationToolBar from '@/components/PaginationToolBar.vue';
     import Loader from '@/components/Loader.vue';
     import SubjectCard from './components/SubjectCard.vue';
+    import NavButton from '@/components/NavButton.vue';
+    import SearchButton from '@/components/SearchButton.vue';
 
     const route = useRoute();
     const router = useRouter();
@@ -56,18 +58,11 @@
                     </h3>
                 </div>
                 <div class="d-flex w-100 mb-2">
-                    <button id="add_button" @click="router.push({
-                        path: '/admin/subjects/add'
-                    })">+</button>
+                    <NavButton color="primary" text="+ Add new subject" url="/admin/subjects/add"/>
                     <input class="d-flex flex-grow-1" type="text" v-model="subjectname" placeholder="Subject">
-                    <button class="query-button" @click="router.push({
-                        'path': 'subjects',
-                        'query': {
-                            ...route.query,
-                            'q': subjectname,
-                            'page': 1
-                        }
-                    })">Search subjects</button>
+                    <SearchButton :query_str="subjectname">
+                        Search subjects
+                    </SearchButton>
                 </div>
             </div>
             <div class="result-container-div">
@@ -118,12 +113,6 @@
 
 .subject-sidebar{
     margin-top: 1em;
-}
-
-.query-button{
-    border: 1px solid light-dark(var(--dark-color),var(--light-color));
-    background-color: var(--secondary-color);
-    color: var(--light-color);
 }
 
 input {
