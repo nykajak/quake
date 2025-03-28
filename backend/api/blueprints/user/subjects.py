@@ -12,6 +12,8 @@ user_subject_routes = Blueprint('user_subject_routes', __name__)
 def query_specific_subject(uid, sid):
     s = db.session.query(Subject).join(Subject.users)
     s = s.filter(Subject.id == sid, User.id == uid).scalar()
+    if s is not None:
+        return s.serialise('chapters')
     return s
 
 @user_subject_routes.get("/all")
@@ -85,8 +87,7 @@ def user_specific_subject(sid):
     
     u = get_current_user()
     s = query_specific_subject(u.id, sid)
-
     if s is None:
         return jsonify(msg = "Subject not found!"), 400
 
-    return jsonify(payload=s.serialise('chapters')),200
+    return jsonify(payload=s),200
