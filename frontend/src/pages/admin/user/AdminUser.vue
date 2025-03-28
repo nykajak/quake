@@ -47,8 +47,8 @@
             
             <!-- Display the user subject details -->
             <div class="user-info">
-                <h2 class="heading">Subjects</h2>
-                <div class="d-flex flex-column w-100 align-items-center">
+                <h2 class="heading">Enrolled subjects</h2>
+                <div class="d-flex flex-column w-100 align-items-center pt-3">
                     <div class="subject-info" v-for="subject in user.subjects">
                         <div>
                             <RouterLink :to="`/admin/subjects/${subject.id}`">
@@ -98,7 +98,6 @@
     padding: 1em;
     width: 90%;
     border-bottom: 1px solid light-dark(var(--dark-color),var(--light-color));
-    border-top: 1px solid light-dark(var(--dark-color),var(--light-color));
 }
 
 .user-info{
@@ -110,11 +109,16 @@
     border-top: 1px solid light-dark(var(--dark-color),var(--light-color));
 }
 
+.subject-info:first-child{
+    border-top: 1px solid light-dark(var(--dark-color),var(--light-color));
+}
+
 .subject-heading{
     font-size: 2em;
     padding-right: 0.3em;
 }
 .heading{
+    font-size:3em;
     color: light-dark(var(--dark-color), var(--light-color));
 }
 .dropdown{
