@@ -5,9 +5,8 @@
 
     import { api } from '@/api';
 
-    import Pagination from '@/components/Pagination.vue';
+    import PaginationToolBar from '@/components/PaginationToolBar.vue';
     import Loader from '@/components/Loader.vue';
-    import PerPage from '@/components/PerPage.vue';
     import SubjectCard from './components/SubjectCard.vue';
 
     const route = useRoute();
@@ -49,20 +48,18 @@
 
 <template>
     <div v-if="loading == false" class="d-flex flex-column flex-grow-1">
-        
-        <div class="d-flex flex-column align-items-center">
-            <div class="subject-sidebar d-flex flex-column text-center justify-content-center align-items-center">
+        <div class="d-flex flex-column align-items-center flex-grow-1">
+            <div class="subject-sidebar d-flex flex-column text-center justify-content-center align-items-center w-75">
                 <div class="d-flex gap-2">
-                    <h3 class="heading">
+                    <h3 id="heading-info">
                         Querying subjects
                     </h3>
                 </div>
-                <div class="d-flex border mb-2">
+                <div class="d-flex w-100 mb-2">
                     <button id="add_button" @click="router.push({
                         path: '/admin/subjects/add'
                     })">+</button>
-                    <PerPage/>
-                    <input type="text" v-model="subjectname" placeholder="Subject">
+                    <input class="d-flex flex-grow-1" type="text" v-model="subjectname" placeholder="Subject">
                     <button class="query-button" @click="router.push({
                         'path': 'subjects',
                         'query': {
@@ -70,10 +67,10 @@
                             'q': subjectname,
                             'page': 1
                         }
-                    })">Submit</button>
+                    })">Search subjects</button>
                 </div>
             </div>
-            <div class="d-flex flex-column">
+            <div class="result-container-div">
                 <div class="d-flex flex-column flex-grow-1 justify-content-center">
                     <div class="results-div">
                         <div v-for="subject in subjects" class="pl-2 pr-2 mb-2">
@@ -81,9 +78,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="d-flex justify-content-center">
-                    <Pagination :pages="numPages" :url="route.fullPath"/>
-                </div>
+                <PaginationToolBar :num-pages="numPages"/>
             </div>
         </div>
     </div>
@@ -92,8 +87,18 @@
 </template>
 
 <style scoped>
-.heading{
-    font: 10em;
+.result-container-div{
+    display: flex;
+    flex-grow: 1;
+    flex-direction: column;
+    width: 75%;
+    border: 1px solid light-dark(var(--dark-color),var(--light-color));
+}
+
+#heading-info{
+    font-size: 3em;
+    color: var(--secondary-color);
+    padding-bottom: 0.3em;
 }
 
 #add_button{

@@ -1,13 +1,11 @@
 <script setup>
     import { ref } from 'vue';
     import { useRoute, useRouter } from 'vue-router';
-    
     import { api } from '@/api';
     
     import UserCard from './components/UserCard.vue';
-    import Pagination from '@/components/Pagination.vue';
+    import PaginationToolBar from '@/components/PaginationToolBar.vue';
     import Loader from '@/components/Loader.vue';
-    import PerPage from '@/components/PerPage.vue';
 
     const route = useRoute();
     const router = useRouter();
@@ -65,7 +63,7 @@
                             'q': username,
                             'page': 1
                         }
-                    })">Search user</button>
+                    })">Search users</button>
                 </div>
             </div>
 
@@ -79,12 +77,7 @@
                     </div>
                 </div>
                 
-                <div class="d-flex justify-content-center gap-2">
-                    <div>
-                        <Pagination :pages="numPages" :url="route.fullPath"/>
-                    </div>
-                    <PerPage/>
-                </div>
+                <PaginationToolBar :num-pages="numPages"/>
             </div>
 
             <div v-else-if="users !== null && users.length == 0" class="error-div">
