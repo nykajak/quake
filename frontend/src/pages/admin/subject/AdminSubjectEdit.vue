@@ -6,6 +6,7 @@
     import { api } from '@/api';
     import Loader from '@/components/Loader.vue';
     import ChapterCard from '../chapter/components/ChapterCard.vue';
+    import Message from '@/components/Message.vue';
 
     const router = useRouter();
     const props = defineProps(['sid']);
@@ -13,13 +14,15 @@
     const subject = ref(null);
     const loading = ref(false);
     const ready = ref(false);
+    const errorMessage = ref('')
 
     async function fetchSubject(){
         try{
             loading.value = true;
             let res = await api.get(`/admin/subjects/${props.sid}`);
             loading.value = false;
-            return res.data.payload
+            subject.value = res.data.payload;
+            ready.value = true;
         }
 
         catch(err){
@@ -34,23 +37,30 @@
         f.append("name",document.getElementById("edit-title").value)
         f.append("description",document.getElementById("edit-description").innerText)
 
-        let res = await api.put(`/admin/subjects/${props.sid}`,f)
-        router.push({
-            "path":`/admin/subjects/${props.sid}`
-        })
+        let res;
+        try{
+            res = await api.put(`/admin/subjects/${props.sid}`,f)
+            router.push({
+                "path":`/admin/subjects/${props.sid}`
+            })
+        }
+        catch(err){
+            errorMessage.value = err.response.data.msg;
+            return;
+        }
         return res.data
     }
 
-    fetchSubject().then(data => {
-        if (data != -1){
-            subject.value = data;
-            ready.value = true;
-        }
-    })
+    fetchSubject()
 
 </script>
 
 <template>
+    <Message v-if="errorMessage !== ''" level="danger" :hide-function="()=>{
+        errorMessage = ''
+    }">
+        {{ errorMessage }}
+    </Message>
     <div v-if="loading == false && ready == true" class="d-flex flex-column flex-grow-1 mt-2">
         <div class="d-flex flex-column justify-content-center align-items-center text-center">
             <input id="edit-title" type="text" :value="subject.name">

@@ -2,8 +2,11 @@
 
 import { api } from '@/api';
 import { useRouter } from 'vue-router';
+import Message from '@/components/Message.vue';
+import { ref } from 'vue';
 
 const router = useRouter();
+const errorMessage = ref('')
 
 async function validateForm(e){
     try {
@@ -12,12 +15,18 @@ async function validateForm(e){
         return;
     }
     catch(err){
+        errorMessage.value = err.response.data.msg;
         console.log(err);
     }
 }
 </script>
 
 <template>
+    <Message v-if="errorMessage !== ''" level="danger" :hide-function="()=>{
+        errorMessage = ''
+    }">
+        {{ errorMessage }}
+    </Message>
     <div class="d-flex flex-row flex-grow-1 justify-content-center pt-5">
         <div class="d-flex flex-column align-items-center w-75">
             <div class="form-div justify-content-center">
