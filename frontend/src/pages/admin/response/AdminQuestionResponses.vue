@@ -4,6 +4,7 @@
     import { useRoute } from 'vue-router';
     
     import AdminQuestion from '../question/AdminQuestion.vue';
+    import StaticResponse from '@/components/StaticResponse.vue';
     import Pagination from '@/components/Pagination.vue';
     import PerPage from '@/components/PerPage.vue';
 

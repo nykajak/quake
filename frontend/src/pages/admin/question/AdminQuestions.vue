@@ -3,8 +3,7 @@ import { api } from '@/api';
 import { ref } from 'vue';
 
 import { RouterLink, useRoute } from 'vue-router';
-import Pagination from '@/components/Pagination.vue';
-import PerPage from '@/components/PerPage.vue';
+import PaginationToolBar from '@/components/PaginationToolBar.vue';
 import NavButton from '@/components/NavButton.vue';
 
 import StaticQuestion from '@/components/StaticQuestion.vue';
@@ -27,27 +26,30 @@ fetchQuestions()
 
 <template>
     <div v-if="questions" class="d-flex flex-column flex-grow-1 pt-4">
-        <div class="d-flex flex-column align-items-center gap-4">
-            <div class="d-flex align-items-center gap-2">
-                Questions per page: <PerPage/>
-            </div>
+        <div class="d-flex flex-column align-items-center gap-4 flex-grow-1">
+            <h3 class="headingInfo">
+                Showing all questions in current chapter
+            </h3>
             <div>
                 <NavButton url="questions/add" color="primary" text="Add new question"/>
             </div>
-            <div class="d-flex p-2 w-100 justify-content-center" v-for="question in questions">
-                <RouterLink class="w-100" :to="`/admin/subjects/${props.sid}/chapters/${props.cid}/questions/${question.id}`">
-                    <StaticQuestion :description="question.description" />
-                </RouterLink>
+            <div class="d-flex flex-grow-1 flex-column w-100">
+                <div class="d-flex p-2 w-100 justify-content-center" v-for="question in questions">
+                    <RouterLink class="w-75" :to="`/admin/subjects/${props.sid}/chapters/${props.cid}/questions/${question.id}`">
+                        <StaticQuestion :description="question.description" />
+                    </RouterLink>
+                </div>
             </div>
-            
-            <div class="d-flex justify-content-center">
-                <Pagination :pages="numPages" :url="route.fullPath"/>
-            </div>
+            <PaginationToolBar :num-pages="numPages"/>
         </div>
     </div>
 </template>
 
 <style scoped>
+.headingInfo{
+    font-size: 2.5em;
+}
+
 .question-div{
     display: flex;
     justify-content: center;

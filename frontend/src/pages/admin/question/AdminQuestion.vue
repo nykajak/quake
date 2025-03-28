@@ -8,6 +8,7 @@ import StaticOptions from '../../../components/StaticOptions.vue';
 import StaticQuestion from '../../../components/StaticQuestion.vue';
 import NavButton from '@/components/NavButton.vue';
 import DeleteButton from '@/components/DeleteButton.vue';
+import AdminQuestionCard from './components/AdminQuestionCard.vue';
 
 const router = useRouter();
 
@@ -26,9 +27,7 @@ fetchQuestion().then((data)=>{
 
 <template>
     <div v-if="question" class="d-flex w-100 flex-column align-self-center m-1 p-1">
-        <StaticQuestion :index="question.id" :description="question.description" />
-        <StaticOptions :question="question"/>
-
+        <AdminQuestionCard :question="question"/>
         <div class="d-flex justify-content-center mt-4">
             <NavButton :url="`${props.qid}/responses`" text="See Responses" color="primary"/>
             <NavButton :url="`${props.qid}/edit`" text="Edit Question" color="secondary"/>
