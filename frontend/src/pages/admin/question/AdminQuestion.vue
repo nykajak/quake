@@ -30,8 +30,8 @@ fetchQuestion().then((data)=>{
         <StaticOptions :question="question"/>
 
         <div class="d-flex justify-content-center mt-4">
-            <NavButton :url="`${props.qid}/edit`" text="Edit Question" color="primary"/>
-            <NavButton :url="`${props.qid}/responses`" text="See Responses" color="secondary"/>
+            <NavButton :url="`${props.qid}/responses`" text="See Responses" color="primary"/>
+            <NavButton :url="`${props.qid}/edit`" text="Edit Question" color="secondary"/>
             <DeleteButton :redirect="`/admin/subjects/${props.sid}/chapters/${props.cid}/questions/`" :url="`/admin/subjects/${props.sid}/chapters/${props.cid}/questions/${props.qid}`" color="error">
                 Delete question
             </DeleteButton>

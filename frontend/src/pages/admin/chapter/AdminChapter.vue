@@ -54,7 +54,7 @@ fetchChapter()
         <div class="d-flex flex-row justify-content-center">
             <NavButton text="Manage questions" :url="`/admin/subjects/${props.sid}/chapters/${props.cid}/questions`" color="primary"/>
             <NavButton text="Manage quizes" :url="`/admin/subjects/${props.sid}/chapters/${props.cid}/quizes`" color="secondary"/>
-            <NavButton text="Edit chapter" :url="`/admin/subjects/${props.sid}/chapters/${props.cid}/edit`" color="error"/>
+            <NavButton text="Edit chapter" :url="`/admin/subjects/${props.sid}/chapters/${props.cid}/edit`" color="tertiary"/>
             <DeleteButton :redirect="`/admin/subjects/${props.sid}`" :url="`/admin/subjects/${props.sid}/chapters/${props.cid}`" color="error">
                 Delete chapter
             </DeleteButton>

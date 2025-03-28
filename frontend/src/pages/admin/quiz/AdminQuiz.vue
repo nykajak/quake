@@ -32,7 +32,7 @@ fetchQuiz().then((data)=>{
         <div class="d-flex mb-3">
             <NavButton text="Modify questions" :url="`${props.qid}/search`" color="primary"/>
             <NavButton text="View responses" :url="`${props.qid}/responses`" color="secondary"/>
-            <NavButton text="Edit quiz" :url="`${props.qid}/edit`" color="error"/>
+            <NavButton text="Edit quiz" :url="`${props.qid}/edit`" color="tertiary"/>
             <DeleteButton :redirect="`/admin/subjects/${props.sid}/chapters/${props.cid}/quizes/`" :url="`/admin/subjects/${props.sid}/chapters/${props.cid}/quizes/${props.qid}`" color="error">
                 Delete quiz
             </DeleteButton>

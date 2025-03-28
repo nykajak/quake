@@ -48,7 +48,7 @@
         <div class="d-flex justify-content-center mb-2">
             <NavButton text="See enrolled" :url="`/admin/subjects/${subject.id}/enrolled`" color="primary"/>
             <NavButton text="Add chapter" :url="`/admin/subjects/${subject.id}/chapters/add`" color="secondary"/>
-            <NavButton text="Edit subject" :url="`/admin/subjects/${subject.id}/edit`" color="error"/>
+            <NavButton text="Edit subject" :url="`/admin/subjects/${subject.id}/edit`" color="tertiary"/>
             <DeleteButton :redirect="`/admin/subjects/`" :url="`/admin/subjects/${props.sid}`" color="error">
                 Delete subject
             </DeleteButton>
