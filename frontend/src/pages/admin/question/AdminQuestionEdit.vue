@@ -66,11 +66,10 @@ async function editQuestion(e){
 <style scoped>
 
 #submit-button{
-    border: 1px solid var(--light-color);
+    border: none;
     color: var(--light-color);
-    background-color: var(--tertiary-color);
+    background-color: var(--primary-color);
     padding: 0.5em;
-    border-radius: 10px;
 }
 
 .option-container{
