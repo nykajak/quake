@@ -16,15 +16,16 @@
     const pages = ref(null);
 
     async function fetchQuestion(){
+        let res;
         try{
-            let res = await api.get(`/user/subjects/${props.sid}/chapters/${props.cid}/quizes/${props.quiz_id}/questions/${props.question_id}`);
-
+            res = await api.get(`/user/subjects/${props.sid}/chapters/${props.cid}/quizes/${props.quiz_id}/questions/${props.question_id}`);
         }
         catch(err){
             router.push({
                 "path": `/user/subjects/${props.sid}/chapters/${props.cid}/quizes/${props.quiz_id}`
             })
-        }   
+        }
+
         marked.value = res.data.payload;
         question.value = res.data.question;
         pages.value = res.data.num;
