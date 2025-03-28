@@ -76,7 +76,7 @@ def edit_subject(id):
     # Valdiation - existence
     s = Subject.query.filter(Subject.id == id).scalar()
     if s:
-        cache.delete_memoize(specific_subject,id)
+        cache.delete_memoized(specific_subject,id)
         # Validation - Name should be non empty
         try:
             if name and len(name) > 0:
