@@ -30,6 +30,9 @@ import { useRouter } from 'vue-router';
     background-color: var(--secondary-color);
 }
 
+.tertiary-button{
+    background-color: var(--tertiary-color);
+}
 
 .error-button{
     background-color: var(--error-color);

@@ -1,7 +1,8 @@
 from functools import wraps
 from api.models import *
 from flask import jsonify,Blueprint
-from flask_jwt_extended import get_current_user
+from flask_jwt_extended import get_current_user,jwt_required
+from api import cache
 
 # All admin endpoints start with /admin
 admin_routes = Blueprint('admin_routes', __name__, url_prefix="/admin")
@@ -15,6 +16,26 @@ def admin_required(fun):
             return fun(*args,**kwargs)
         return jsonify(msg="Not an Admin!"),400
     return inner
+
+@admin_routes.get("/")
+@jwt_required()
+@admin_required
+@cache.memoize(10)
+def fetch_admin_stats():
+    """
+        Fetches display statistics for admin dashboard page!
+    """
+    count_users = User.query.filter(User.is_admin == 0).count()
+    count_subjects = Subject.query.filter().count()
+    count_questions = Question.query.filter().count()
+    count_responses = Response.query.filter().count()
+
+    return jsonify(
+        count_users = count_users,
+        count_responses = count_responses,
+        count_questions = count_questions,
+        count_subjects = count_subjects
+    ), 200
 
 # Importing required functionality related to admin responsibilites
 from api.blueprints.admin.users import admin_user_routes
