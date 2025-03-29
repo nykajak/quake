@@ -36,7 +36,7 @@ def all_subjects():
     if not q:
         query = Subject.query.filter().paginate(page=page,per_page=per_page,max_per_page=MAX_SUBJECTS_PER_PAGE)
     else:
-        query = Subject.query.filter(Subject.name.startswith(q)).paginate(page=page,per_page=per_page,max_per_page=MAX_SUBJECTS_PER_PAGE)
+        query = Subject.query.filter(Subject.name.ilike(f"%{q}%")).paginate(page=page,per_page=per_page,max_per_page=MAX_SUBJECTS_PER_PAGE)
     
     res = [s.serialise() for s in query]
     return jsonify(payload=res,pages=query.pages)

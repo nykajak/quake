@@ -76,7 +76,7 @@ def see_enrolled(sid):
         if userName is None:
             query = s.users.paginate(page = page, per_page = per_page, max_per_page = MAX_USERS_PER_PAGE)
         else:
-            query = s.users.filter(User.name.startswith(userName)).paginate(page = page, per_page = per_page, max_per_page = MAX_USERS_PER_PAGE)
+            query = s.users.filter(User.name.ilike(f"%{userName}%")).paginate(page = page, per_page = per_page, max_per_page = MAX_USERS_PER_PAGE)
 
         users = [x.serialise() for x in query]
         return jsonify(payload = {"users":users}, pages = query.pages), 200

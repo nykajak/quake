@@ -48,13 +48,13 @@ def user_specific_chapter(sid,cid):
         # Pending quizes here are ones that haven't begun yet!
         query = c.quizes.filter(Quiz.dated > datetime.now())
         if query_str is not None:
-            query = query.filter(Quiz.description.startswith(query_str))
+            query = query.filter(Quiz.description.ilike(f"%{query_str}%"))
         query = query.paginate(page=page,per_page=per_page,max_per_page=MAX_QUIZES_PER_PAGE)
         quizes = [x.serialise() for x in query]
     else:
         query = c.quizes.filter(Quiz.dated < datetime.now())
         if query_str is not None:
-            query = query.filter(Quiz.description.startswith(query_str))
+            query = query.filter(Quiz.description.ilike(f"%{query_str}%"))
         query = query.paginate(page=page,per_page=per_page,max_per_page=MAX_QUIZES_PER_PAGE)
         quizes = [x.serialise() for x in query]
             

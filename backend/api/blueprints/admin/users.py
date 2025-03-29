@@ -40,7 +40,7 @@ def all_users():
     if q:
         query = User.query.filter(
                 User.is_admin == 0, 
-                User.name.startswith(q)
+                User.name.ilike(f"%{q}%")
             ).paginate(
                 page = page,
                 per_page = per_page,

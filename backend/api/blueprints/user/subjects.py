@@ -65,7 +65,7 @@ def user_subjects():
     if query_string is None:
         subjects = u.subjects.paginate(page = page, per_page = per_page, max_per_page = 10)
     else:
-        subjects = u.subjects.filter(Subject.name.startswith(query_string))
+        subjects = u.subjects.filter(Subject.name.ilike(f"%{query_string}%"))
         subjects = subjects.paginate(page = page, per_page = per_page, max_per_page = 10)
 
     u = u.serialise()
