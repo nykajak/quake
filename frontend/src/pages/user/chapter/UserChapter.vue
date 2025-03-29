@@ -5,6 +5,7 @@
 
     import Loader from '@/components/Loader.vue';
     import PaginationToolBar from '@/components/PaginationToolBar.vue';
+    import SearchButton from '@/components/SearchButton.vue';
     
     const props = defineProps(['sid','cid'])
     const router = useRouter();
@@ -57,8 +58,8 @@
 </script>
 
 <template>
-    <div v-if="chapter && chapter.subject" class="d-flex flex-column flex-grow-1 mt-3">
-        <div class="d-flex flex-column align-items-center">
+    <div v-if="chapter && chapter.subject" class="d-flex align-items-center flex-column flex-grow-1 mt-3">
+        <div class="d-flex flex-column align-items-center text-center">
             <div>
                 <h3>
                     <RouterLink :to="`/user/subjects/${props.sid}`">
@@ -87,13 +88,11 @@
             Pending: <input type="radio" v-model="filter" value="pending">
         </div>
 
-        <div class="d-flex justify-content-center align-items-center mt-2">
-            <div class="d-flex justify-content-center align-items-center gap-1">
-                Search by description: <input type="text" v-model="query_str">
-            </div>
-            <button id="search" @click="search">
-                Search
-            </button>
+        <div class="d-flex justify-content-center align-items-center mt-2 w-75">
+            <input class="d-flex flex-grow-1 h-100" type="text" v-model="query_str" placeholder="Description">
+            <SearchButton :query_str="query_str">
+                Search by description
+            </SearchButton>
         </div>
 
         <div class="results-div">

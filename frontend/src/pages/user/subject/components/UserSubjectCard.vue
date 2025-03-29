@@ -7,7 +7,7 @@ const props = defineProps(['subject','active']);
 </script>
 
 <template>
-    <div class="d-flex flex-column align-items-center">
+    <div class="d-flex flex-column align-items-center text-center">
         <h3 v-if="active == 1">
             <RouterLink :to="`/user/subjects/${props.subject.id}`">
                 {{ props.subject.name }}    
