@@ -8,7 +8,7 @@
 
 <template>
     <button class="query-button" @click="router.push({
-        'path': 'subjects',
+        'path': route.fullPath,
         'query': {
             ...route.query,
             'q': props.query_str,

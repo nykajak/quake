@@ -5,9 +5,8 @@ import { useRoute, useRouter } from 'vue-router';
 
 import UserCard from '../user/components/UserCard.vue';
 import Loader from '@/components/Loader.vue';
-import Pagination from '@/components/Pagination.vue';
-import PerPage from '@/components/PerPage.vue';
-import NavButton from '@/components/NavButton.vue';
+import PaginationToolBar from '@/components/PaginationToolBar.vue';
+import SearchButton from '@/components/SearchButton.vue';
 
 const props = defineProps(['sid']);
 
@@ -51,41 +50,31 @@ fetchUsers()
 </script>
 
 <template>
-    <div v-if="users" class="mt-3">
-        <div class="d-flex flex-column justify-content-center gap-2 align-items-center">
-            <div class="d-flex align-items-center gap-2">
-                Users per page: <PerPage/>
-            </div>
-            <div class="d-flex align-items-center">
-                <div class="d-flex align-items-center gap-1">
-                    <label for="username-query">Username:</label>
-                    <input class="username-query" type="text" v-model="userName">
-                </div>
-                <div class="d-flex align-items-center gap-1">
-                    <button id="search-button" @click="router.push({
-                        'path': route.fullPath,
-                        'query': {
-                            ...route.query,
-                            'page': 1,
-                            'q':userName
-                        }
-                    })">
-                        Search
-                    </button>
-                </div>
+    <div v-if="users" class="d-flex flex-column align-items-center mt-3 flex-grow-1">
+        <div class="d-flex flex-column flex-grow-1 justify-content-center gap-2 align-items-center w-75">
+            <h1>
+                Showing all enrolled users
+            </h1>
+            <div class="d-flex justify-content-center align-items-start w-100">
+                <input class="d-flex flex-grow-1 h-100" name="username-query" type="text" v-model="userName" placeholder="Username">
+                <SearchButton :query_str="userName">
+                    Search
+                </SearchButton>
                 
             </div>
-        </div>
-        <div class="d-flex flex-column align-items-center justify-content-center" v-for="user in users">
-            <UserCard :user="user" :active="true"/>
-            <button class="remove-button" @click="async () => {
-                let res = await api.delete(`/admin/enrolled/users/${user.id}/subjects/${props.sid}`);
-            }">
-                Remove enrollment?
-            </button>
-        </div>
-        <div class="d-flex mt-2 justify-content-center">
-            <Pagination :url="route.path" :pages="numPages"/>
+            <div class="resultContainerDiv">
+                <div class="d-flex flex-row flex-grow-1 flex-wrap justify-content-center">
+                    <div class="d-flex flex-column align-items-center justify-content-center mb-2" v-for="user in users">
+                        <UserCard :user="user" :active="true"/>
+                        <button class="remove-button" @click="async () => {
+                            let res = await api.delete(`/admin/enrolled/users/${user.id}/subjects/${props.sid}`);
+                        }">
+                            Remove enrollment?
+                        </button>
+                    </div>
+                </div>
+                <PaginationToolBar :num-pages="numPages"/>
+            </div>
         </div>
     </div>
 
@@ -104,6 +93,16 @@ fetchUsers()
 </template>
 
 <style scoped>
+
+.resultContainerDiv{
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    flex-grow: 1;
+    border: 1px solid light-dark(var(--dark-color),var(--light-color));
+    margin-bottom: 0.2em;
+}
+
 .remove-button{
     display: flex;
     border: none;
