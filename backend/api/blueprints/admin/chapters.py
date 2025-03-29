@@ -87,7 +87,7 @@ def admin_add_chapter(sid):
     description = request.form.get("description",None)
 
     # Validation - name should be present
-    if name is None:
+    if name is None or len(name) == 0:
         return jsonify(msg = "Malformed request! Missing name."), 400
     
     # Validation - description should be present
