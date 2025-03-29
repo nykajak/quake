@@ -4,7 +4,6 @@
 import { defineProps,ref } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 
-// Note: Consider eliminating props.url in favor of path from useRoute()
 const props = defineProps(['url','pages'])
 
 const router = useRouter();

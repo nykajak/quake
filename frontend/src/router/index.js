@@ -1,8 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { api } from '@/api'
 
-// Note: Organise imports and remove redundant pages!
-
 import NotFound from '@/pages/anon/NotFound.vue'
 
 import Login from '@/pages/anon/Login.vue'
@@ -51,17 +49,11 @@ import AdminQuestionResponses from '@/pages/admin/response/AdminQuestionResponse
 import AdminSubjectScore from '@/pages/admin/scores/AdminSubjectScore.vue'
 import AdminChapterScore from '@/pages/admin/scores/AdminChapterScore.vue'
 import AdminQuizScore from '@/pages/admin/scores/AdminQuizScore.vue'
-import Test from '@/pages/Test.vue'
 import UserSummary from '@/pages/user/summary/UserSummary.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
-    {
-      name: "test",
-      path: "/test",
-      component: Test
-    },
     {
       name: "home",
       path: "/",

@@ -3,7 +3,6 @@
     
     import { useRouter } from 'vue-router';
     import { api } from '@/api';
-    // Note: Replace props.text with slot based rendering
     const props = defineProps(['redirect','url','color'])
     const router = useRouter();
 

@@ -1,6 +1,5 @@
 <!-- 
  Renders a static (non-editable) view of a response
- Note: Make it adaptable according to structure of response.
 -->
 <script setup>
     import { RouterLink,useRouter } from 'vue-router';

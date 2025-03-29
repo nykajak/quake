@@ -1,9 +1,6 @@
 from api.database import db
 import datetime
 
-# Note: Remove some of the various unused required options in serialise().
-# Note: Find optimal values for field lengths for certain models.
-
 # Registered relation to check if user registered for a particular course. (many to many)
 registered = db.Table("registered",
     db.Column("user_id",db.Integer,db.ForeignKey('users.id'), primary_key = True),
@@ -315,9 +312,6 @@ class Response(db.Model):
 class Score(db.Model):
     """
         Score model representing the result of a quiz given by some user.
-        Note: Score model is usually just used as an aggregator to prevent 
-        repeated queries. Therefore changes to past quizes, including change 
-        in questions (only deletion allowed) requires recomputation of scores.
     """
     __tablename__ = "scores"
 
