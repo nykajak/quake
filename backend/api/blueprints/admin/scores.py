@@ -41,7 +41,6 @@ def recompute_score_one(qid, uid):
     # Fetch no of correct responses
     response_correct_query = response_count_query.filter(Response.marked == Question.correct)
     correct_count = response_correct_query.count()
-
     return attempted_count, correct_count
 
 @admin_score_routes.get("/users/<uid>/subjects/<sid>")
