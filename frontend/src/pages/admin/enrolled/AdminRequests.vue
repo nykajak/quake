@@ -1,22 +1,25 @@
 <script setup>
     import { ref } from 'vue';
     import { api } from '@/api';
-    import { useRoute } from 'vue-router';
+    import { useRoute, useRouter } from 'vue-router';
 
     import Loader from '@/components/Loader.vue';
     import PaginationToolBar from '@/components/PaginationToolBar.vue';
 
     const route = useRoute();
+    const router = useRouter();
     const requests = ref(null);
     const errorMessage = ref(null);
     const pages = ref(null);
 
     async function rejectResponse(uid,sid){
         let res = await api.delete(`/admin/enrolled/users/${uid}/subjects/${sid}`);
+        router.go(0);
     }
 
     async function acceptResponse(uid,sid){
         let res = await api.post(`/admin/enrolled/users/${uid}/subjects/${sid}`);
+        router.go(0);
     }
 
     async function fetchRequests(){

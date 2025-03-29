@@ -1,7 +1,9 @@
 <script setup>
 import { ref } from 'vue';
 import { api } from '@/api';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 const subjects = ref(null);
 const requests = ref(null);
 
@@ -36,9 +38,9 @@ Promise.all([fetchSubjects(),fetchRequests()])
                         headers: {
                             'Content-Type': 'multipart/form-data'
                         }
-                    }
+                    }   
                 );
-                Promise.all([fetchSubjects(),fetchRequests()])
+                router.go(0);
                 }">
                     Enroll
                 </button>

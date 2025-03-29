@@ -2,10 +2,12 @@
 import { api } from '@/api';
 import { ref } from 'vue';
 import { defineProps } from 'vue';
+import { useRouter } from 'vue-router';
 
 import Loader from '@/components/Loader.vue';
 
 const props = defineProps(['sid','cid']);
+const router = useRouter();
 const chapter = ref(null);
 const errorMessage = ref(null);
 

@@ -68,6 +68,7 @@ fetchUsers()
                         <UserCard :user="user" :active="true"/>
                         <button class="remove-button" @click="async () => {
                             let res = await api.delete(`/admin/enrolled/users/${user.id}/subjects/${props.sid}`);
+                            router.go(0);
                         }">
                             Remove enrollment?
                         </button>
