@@ -190,22 +190,7 @@ def triggeredFullReport(uid):
     # Note: Need to tidy up the HTML template
     # Sending email notification when done!
     msg = Message("Attempt summary report generated!", sender="jakyn@gmail.com", recipients = [user.email])
-    html_body = """
-        <html>
-            <head>
-                <title>
-                    Attempt summary report generated!
-                </title>
-            </head>
-            <body>
-                <p>
-                    Your request for an attemt summary has been processed and your results are waiting for you!
-                    <br>
-                    Simply login and proceed to your summary page! Happy quizzing!
-                </p>
-            </body>
-        </html>
-    """
+    html_body = render_template("./notify.html")
     msg.html = html_body
     mail.send(msg)
 
