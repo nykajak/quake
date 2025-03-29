@@ -6,6 +6,7 @@ import { useRoute, useRouter } from 'vue-router';
 import UserSubjectCard from './components/UserSubjectCard.vue';
 import Loader from '@/components/Loader.vue';
 import PaginationToolBar from '@/components/PaginationToolBar.vue';
+import SearchButton from '@/components/SearchButton.vue';
 
 const subjects = ref(null);
 const pages = ref(null);
@@ -38,14 +39,15 @@ fetchSubjects()
 </script>
 
 <template>
-    <div v-if="subjects" class="mt-3">
-        <div class="d-flex justify-content-center mb-3">
-            <div class="d-flex justify-content-center align-items-center gap-1">
-                Search enrolled: <input type="text" v-model="query_string">
-            </div>
-            <button id="search" @click="search">
-                Search
-            </button>
+    <div v-if="subjects" class="d-flex flex-column align-items-center mt-3">
+        <h1>
+            Search for enrolled subject
+        </h1>
+        <div class="d-flex justify-content-center mb-3 w-75">
+            <input class="d-flex flex-grow-1" type="text" v-model="query_string" placeholder="Subject">
+            <SearchButton :query_str="query_string">
+                Search Subject
+            </SearchButton>
         </div>
 
         <template v-for="subject in subjects">
