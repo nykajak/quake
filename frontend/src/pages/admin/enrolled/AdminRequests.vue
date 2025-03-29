@@ -4,8 +4,7 @@
     import { useRoute } from 'vue-router';
 
     import Loader from '@/components/Loader.vue';
-    import Pagination from '@/components/Pagination.vue';
-    import PerPage from '@/components/PerPage.vue';
+    import PaginationToolBar from '@/components/PaginationToolBar.vue';
 
     const route = useRoute();
     const requests = ref(null);
@@ -65,29 +64,36 @@
             </h3>
         </div>
         <template v-else>
-            <PerPage/>
-            <div class="d-flex flex-column align-items-center mb-3" v-for="r in requests">
-                <div>
-                    Username: {{ r.user.name }} 
+            <h3>
+                Viewing enrollment requests!
+            </h3>
+            <div class="request-div" v-for="r in requests">
+                <div class="header-div">
+                    <div class="username-div">
+                        Username: {{ r.user.name }} 
+                    </div>
+                    <div class="subject-div">
+                        Subject: {{ r.subject.name }}
+                    </div>
                 </div>
-                <div>
-                    Subject: {{ r.subject.name }}
+                
+                <div class="mt-2">
+                    <h4>Confirm action?</h4>
                 </div>
-    
-                <div class="d-flex mt-3">
+                <div class="options-div">
                     <button class="accept-button" @click="async () => {
                         await acceptResponse(r.user.id,r.subject.id);
                     }">
-                        Accept
+                        Accept Enrollment
                     </button>
                     <button class="reject-button" @click="async () => {
                         await rejectResponse(r.user.id,r.subject.id);
                     }">
-                        Reject
+                        Reject Enrollment
                     </button>
                 </div>
             </div>
-            <Pagination :url="route.fullPath" :pages="pages"/>
+            <PaginationToolBar :num-pages="pages"/>
         </template>
     </div>
 
@@ -106,6 +112,40 @@
 </template>
 
 <style scoped>
+.header-div div{
+    padding: 1em;
+    color: var(--light-color);
+}
+
+.header-div{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    background-color: var(--primary-color);
+}
+
+.request-div{
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 1em;
+    padding-bottom: 1em;
+    border: 1px solid light-dark(var(--dark-color),var(--light-color));
+}
+
+.options-div{
+    display: flex;
+    width: 75%;
+    justify-content: space-around;
+    margin-top: 0.5em;
+}
+
+.options-div button{
+    padding: 0.5em;
+}
+
 .accept-button{
     display: flex;
     border: none;
