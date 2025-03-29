@@ -1,4 +1,6 @@
 cd backend
+
+python -m venv .env
 . ".env\Scripts\activate"
 
 try
@@ -7,6 +9,6 @@ try
 }
 finally
 {
-    cd ..
     deactivate
+    cd ..
 }
