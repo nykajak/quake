@@ -71,8 +71,8 @@
                 <h1>
                     {{chapter.name}}
                 </h1>
-                <p class="text-center">
-                    {{chapter.description}}
+                <p class="descriptionDiv text-center">
+                    {{chapter.description ?? 'No description provided!'}}
                 </p>
             </div>
         </div>
@@ -128,6 +128,10 @@
 </template>
 
 <style scoped>
+.descriptionDiv{
+    color: var(--contrast-color);
+}
+
 .result-obj{
     display: flex;
     flex-direction: column;
