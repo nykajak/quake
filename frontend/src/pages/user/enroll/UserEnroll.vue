@@ -3,16 +3,22 @@ import { ref } from 'vue';
 import { api } from '@/api';
 import { useRouter, useRoute } from 'vue-router';
 import SearchButton from '@/components/SearchButton.vue';
+import PaginationToolBar from '@/components/PaginationToolBar.vue';
 
 const router = useRouter();
 const route = useRoute();
 const subjects = ref(null);
 const requests = ref(null);
+
 const q = ref(route.query.q ?? "");
+const pages = ref(null);
 
 async function fetchSubjects(){
-    let res = await api.get(`/user/subjects/all?q=${q.value}`);
+    let page = route.query.page ?? 1;
+    let per_page = route.query.per_page ?? 5;
+    let res = await api.get(`/user/subjects/all?q=${q.value}&page=${page}&per_page=${per_page}`);
     subjects.value = res.data.payload;
+    pages.value = res.data.pages;
 }
 
 async function fetchRequests(){
@@ -59,6 +65,8 @@ Promise.all([fetchSubjects(),fetchRequests()])
                 {{ subject.description ?? 'No description provided!' }}
             </div>
         </div>
+
+        <PaginationToolBar :num-pages="pages"/>
     </div>
 
     <div v-if="requests" class="d-flex flex-column align-items-center mt-3">

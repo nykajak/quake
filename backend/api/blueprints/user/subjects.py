@@ -24,11 +24,21 @@ def available_subjects():
         Returns the list of subjects that user can enroll for
         GET /user/subjects/all
 
-        Expected on success: Returns the serialised list of subjects
+        Expected on success: Returns the paginated, serialised list of subjects
         that a user can enroll for.
     """
     u = get_current_user()
     query_string = request.args.get("q", None)
+    page = request.args.get("page", 1)
+    per_page = request.args.get("per_page", 5)
+
+    MAX_SUBJECTS_PER_PAGE=10
+    
+    return_val,validation = pagination_validation(page,per_page)
+    if validation != 200:
+        return validation
+    
+    page, per_page = return_val
 
     # Already enrolled!
     enrolled = [x.id for x in u.subjects]
@@ -40,8 +50,9 @@ def available_subjects():
     if query_string is not None:
         query = query.filter(Subject.name.ilike(f"%{query_string}%"))
 
+    query = query.paginate(page = page, per_page = per_page, max_per_page = MAX_SUBJECTS_PER_PAGE)
     subjects = [x.serialise() for x in query]
-    return jsonify(payload=subjects),200
+    return jsonify(payload=subjects, pages = query.pages),200
 
 @user_subject_routes.get("/")
 @jwt_required()
@@ -67,11 +78,10 @@ def user_subjects():
 
     u = get_current_user()
 
-    if query_string is None:
-        subjects = u.subjects.paginate(page = page, per_page = per_page, max_per_page = 10)
-    else:
-        subjects = u.subjects.filter(Subject.name.ilike(f"%{query_string}%"))
-        subjects = subjects.paginate(page = page, per_page = per_page, max_per_page = 10)
+    subjects = u.subjects
+    if query_string is not None:
+        subjects = subjects.filter(Subject.name.ilike(f"%{query_string}%"))
+    subjects = subjects.paginate(page = page, per_page = per_page, max_per_page = 10)
 
     u = u.serialise()
     u["subjects"] = [x.serialise() for x in subjects]
