@@ -15,6 +15,7 @@
     {% for quiz in quizes %}
         <br>
         <h4> Quiz #{{quiz.id}} </h4>
+        <h5>{{quiz.description}}</h5>
         <p>
             No of questions in quiz: {{quiz.question_count}} <br>
             No of questions attempted: {{quiz.response_count}} <br>

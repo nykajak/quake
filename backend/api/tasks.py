@@ -25,14 +25,14 @@ def scheduledDailyReminder():
     tomorrow = today + timedelta(days = 1)
 
     # Fetching all relevant quizes
-    query = db.session.query(Quiz,Chapter,Subject).join(Chapter, Chapter.id == Quiz.chapter_id).join(Subject, Subject.id == Chapter.subject_id)
+    query = db.session.query(Quiz,Chapter,Subject).join(Quiz.chapter).join(Chapter.subject)
     query = query.filter(Quiz.dated < tomorrow, Quiz.dated > today)
     
     # Populating mapping to construct subject - chapter - quiz heirarchy
     pending_subjects = defaultdict(set)
     pending_quizes = defaultdict(set)
     for quiz,chapter,subject in query:
-        pending_subjects[subject].add(chapter.name)
+        pending_subjects[subject].add(chapter)
         pending_quizes[chapter].add(quiz)
 
     # Using default upper limit of infinity for MAIL_MAX_EMAILS
@@ -47,9 +47,9 @@ def scheduledDailyReminder():
                 msg = [f"{user.name}, you have pending quizes for the following today!"]
                 for subject in notify_for:
                     msg.append(f"Subject: {subject.name}")
-                    chapter_names = pending_subjects[subject]
-                    for chapter_name in chapter_names:
-                        msg.append(f"Chapter: {chapter_name}")
+                    chapters = pending_subjects[subject]
+                    for chapter in chapters:
+                        msg.append(f"Chapter: {chapter.name}")
                         for quiz in pending_quizes[chapter]:
                             msg.append(f"Quiz {quiz.id}")
                 
@@ -110,6 +110,7 @@ def scheduledMonthlyReport():
 
                     quizes.append({
                         "id": quiz.id,
+                        "description": quiz.description,
                         "question_count": question_count,
                         "response_count": attempted_count,
                         "correct_count": correct_count,
@@ -149,7 +150,7 @@ def triggeredFullReport(uid):
     # Only querying quizes from the past (before current datetime)
     current_date = datetime.now()
     quizes = db.session.query(Quiz)
-    quizes = quizes.join(Quiz.chapter).join(Chapter.subject).join(Subject.user)
+    quizes = quizes.join(Quiz.chapter).join(Chapter.subject).join(Subject.users)
     quizes = quizes.filter(User.id == user.id).filter(Quiz.dated < current_date)
 
     base_path = os.getcwd()
