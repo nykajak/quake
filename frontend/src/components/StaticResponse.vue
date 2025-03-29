@@ -31,6 +31,14 @@
                 </button>
             </div>
 
+            <div v-if="props.response.question">
+                <button class="nav-button" @click="router.push({
+                    'path': `/admin/subjects/${props.response.question.chapter.subject.id}/chapters/${props.response.question.chapter.id}/questions/${props.response.question.id}`
+                })">
+                    Question #{{ props.response.question.id }}
+                </button>
+            </div>
+
             <div v-if="props.response.dated">
                 {{ props.response.dated.day }}/{{ props.response.dated.month }}/{{ props.response.dated.year }}
                 at

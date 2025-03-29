@@ -7,8 +7,7 @@ import { useRoute } from 'vue-router';
 import { RouterLink } from 'vue-router';
 import NavButton from '@/components/NavButton.vue';
 import StaticQuestion from '@/components/StaticQuestion.vue';
-import Pagination from '@/components/Pagination.vue';
-import PerPage from '@/components/PerPage.vue';
+import PaginationToolBar from '@/components/PaginationToolBar.vue';
 
 const props = defineProps(['sid','cid','qid']);
 const route = useRoute();
@@ -28,19 +27,15 @@ fetchQuestions()
 </script>
 
 <template>
-    <div class="d-flex flex-column align-items-center w-100">
-        <div class="d-flex flex-column align-items-center w-100">
-            
-            <div class="d-flex gap-2 align-items-center">
-                Questions per page: <PerPage/>
-            </div>
+    <div class="d-flex flex-column align-items-center w-100 flex-grow-1">
+        <div class="d-flex flex-column align-items-center w-100 flex-grow-1">
             <div v-if="questions && pages" class="d-flex p-2 w-100 justify-content-center" v-for="question in questions">
                 <RouterLink class="w-75" :to="`/admin/subjects/${props.sid}/chapters/${props.cid}/questions/${question.id}`">
                     <StaticQuestion class="w-100" :description="question.description" />
                 </RouterLink>
             </div>
-            <Pagination :url="route.fullPath" :pages="pages"/>
         </div>
+        <PaginationToolBar :num-pages="pages"/>
     </div>
 </template>
 

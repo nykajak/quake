@@ -4,8 +4,7 @@
     import { RouterLink, useRouter,useRoute } from 'vue-router';
 
     import Loader from '@/components/Loader.vue';
-    import Pagination from '@/components/Pagination.vue';
-    import PerPage from '@/components/PerPage.vue';
+    import PaginationToolBar from '@/components/PaginationToolBar.vue';
     
     const props = defineProps(['sid','cid'])
     const router = useRouter();
@@ -123,12 +122,7 @@
                 Quiz fetching logic error!
             </div>
         </div>
-        <div class="d-flex justify-content-center gap-2">
-            <PerPage/>
-            <div>
-                <Pagination :url="route.fullPath" :pages="pages"/>
-            </div>
-        </div>
+        <PaginationToolBar :num-pages="pages"/>
     </div>
 
     <Loader v-else/>

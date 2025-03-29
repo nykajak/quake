@@ -4,8 +4,7 @@
     import { useRoute } from 'vue-router';
     
     import StaticResponse from '@/components/StaticResponse.vue';
-    import Pagination from '@/components/Pagination.vue';
-    import PerPage from '@/components/PerPage.vue';
+    import PaginationToolBar from '@/components/PaginationToolBar.vue';
 
     const props = defineProps(['sid','cid','qid'])
     const route = useRoute();
@@ -24,9 +23,6 @@
 </script>
 
 <template>
-    <div class="d-flex w-100 justify-content-center mt-3 align-items-center gap-1">
-        Number of responses per page: <PerPage/>
-    </div>
 
     <div v-if="responses">
         <div v-for="r in responses">
@@ -34,7 +30,7 @@
         </div>
     </div>
 
-    <Pagination :url="route.fullPath" :pages="pages"/>
+    <PaginationToolBar :num-pages="pages"/>
 </template>
 
 <style scoped>

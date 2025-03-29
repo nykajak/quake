@@ -4,8 +4,7 @@
     import { api } from '@/api';
 
     import StaticQuestion from '@/components/StaticQuestion.vue';
-    import Pagination from '@/components/Pagination.vue';
-    import PerPage from '@/components/PerPage.vue';
+    import PaginationToolBar from '@/components/PaginationToolBar.vue';
 
     const props = defineProps(['sid','cid','qid'])
     const router = useRouter();
@@ -62,7 +61,6 @@
         <h3 class="text-center">Searching questions for Quiz</h3>
         <form @submit.prevent="fetchResults" class="d-flex flex-column w-100 align-items-center mt-1">
             <div class="form-div">
-                <PerPage/>
                 <label for="q" class="form-div-label">Search term: </label>
                 <input type="text" class="form-div-input" name="q" :value="route.query.q ?? ''">
             </div>
@@ -95,7 +93,7 @@
                 </div>
             </div>
         </div>
-        <Pagination :url="route.fullPath" :pages = "pages"/>
+        <PaginationToolBar :num-pages = "pages"/>
     </div>
 
 </template>

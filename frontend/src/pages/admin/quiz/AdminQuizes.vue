@@ -5,8 +5,7 @@ import { api } from '@/api';
 import { RouterLink, useRouter, useRoute } from 'vue-router';
 
 import NavButton from '@/components/NavButton.vue';
-import PerPage from '@/components/PerPage.vue';
-import Pagination from '@/components/Pagination.vue';
+import PaginationToolBar from '@/components/PaginationToolBar.vue';
 
 const router = useRouter()
 const route = useRoute()
@@ -49,7 +48,6 @@ watch(selected, (newVal,oldVal)=>{
         <form @submit.prevent="" class="d-flex flex-column w-100 align-items-center mt-1">
             <div class="d-flex mb-2">
                 <NavButton text="+ Add Quiz" url="quizes/add" color="primary"/>
-                <PerPage/>
             </div>
             
             <div class="form-options-div-container">
@@ -75,7 +73,7 @@ watch(selected, (newVal,oldVal)=>{
             </p>
         </div>
 
-        <Pagination :url="route.fullPath" :pages="pages"/>
+        <PaginationToolBar :num-pages="pages"/>
     </div>
 </template>
 

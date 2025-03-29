@@ -3,10 +3,8 @@
     import { api } from '@/api';
     import { useRoute } from 'vue-router';
 
-    import AdminQuizScoreWidget from './AdminQuizScoreWidget.vue';
     import StaticResponse from '@/components/StaticResponse.vue';
-    import Pagination from '@/components/Pagination.vue';
-    import PerPage from '@/components/PerPage.vue';
+    import PaginationToolBar from '@/components/PaginationToolBar.vue';
 
     const props = defineProps(['uid','sid','cid','qid']);
     const route = useRoute();
@@ -24,15 +22,12 @@
 </script>
 
 <template>
-    <div class="d-flex gap-2 justify-content-center w-100 mt-2 align-items-center">
-        Number of responses per page: <PerPage/>
-    </div>
     <div v-if="responses">
         <div v-for="response in responses">
             <StaticResponse :response="response"/>
         </div>
     </div>
-    <Pagination :url="route.fullPath" :pages="pages"/>
+    <PaginationToolBar :num-pages="pages"/>
 
 </template>
 

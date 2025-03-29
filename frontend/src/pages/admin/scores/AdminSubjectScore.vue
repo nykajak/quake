@@ -76,7 +76,7 @@
 
     <div v-if="subject && subject.chapters" class="chapters">
         <div class="d-flex flex-column align-items-center mb-3 w-100" v-for="chapter in subject.chapters">
-            <ChapterCard :chapter="chapter"/>
+            <ChapterCard :active="1" :chapter="chapter"/>
             <NavButton color="primary" text="View Score" :url="`${props.sid}/chapters/${chapter.id}`" />
         </div>
     </div>
