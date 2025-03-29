@@ -5,6 +5,7 @@
 
     import StaticQuestion from '@/components/StaticQuestion.vue';
     import PaginationToolBar from '@/components/PaginationToolBar.vue';
+    import Message from '@/components/Message.vue';
 
     const props = defineProps(['sid','cid','qid'])
     const router = useRouter();
@@ -15,6 +16,7 @@
     
     const questions = ref([]);
     const pages = ref(null);
+    const errorMessage = ref('');
 
     async function fetchResults(e){
         const f = new FormData(e.target);
@@ -42,14 +44,26 @@
     async function addQuestion(id){
         const formData = new FormData();
         formData.append('question_id',id);
-        let res = await api.post(`/admin/subjects/${props.sid}/chapters/${props.cid}/quizes/${props.qid}/questions/add`, formData)
+        try{
+            let res = await api.post(`/admin/subjects/${props.sid}/chapters/${props.cid}/quizes/${props.qid}/questions/add`, formData)
+        }
+        catch(err){
+            errorMessage.value = err.response.data.msg
+            return 
+        }   
         router.go(0);
     }
 
     async function removeQuestion(id){
         const formData = new FormData();
         formData.append('question_id',id);
-        let res = await api.post(`/admin/subjects/${props.sid}/chapters/${props.cid}/quizes/${props.qid}/questions/remove`, formData)
+        try{
+            let res = await api.post(`/admin/subjects/${props.sid}/chapters/${props.cid}/quizes/${props.qid}/questions/remove`, formData)
+        }
+        catch(err){
+            errorMessage.value = err.response.data.msg
+            return
+        }
         router.go(0);
     }
 
@@ -57,6 +71,11 @@
 </script>
 
 <template>
+    <Message v-if='errorMessage' level="danger" :hide-function="()=>{
+        errorMessage = ''
+    }">
+        {{ errorMessage }}
+    </Message>
     <div v-if="questions && pages" class="d-flex flex-column flex-grow-1 mt-2 align-items-center">
         <h3 class="text-center">Searching questions for Quiz</h3>
         <form @submit.prevent="fetchResults" class="d-flex flex-column w-100 align-items-center mt-1">

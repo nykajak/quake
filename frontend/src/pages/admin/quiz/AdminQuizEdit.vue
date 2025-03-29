@@ -4,10 +4,13 @@ import { api } from '@/api';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
+import Message from '@/components/Message.vue';
+
 const router = useRouter();
 
 const quiz = ref(null);
 const date = ref(null);
+const errorMessage = ref('');
 const loading = ref(false);
 const ready = ref(false);
 const props = defineProps(['sid','cid','qid'])
@@ -36,7 +39,14 @@ fetchQuiz().then(data => {
 })
 
 async function editQuiz(e){
-    let res = await api.put(`/admin/subjects/${props.sid}/chapters/${props.cid}/quizes/${props.qid}`,new FormData(e.target));
+    try{
+        let res = await api.put(`/admin/subjects/${props.sid}/chapters/${props.cid}/quizes/${props.qid}`,new FormData(e.target));
+    }
+    catch(err){
+        errorMessage.value = err.response.data.msg
+        return
+    }
+
     router.push({
         'path': `/admin/subjects/${props.sid}/chapters/${props.cid}/quizes/${props.qid}`
     })
@@ -45,6 +55,11 @@ async function editQuiz(e){
 </script>
 
 <template>
+    <Message v-if='errorMessage' level="danger" :hide-function="()=>{
+        errorMessage = ''
+    }">
+        {{ errorMessage }}
+    </Message>
     <div v-if="quiz" class="d-flex flex-column flex-grow-1">
         <form @submit.prevent="editQuiz" class="form-container-div">
             <legend class="text-center">Edit quiz details</legend>

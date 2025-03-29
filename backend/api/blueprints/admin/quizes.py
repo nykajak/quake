@@ -96,7 +96,7 @@ def edit_quiz(sid,cid,qid):
                 q.dated = quiz_date
 
             else:
-                return jsonify(msg = 'Cannot change date of a past quiz'),400
+                return jsonify(msg = 'Cannot change details of a past quiz'),400
         
         if duration:
             # Validation - duration - int > 0

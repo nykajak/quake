@@ -3,11 +3,22 @@
 import { api } from '@/api';
 import { useRouter } from 'vue-router';
 
+import Message from '@/components/Message.vue';
+import { ref } from 'vue';
+
 const props = defineProps(['sid','cid'])
 const router = useRouter()
+const errorMessage = ref();
 
 async function createQuiz(e){
-    let res = await api.post(`/admin/subjects/${props.sid}/chapters/${props.cid}/quizes/`,new FormData(e.target));
+    let res;
+    try{
+        res = await api.post(`/admin/subjects/${props.sid}/chapters/${props.cid}/quizes/`,new FormData(e.target));
+    }
+    catch(err){
+        errorMessage.value = err.response.data.msg
+        return
+    }
     router.push({
         'path': `/admin/subjects/${props.sid}/chapters/${props.cid}/quizes/${res.data.payload}`
     })
@@ -16,6 +27,11 @@ async function createQuiz(e){
 </script>
 
 <template>
+    <Message v-if='errorMessage' level="danger" :hide-function="()=>{
+        errorMessage = ''
+    }">
+        {{ errorMessage }}
+    </Message>
     <div class="d-flex flex-column flex-grow-1">
         <form @submit.prevent="createQuiz" class="form-container-div">
             <legend class="text-center">Quiz creation form</legend>
