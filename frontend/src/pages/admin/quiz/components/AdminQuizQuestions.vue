@@ -30,7 +30,7 @@ fetchQuestions()
     <div class="d-flex flex-column align-items-center w-100 flex-grow-1">
         <div class="d-flex flex-column align-items-center w-100 flex-grow-1">
             <div v-if="questions && pages" class="d-flex p-2 w-100 justify-content-center" v-for="question in questions">
-                <RouterLink class="w-75" :to="`/admin/subjects/${props.sid}/chapters/${props.cid}/questions/${question.id}`">
+                <RouterLink class="w-75 remove-underline" :to="`/admin/subjects/${props.sid}/chapters/${props.cid}/questions/${question.id}`">
                     <StaticQuestion class="w-100" :description="question.description" />
                 </RouterLink>
             </div>
@@ -40,6 +40,10 @@ fetchQuestions()
 </template>
 
 <style scoped>
+.remove-underline{
+    text-decoration: none;
+}
+
 .option-div{
     display: flex;
     flex-direction: row;
