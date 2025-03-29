@@ -30,7 +30,7 @@
 
     async function fetchQuizes(){
         let page = route.query.page ?? 1;
-        let per_page = route.query.per_page ?? 3;
+        let per_page = route.query.per_page ?? 5;
         let q = route.query.q ?? "";
         try{
             let res = await api.get(`/user/subjects/${props.sid}/chapters/${props.cid}?filter=${filter.value}&page=${page}&per_page=${per_page}&q=${q}`);

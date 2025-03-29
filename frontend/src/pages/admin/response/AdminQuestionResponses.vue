@@ -20,7 +20,7 @@
 
     async function fetchResponses(){
         let page = route.query.page ?? 1;
-        let per_page = route.query.per_page ?? 3;
+        let per_page = route.query.per_page ?? 5;
         let res = await api.get(`/admin/responses/?question_id=${props.qid}&page=${page}&per_page=${per_page}`);
         responses.value = res.data.payload;
         pages.value = res.data.pages;
