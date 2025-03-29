@@ -35,25 +35,46 @@
     </Message>
     <div class="d-flex flex-column flex-grow-1">
         <div class="d-flex flex-column align-items-center mt-3" v-if="available">
-            <h3>
+            <h1>
                 Enjoy your report!
-            </h3>
-            <a href="http://localhost:5000/user/summary/">Download report!</a>
-            <button @click="requestReport">
-                Generate report!
-            </button>
+            </h1>
         </div>
 
         <div class="d-flex flex-column align-items-center mt-3" v-else>
-            <h3>
+            <h1>
                 No report available!
-            </h3>
-            <button @click="requestReport">
-                Generate report!
+            </h1>
+        </div>
+
+        <div class="d-flex justify-content-center m-2">
+            <a v-if="available" id="fetch-button" href="http://localhost:5000/user/summary/" @click="(e)=>{
+                if (!available){
+                    e.preventDefault();
+                }
+            }">
+                Download report!
+            </a>
+            <button id="generate-button" @click="requestReport">
+                Generate new report!
             </button>
         </div>
+
     </div>
 </template>
 
 <style scoped>
+#fetch-button{
+    padding: 0.5em;
+    background-color: var(--primary-color);
+    color: var(--light-color);
+    border: none;
+    text-decoration: none;
+}
+
+#generate-button{
+    padding: 0.5em;
+    background-color: var(--secondary-color);
+    color: var(--light-color);
+    border: none;
+}
 </style>
