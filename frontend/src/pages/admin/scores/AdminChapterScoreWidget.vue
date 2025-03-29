@@ -75,12 +75,13 @@
 <template>
     <div class="d-flex flex-column w-100 justify-content-between align-items-center">
         <ChapterCard v-if="chapter" :chapter="chapter"/>
-        <template v-else>
-            <ChapterCard :chapter="{
+        <ChapterCard v-else :chapter="{
                 'id': 0,
                 'name':'Loading...  ',
-            }"/>
-        </template>
+                'subject' : {
+                    'id': 0
+                }
+        }"/>
 
         <div class="d-flex w-75 justify-content-between">
             <Accuracy :data="[correctResponses,wrongResponses,unknownResponses]"/>

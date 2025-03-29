@@ -30,9 +30,15 @@
     <template v-if="quizes">
         <AdminChapterScoreWidget :uid="props.uid" :sid="props.sid" :cid="props.cid" />
         
-        <div class="d-flex flex-column gap-4">
-            <div v-for="quiz in quizes">
-                <AdminQuizScoreWidget :quiz="quiz" :uid="props.uid" :sid="props.sid" :cid="props.cid"/>
+        <div class="d-flex justify-content-center mt-4">
+            <h1>
+                Displaying quiz scores!
+            </h1>
+        </div>
+
+        <div class="d-flex w-100 justify-content-center">
+            <div class="d-flex flex-column align-items-center gap-4 w-75">
+                <AdminQuizScoreWidget v-for="quiz in quizes" :quiz="quiz" :uid="props.uid" :sid="props.sid" :cid="props.cid"/>
             </div>
         </div>
     

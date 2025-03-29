@@ -6,16 +6,10 @@
     import Loader from '@/components/Loader.vue';
     import { RouterLink } from 'vue-router';
 
-    const color1 = window.getComputedStyle(document.body).getPropertyValue('--tertiary-color');
-    const color2 = window.getComputedStyle(document.body).getPropertyValue('--error-color');
-    const color3 = window.getComputedStyle(document.body).getPropertyValue('--contrast-color');
-
     const props = defineProps(['quiz','uid','sid','cid'])
 
     const correctResponses = ref(null);
     const wrongResponses = ref(null);
-
-    const attemptedQuestions = ref(null);
     const unattemptedQuestions = ref(null);
 
     async function fetchQuizStats(){
@@ -29,24 +23,42 @@
 </script>
 
 <template>
-    <div v-if="quiz" class="d-flex align-items-center">
+    <div v-if="quiz" class="container-quiz-score">
         <div class="d-flex flex-grow-1">
             <div class="d-flex flex-column align-items-center flex-grow-1">
-                <RouterLink :to="`${cid}/quizes/${quiz.id}`">
-                    <h4>
-                        Quiz ID #{{ quiz.id }}
+                <div>
+                    <h4 class="d-flex justify-content-center">
+                        <RouterLink :to="`/admin/subjects/${props.sid}/chapters/${props.cid}/quizes/${quiz.id}`">
+                            Quiz ID #{{ quiz.id }}
+                        </RouterLink>
+                        
                     </h4>
-                </RouterLink>
-                {{ quiz.description ?? 'No description provideed!'}}
+                    <p class="text-center">
+                        {{ quiz.description ?? 'No description provideed!'}}
+                    </p>
+                    <RouterLink class="d-flex justify-content-center" :to="`${cid}/quizes/${quiz.id}`">
+                        Show Responses
+                    </RouterLink>
+                </div>
             </div>
         </div>
-        <div class="d-flex w-75 justify-content-between align-items-center">
-            <QuizSummary :correct-responses="correctResponses" :wrong-responses="wrongResponses" :unattempted-questions="unattemptedQuestions" :color1="color1" :color2="color2" :color3="color3"/>
+        <div class="d-flex w-75 justify-content-end align-items-center">
+            <div v-if="correctResponses + wrongResponses + unattemptedQuestions > 0">
+                <QuizSummary :data="[correctResponses,wrongResponses,unattemptedQuestions]"/>
+            </div>
+            <div v-else>
+                <QuizSummary :data="[correctResponses,wrongResponses,10000]"/>
+            </div>
         </div>
     </div>
     <Loader v-else/>
 </template>
 
 <style scoped>
-
+.container-quiz-score{
+    display: flex;
+    align-items: center;
+    width: 100%;
+    border: 1px solid light-dark(var(--dark-color),var(--light-color));
+}
 </style>
