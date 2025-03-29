@@ -5,7 +5,9 @@ import { api } from '@/api';
 import { RouterLink, useRouter, useRoute } from 'vue-router';
 
 import NavButton from '@/components/NavButton.vue';
+import Loader from '@/components/Loader.vue';
 import PaginationToolBar from '@/components/PaginationToolBar.vue';
+import ObjectNotFound from '@/components/ObjectNotFound.vue';
 
 const router = useRouter()
 const route = useRoute()
@@ -59,22 +61,27 @@ watch(selected, (newVal,oldVal)=>{
                 </div>
             </div>
         </form>
-        
-        <div v-for="quiz in quizes" class="d-flex flex-column align-items-center mt-3">
-            <h3>
-                <RouterLink :to="`/admin/subjects/${props.sid}/chapters/${props.cid}/quizes/${quiz.id}`">
-                    On {{ quiz.dated.day }}-{{ quiz.dated.month }}-{{ quiz.dated.year }}, at {{ quiz.dated.hour }}:{{ quiz.dated.minute }}
-                </RouterLink>
-            </h3>
-            <p class="text-center">
-                Description: {{ quiz.description }}
-                <br>
-                Quiz duration: {{ quiz.duration  }} minutes
-            </p>
-        </div>
+        <template v-if="quizes.length > 0">
+            <div v-for="quiz in quizes" class="d-flex flex-column align-items-center mt-3">
+                <h3>
+                    <RouterLink :to="`/admin/subjects/${props.sid}/chapters/${props.cid}/quizes/${quiz.id}`">
+                        On {{ quiz.dated.day }}-{{ quiz.dated.month }}-{{ quiz.dated.year }}, at {{ quiz.dated.hour }}:{{ quiz.dated.minute }}
+                    </RouterLink>
+                </h3>
+                <p class="text-center">
+                    Description: {{ quiz.description }}
+                    <br>
+                    Quiz duration: {{ quiz.duration  }} minutes
+                </p>
+            </div>
+            <PaginationToolBar :num-pages="pages"/>
+        </template>
+        <ObjectNotFound v-else>
+            No results found
+        </ObjectNotFound>
 
-        <PaginationToolBar :num-pages="pages"/>
     </div>
+    <Loader v-else/>
 </template>
 
 <style scoped>

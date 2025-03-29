@@ -158,7 +158,7 @@ class Quiz(db.Model):
     chapter_id = db.Column(db.Integer, db.ForeignKey('chapters.id'), nullable = False)
     dated = db.Column(db.DateTime, nullable = False)
     duration = db.Column(db.Integer, nullable = False)
-    description = db.Column(db.String(128))
+    description = db.Column(db.String(128),nullable=False)
 
     # Relationships
 

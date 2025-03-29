@@ -116,8 +116,10 @@ def edit_quiz(sid,cid,qid):
             else:
                 return jsonify(msg = 'Cannot change duration of a past quiz'),400
         
-        if description:
+        if description is not None and len(description) > 0:
             q.description = description
+        else:
+            return jsonify(msg = "Description required!"),400
         
         # Checking for db errors
         try:
