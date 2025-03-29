@@ -277,11 +277,11 @@ def remove_question_from_quiz(sid,cid,qid):
 
     # Validation - Can only remove questions before end of quiz
     current_time = datetime.now()
+    quiz = Quiz.query.filter(Quiz.id == qid).scalar()
     if quiz.dated < current_time:
         return jsonify(msg="Unable to remove questions from a past quiz!"), 400
 
     question = Question.query.filter(Question.id == question_id).scalar()
-    quiz = Quiz.query.filter(Quiz.id == qid).scalar()
 
     # Validation - Existence
     if question is None or quiz is None:
