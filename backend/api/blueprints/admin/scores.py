@@ -63,6 +63,7 @@ def get_score_summary_subject(uid,sid):
     # Fetch no of questions in subject
     question_count_query = db.session.query(Question)
     question_count_query = question_count_query.join(Question.chapter).join(Chapter.subject)
+    question_count_query = question_count_query.filter(Subject.id == sid)
     question_count = question_count_query.count()
 
     # Fetch no of responses by user in subject
