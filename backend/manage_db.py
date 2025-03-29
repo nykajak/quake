@@ -25,27 +25,37 @@ def make_file():
         d["chapters"] = []
         chapters = Chapter.query.all()
         for u in chapters:
-            d["chapters"].append(u.serialise())
+            x = u.serialise()
+            x["subject"] = {"id": x["subject"]['id']}
+            d["chapters"].append(x)
 
 
         # Fetching quiz data
         d["quizes"] = []
         quizes = Quiz.query.all()
         for u in quizes:
-            d["quizes"].append(u.serialise(required=("chapter")))
+            x = u.serialise(required=("chapter"))
+            x["chapter"] = {"id": x["chapter"]['id']}
+            d["quizes"].append(x)
 
         
         # Fetching question data
         d["questions"] = []
         questions = Question.query.all()
         for u in questions:
-            d["questions"].append(u.serialise(required=("chapter")))
+            x = u.serialise(required=("chapter"))
+            x["chapter"] = {"id": x["chapter"]['id']}
+            d["questions"].append(x)
 
         # Fetching response data
         d["responses"] = []
         responses = Response.query.all()
         for u in responses:
-            d["responses"].append(u.serialise(required=("user","question","quiz")))
+            x = u.serialise(required=("user","question","quiz"))
+            x["user"] = {"id": x["user"]['id']}
+            x["question"] = {"id": x["question"]['id']}
+            x["quiz"] = {"id": x["quiz"]['id']}
+            d["responses"].append(x)
         
         # Fetching registered data
         d["registered"] = []
@@ -152,7 +162,8 @@ def add_registered(content):
         u = User.query.filter(User.id == int(uid)).scalar()
         for sid in sids:
             s = Subject.query.filter(Subject.id == int(sid)).scalar()
-            u.subjects.append(s)
+            if s is not None:
+                u.subjects.append(s)
 
     db.session.commit()
     print("Finished adding registered!")
@@ -226,8 +237,7 @@ def make_db():
     add_responses(content)
     add_scores(content)
 
-
-print("Enter 1 to save databse")
+print("Enter 1 to save database")
 print("Enter 2 to remake databse")
 userin = input("Enter action ")
 
@@ -236,6 +246,3 @@ if userin == "1":
 
 elif userin == "2":
     make_db()
-
-else:
-    pass

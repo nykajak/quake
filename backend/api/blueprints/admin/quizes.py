@@ -143,10 +143,9 @@ def specific_quiz(sid,cid,qid):
 
         Expected on success: Serialised quiz information. (only)
     """
-
     q = db.session.query(Quiz)
     q = q.join(Quiz.chapter).join(Chapter.subject)
-    q = q.filter(Quiz.id == qid, Chapter.id == cid, Subject.id == cid).scalar()
+    q = q.filter(Quiz.id == qid, Chapter.id == cid, Subject.id == sid).scalar()
     if q:
         return jsonify(payload = q.serialise())
     
@@ -179,7 +178,7 @@ def specific_quiz_questions(sid,cid,qid):
     
     q = db.session.query(Quiz)
     q = q.join(Quiz.chapter).join(Chapter.subject)
-    q = q.filter(Quiz.id == qid, Chapter.id == cid, Subject.id == cid).scalar()
+    q = q.filter(Quiz.id == qid, Chapter.id == cid, Subject.id == sid).scalar()
 
     if not (q and q.chapter.subject_id == int(sid)):
         return jsonify(msg="Subject, chapter or quiz not found!"),400
