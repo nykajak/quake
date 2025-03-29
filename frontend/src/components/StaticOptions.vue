@@ -1,6 +1,5 @@
 <!-- 
  Renders a static (non-editable) view of all 4 options
- Note: Check if StaticOption is getting all props!
 -->
 <script setup>
     import StaticOption from './StaticOption.vue';
