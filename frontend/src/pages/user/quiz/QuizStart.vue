@@ -22,7 +22,7 @@
             status.value = "ongoing";
         }
         
-        if (res.data.correct_count && res.data.response_count && res.data.question_count){
+        if (res.data.correct_count != null && res.data.response_count != null && res.data.question_count != null){
             correct_count.value = res.data.correct_count
             response_count.value = res.data.response_count
             question_count.value = res.data.question_count
@@ -33,29 +33,46 @@
 </script>
 
 <template>
-    <div v-if="quiz" class="d-flex flex-column flex-grow-1 align-items-center mt-3">
+    <div v-if="quiz" class="d-flex flex-column flex-grow-1 align-items-center mt-3 w-100">
         <div class="d-flex flex-column align-items-center">
-            <h1>
+            <h1 class="headingText">
                 {{quiz.description}}
             </h1>
-            <p class="text-center">
+            <p class="descriptionText text-center">
                 Start time: {{ quiz.dated.minute }}:{{ quiz.dated.hour }}, on {{ quiz.dated.day }}/{{ quiz.dated.month }}/{{ quiz.dated.year }}
                 <br>
                 Duration: {{ quiz.duration }} minutes
             </p>
         </div>
 
-        <div class="d-flex justify-content-center" v-if="quiz">
-            <div class="d-flex flex-column align-items-center" v-if="status === 'past'">
-                <h3>Quiz status: Expired</h3>
-                <div>
-                        Total questions: {{ question_count }}
-                </div>
-                <div>
-                    Attempted questions: {{ response_count }}
-                </div>
-                <div>
-                    Correct questions: {{ correct_count }}
+        <div class="d-flex justify-content-center w-100" v-if="quiz">
+            <div class="d-flex flex-column align-items-center w-100" v-if="status === 'past'">
+                <h3 class="expiredStatus">Quiz status: Expired</h3>
+                <div class="statsContainer">
+                    <div class="statsElement">
+                        <h4>
+                            Total questions
+                        </h4>
+                        <p>
+                            {{ question_count }}
+                        </p>
+                    </div>
+                    <div class="statsElement">
+                        <h4>
+                            Attempted questions
+                        </h4>
+                        <p>
+                            {{ response_count }}
+                        </p>
+                    </div>
+                    <div class="statsElement">
+                        <h4>
+                            Correct questions
+                        </h4>
+                        <p>
+                            {{ correct_count }}
+                        </p>
+                    </div>
                 </div>
                 <div class="mt-2">
                     <NavButton :color="'primary'" :text="`View responses!`" :url="`${props.qid}/responses/1`"/>
@@ -63,11 +80,11 @@
             </div>
             
             <div class="d-flex flex-column align-items-center" v-else-if="status === 'pending'">
-                <h3>Quiz status: Pending</h3>
-                <NavButton :active="false" :color="'primary'" :text="`Quiz yet to start!`" :url="`${props.qid}/questions/1`"/>
+                <h3 class="pendingStatus">Quiz status: Pending</h3>
             </div>
             
             <div class="d-flex flex-column align-items-center" v-else-if="status === 'ongoing'">
+                <h3 class="liveStatus">Quiz status: Live</h3>
                 <NavButton :color="'primary'" :text="`Start quiz now!`" :url="`${props.qid}/questions/1`"/>
             </div>
         </div>
@@ -77,4 +94,50 @@
 </template>
 
 <style scoped>
+.statsContainer{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    width: 75%;
+    margin-bottom: 2em;
+}
+
+.statsElement{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 5px;
+    border: 1px solid light-dark(var(--dark-color),var(--light-color));
+}
+
+.statsElement h4{
+    padding: 1em;
+    border-radius: 5px;
+    background-color: var(--primary-color);
+    color: var(--light-color);
+}
+
+.statsElement p{
+    font-size: 2em;
+}
+
+.expiredStatus{
+    color: var(--error-color);
+}
+
+.pendingStatus{
+    color: var(--tertiary-color);
+}
+
+.liveStatus{
+    color: var(--secondary-color);
+}
+
+.headingText{
+    color: var(--primary-color);
+}
+
+.descriptionText{
+    color: var(--contrast-color);
+}
 </style>
