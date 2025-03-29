@@ -4,7 +4,9 @@
 
     import NavButton from '@/components/NavButton.vue';
     import Loader from '@/components/Loader.vue';
+    import { useRouter } from 'vue-router';
 
+    const router = useRouter()
     const props = defineProps(['sid','cid','qid'])
     const quiz = ref(null);
     const status = ref("pending");
@@ -14,7 +16,16 @@
     const question_count = ref(null);
 
     async function fetchQuiz() {
-        let res = await api.get(`/user/subjects/${props.sid}/chapters/${props.cid}/quizes/${props.qid}`);
+        let res;
+        try{
+            res = await api.get(`/user/subjects/${props.sid}/chapters/${props.cid}/quizes/${props.qid}`);
+        }
+        catch(err){
+            router.push({
+                "path": `/user/subjects/${props.sid}/chapters/${props.cid}`
+            });
+            return
+        }
         quiz.value = res.data.payload
         
         let active = res.data.active;
