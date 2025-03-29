@@ -17,6 +17,7 @@ const correct = ref(-2);
 const question = ref(null);
 const num = ref(null);
 const time = ref(null);
+const shown = ref(false)
 
 function formatTime(time){
     if (time > 0){
@@ -64,11 +65,11 @@ let interval_id = setInterval(() => {
 
 <template>
     <template v-if="time > 0">
-        <div class="d-flex justify-content-end p-2">
-            {{formatTime(time)}}
-        </div>
-        
+
         <div v-if="question" class="d-flex w-100 flex-column align-self-center m-1 p-1">
+            <div class="timerDiv">
+                {{formatTime(time)}}
+            </div>
             <div class="question-container">
                 <StaticQuestion :index="props.question_id" :description="question.description"/>
             </div>
@@ -81,12 +82,6 @@ let interval_id = setInterval(() => {
                         }"/>
                     </template>
                 </div>
-                
-                <div class="d-flex mt-3 justify-content-center">
-                    <button id="clear-button" @click="correct = -1">
-                        Clear choice
-                    </button>
-                </div>
 
                 <div class="d-flex mt-3 justify-content-between">
                     <button class="nav-button" @click="async ()=>{
@@ -95,6 +90,9 @@ let interval_id = setInterval(() => {
                             'path': `/user/subjects/${props.sid}/chapters/${props.cid}/quizes/${props.quiz_id}/questions/${Number(props.question_id) - 1}`
                         })}" :disabled="props.question_id == 1">
                         Save and prev
+                    </button>
+                    <button id="clear-button" @click="correct = -1">
+                        Clear choice
                     </button>
                     <button class="nav-button" @click="async ()=>{
                         await submitResponse();
@@ -106,14 +104,45 @@ let interval_id = setInterval(() => {
                 </div>
             </div>
         </div>
-
-        <QuizNavigation :length="num" :beforeSubmit="submitResponse" :current="props.question_id" :url="`/user/subjects/${props.sid}/chapters/${props.cid}/quizes/${props.quiz_id}/questions`"/>
+        
+        <div class="d-flex flex-grow-1 flex-column justify-content-end">
+            <div v-if="shown">
+                <QuizNavigation :length="num" :beforeSubmit="submitResponse" :current="props.question_id" :url="`/user/subjects/${props.sid}/chapters/${props.cid}/quizes/${props.quiz_id}/questions`"/>
+            </div>
+            <button id="toggleButton" @click="shown = !shown">
+                <template v-if="!shown">
+                    Show navigation bar
+                </template>
+                <template v-else>
+                    Hide navigation bar
+                </template>
+            </button>
+            <div class="d-flex justify-content-center">
+            </div>
+        </div>
     </template>
     <Loader v-else/>
 
 </template>
 
 <style scoped>
+#toggleButton{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background-color: var(--primary-color);
+    color: var(--light-color);
+}
+
+.timerDiv{
+    display: flex;
+    justify-content: end;
+    padding: 0.2em;
+    background-color: var(--primary-color);
+    color: var(--light-color);
+    margin-bottom: 0;
+}
 .nav-button{
     justify-content: center;
     align-items: center;
@@ -121,9 +150,8 @@ let interval_id = setInterval(() => {
     padding-right: 0.5em;
     margin: 0.5em;
     color: var(--light-color);
-    border: 1px solid var(--light-color);
     background-color: var(--primary-color);
-    border-radius: 1em;
+    border: none;
 }
 
 #clear-button{
@@ -132,16 +160,14 @@ let interval_id = setInterval(() => {
     padding: 0.5em;
     margin: 0.5em;
     color: var(--light-color);
-    border: 1px solid var(--light-color);
     background-color: var(--error-color);
-    border-radius: 1em;
+    border: none;
 }
 
 .question-container{
     display: flex;
     flex-direction: row;
     align-items: center;
-    border: 1px solid var(--light-color);
     padding: 0.33em;
     width: 100%;
     color: var(--light-color);

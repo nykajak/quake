@@ -46,7 +46,6 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    border: 1px solid var(--light-color);
     padding: 0.33em;
     color: var(--light-color);
     background-color: var(--secondary-color);

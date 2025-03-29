@@ -72,7 +72,7 @@
     padding: 0.5em;
     margin: 0.5em;
     color: var(--light-color);
-    border: 1px solid var(--light-color);
+    border: none;
     background-color: var(--secondary-color);
     border-radius: 1em;
 }

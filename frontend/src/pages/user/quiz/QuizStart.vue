@@ -50,7 +50,7 @@
                 {{quiz.description}}
             </h1>
             <p class="descriptionText text-center">
-                Start time: {{ quiz.dated.minute }}:{{ quiz.dated.hour }}, on {{ quiz.dated.day }}/{{ quiz.dated.month }}/{{ quiz.dated.year }}
+                Start time: {{ quiz.dated.hour }}:{{ quiz.dated.minute }}, on {{ quiz.dated.day }}/{{ quiz.dated.month }}/{{ quiz.dated.year }}
                 <br>
                 Duration: {{ quiz.duration }} minutes
             </p>
