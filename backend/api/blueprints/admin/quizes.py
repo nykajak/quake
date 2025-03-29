@@ -25,6 +25,7 @@ def all_quizes(sid,cid):
     """
 
     # User input from query string
+    query_str = request.args.get("q",None)
     filter_ = request.args.get("filter", "pending")
     page = request.args.get("page",1)
     per_page = request.args.get("per_page",5)
@@ -55,6 +56,9 @@ def all_quizes(sid,cid):
     else:
         return jsonify("Invalid filter passed!"), 400
     
+    if query_str is not None:
+        quizes = quizes.filter(Quiz.description.ilike(f"%{query_str}%"))
+
     quizes = quizes.paginate(page = page, per_page=per_page, max_per_page = MAX_QUIZES_PER_PAGE)
     return jsonify(payload = [x.serialise() for x in quizes], pages = quizes.pages), 200
 
