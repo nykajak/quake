@@ -6,11 +6,10 @@ from flask_mail import Mail
 from flask_cors import CORS
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager
+from api.app_secrets import *
 
 from api.database import db
 from api import workers
-
-# Note: Rewrite this file to support multiple config types
 
 # BASE_DIR denotes the /backend/api folder
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
@@ -18,7 +17,7 @@ BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 # Flask specific settings
 app = Flask(__name__)
 app.config["DEBUG"] = True
-app.config["SECRET_KEY"] = os.getenv("FLASK_SECRET_KEY")
+app.config["SECRET_KEY"] = FLASK_SECRET_KEY
 
 # FlaskSqlAlchemy settings
 app.config["SQLITE_DB_DIR"] = os.path.join(BASE_DIR, "../instance")
@@ -26,16 +25,15 @@ app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + os.path.join(app.config["
 
 # Flask-jwt-extended settings
 app.config["JWT_TOKEN_LOCATION"] = ["headers", "cookies"]
-app.config["JWT_SECRET_KEY"] = os.getenv("FLASK_SECRET_KEY")
+app.config["JWT_SECRET_KEY"] = JWT_SECRET_KEY
 
 # Flask-mail settings
-# Note: Plain-text credentials!
 app.config['MAIL_SERVER'] = 'sandbox.smtp.mailtrap.io'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USE_SSL'] = False
-app.config['MAIL_USERNAME'] = 'f4e30739ab6564'
-app.config['MAIL_PASSWORD'] = '39722368c4cadc'
+app.config['MAIL_USERNAME'] = MAIL_USERNAME
+app.config['MAIL_PASSWORD'] = MAIL_PASSWORD
 app.config['MAIL_DEFAULT_SENDER'] = 'your_email@example.com'
 
 # Celery settings
