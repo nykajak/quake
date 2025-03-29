@@ -41,7 +41,7 @@
 <template>
     <div v-if="question" class="d-flex w-100 flex-column align-self-center m-1 p-1">
         <div class="question-container">
-            <div v-if="marked == -1">
+            <div class="unattempted" v-if="marked == -1">
                 Not attempted!
             </div>
             <StaticQuestion :index="props.question_id" :description="question.description"/>
@@ -60,4 +60,8 @@
 </template>
 
 <style scoped>
+.unattempted{
+    background-color: var(--primary-color);
+    padding-left: 0.4em;
+}
 </style>
