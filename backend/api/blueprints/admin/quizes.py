@@ -243,11 +243,11 @@ def add_question_to_quiz(sid,cid,qid):
 
     # Validation - Can only add questions before end of quiz
     current_time = datetime.now()
+    quiz = Quiz.query.filter(Quiz.id == qid).scalar()
     if quiz.dated + timedelta(minutes=quiz.duration) < current_time:
         return jsonify(msg="Unable to add questions to a past quiz!"), 400
     
     question = Question.query.filter(Question.id == question_id).scalar()
-    quiz = Quiz.query.filter(Quiz.id == qid).scalar()
 
     # Validation - Existence
     if question is None or quiz is None:
