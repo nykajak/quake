@@ -1,14 +1,17 @@
 <script setup>
 import { ref } from 'vue';
 import { api } from '@/api';
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
+import SearchButton from '@/components/SearchButton.vue';
 
 const router = useRouter();
+const route = useRoute();
 const subjects = ref(null);
 const requests = ref(null);
+const q = ref(route.query.q ?? "");
 
 async function fetchSubjects(){
-    let res = await api.get(`/user/subjects/all`);
+    let res = await api.get(`/user/subjects/all?q=${q.value}`);
     subjects.value = res.data.payload;
 }
 
@@ -25,6 +28,12 @@ Promise.all([fetchSubjects(),fetchRequests()])
         <h2 class="heading">
             Send a register request!
         </h2>
+        <div class="d-flex w-75 mb-3">
+            <input class="flex flex-grow-1" type="text" v-model="q" placeholder="Subject">
+            <SearchButton :query_str="q">
+                Search subject
+            </SearchButton>
+        </div>
         <div class="d-flex flex-column mb-4 align-items-center" v-for="subject in subjects">
             <div class="d-flex align-items-center gap-1">
                 <h3>

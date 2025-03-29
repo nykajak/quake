@@ -28,14 +28,19 @@ def available_subjects():
         that a user can enroll for.
     """
     u = get_current_user()
+    query_string = request.args.get("q", None)
 
     # Already enrolled!
     enrolled = [x.id for x in u.subjects]
 
     # Already requested!
     requested = [x.subject_id for x in db.session.query(Requested).filter(Requested.user_id == u.id)]
+    
+    query = db.session.query(Subject).filter(Subject.id.notin_(enrolled),Subject.id.notin_(requested))
+    if query_string is not None:
+        query = query.filter(Subject.name.ilike(f"%{query_string}%"))
 
-    subjects = [x.serialise() for x in db.session.query(Subject).filter(Subject.id.notin_(enrolled),Subject.id.notin_(requested))]
+    subjects = [x.serialise() for x in query]
     return jsonify(payload=subjects),200
 
 @user_subject_routes.get("/")
