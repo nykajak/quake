@@ -8,13 +8,13 @@ const props = defineProps(['subject','active']);
 
 <template>
     <div class="d-flex flex-column align-items-center text-center">
-        <h3 v-if="active == 1">
+        <h1 v-if="active == 1">
             <RouterLink :to="`/user/subjects/${props.subject.id}`">
                 {{ props.subject.name }}    
             </RouterLink>
-        </h3>
+        </h1>
 
-        <h3 v-else>{{ props.subject.name }}</h3>
+        <h1 v-else>{{ props.subject.name }}</h1>
         <p>
             {{ props.subject.description ? props.subject.description : "No description yet!" }}
         </p>
