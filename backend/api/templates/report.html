@@ -14,6 +14,12 @@
 
     {% for quiz in quizes %}
         <br>
+        <h1>
+            Subject: {{quiz.subject_name}}
+        </h1>
+        <h2>
+            Chapter: {{quiz.chapter_name}}
+        </h2>
         <h4> Quiz #{{quiz.id}} </h4>
         <h5>{{quiz.description}}</h5>
         <p>

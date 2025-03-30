@@ -74,27 +74,21 @@ def scheduledMonthlyReport():
     end_of_month = start_of_month + timedelta(days = days_in_month)
 
     # Find all quizes in current month and map it to subject
-    quizes = db.session.query(Quiz,Subject)
-    quizes = quizes.join(Quiz.chapter).join(Chapter.subject)
+    quizes = db.session.query(Quiz, Chapter, Subject)
+    quizes = quizes.join(Quiz.chapter).join(Chapter.subject).join(Subject.users)
     quizes = quizes.filter(Quiz.dated < end_of_month, Quiz.dated > start_of_month)
-
-    mapping = defaultdict(set)
-    for quiz,subject in quizes:
-        mapping[subject].add(quiz)
 
     # For bulk emailing
     with mail.connect() as conn:
         # Iterate over each user and detect attempted quizes
         for user in User.query.filter(User.is_admin == 0):
-            quiz_set = set()
-            for subject in user.subjects:
-                quiz_set = quiz_set.union(mapping[subject])
+            specific_quizes = quizes.filter(User.id == user.id)
 
-            quizes = []
-            if quiz_set:
+            quizes_ = []
+            if specific_quizes.count() > 0:
                 accuracy = 0
                 num_questions = 0
-                for quiz in quiz_set:
+                for quiz,chapter,subject in specific_quizes:
                     score = Score.query.filter(Score.user_id == user.id, Score.quiz_id == quiz.id).scalar()
                     if score is None:                    
                         question_count = quiz.questions.count()
@@ -108,8 +102,10 @@ def scheduledMonthlyReport():
                         correct_count = score.correct_count
                         question_count = score.question_count
 
-                    quizes.append({
+                    quizes_.append({
                         "id": quiz.id,
+                        "chapter_name": chapter.name,
+                        "subject_name": subject.name,
                         "description": quiz.description,
                         "question_count": question_count,
                         "response_count": attempted_count,
@@ -128,8 +124,7 @@ def scheduledMonthlyReport():
 
             # Construction and sending of email
             msg = Message("Monthly report from Quake",sender="jakyn@gmail.com",recipients=[user.email])
-            # Note: Need to tidy up the HTML template
-            msg.html = render_template("./report.html",user_name = user.name, no_quizes = len(quiz_set), quizes = quizes, accuracy = accuracy)
+            msg.html = render_template("./report.html",user_name = user.name, no_quizes = len(quizes_), quizes = quizes_, accuracy = accuracy)
             conn.send(msg)
 
 @celery.task()
@@ -149,15 +144,15 @@ def triggeredFullReport(uid):
 
     # Only querying quizes from the past (before current datetime)
     current_date = datetime.now()
-    quizes = db.session.query(Quiz)
+    quizes = db.session.query(Quiz,Chapter,Subject)
     quizes = quizes.join(Quiz.chapter).join(Chapter.subject).join(Subject.users)
     quizes = quizes.filter(User.id == user.id).filter(Quiz.dated < current_date)
 
     base_path = os.getcwd()
     filename = os.path.join(base_path,'api','static',f'report_{user.id}.csv')
     with open(filename,"w") as f:
-        f.write("Quiz_ID,Correct,Attempted,No_Of_Questions,Accuracy\n")
-        for quiz in quizes:
+        f.write("Subject_name,Chapter_name,Quiz_ID,Correct,Attempted,No_Of_Questions,Accuracy\n")
+        for quiz,chapter,subject in quizes:
             score = Score.query.filter(Score.user_id == uid, Score.quiz_id == quiz.id).scalar()
             if score:
                 if score.question_count > 0:
@@ -165,7 +160,7 @@ def triggeredFullReport(uid):
                     accuracy = f"{accuracy:.2f}"
                 else:
                     accuracy = 0
-                line = f"{quiz.id},{score.correct_count},{score.attempted_count},{score.question_count},{accuracy}"
+                line = f"{subject.name},{chapter.name},{quiz.id},{score.correct_count},{score.attempted_count},{score.question_count},{accuracy}"
                 line += "\n"
                 f.write(line)
                 continue
@@ -184,7 +179,7 @@ def triggeredFullReport(uid):
             else:
                 accuracy = "N/A"
 
-            line = f"{quiz.id},{score.correct_count},{score.attempted_count},{score.question_count},{accuracy}"
+            line = f"{subject.name},{chapter.name},{quiz.id},{score.correct_count},{score.attempted_count},{score.question_count},{accuracy}"
             line += "\n"
             f.write(line)
     
