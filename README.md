@@ -15,6 +15,7 @@ Quizzing application built as part of IITM BS Degree - Diploma level - MAD 2 pro
 - In the third terminal launch redis, using default port.
 - In the fourth terminal run`./scripts/beat_run.ps1` to boot up celery beat.
 - In the fifth terminal run`./scripts/worker_run.ps1` to start the celery worker.
+- Go to http://localhost:5173 to view the application
 
 # Other info
 - The manage_db.py requires a backend/api/database.json file to setup and backup the current database state.

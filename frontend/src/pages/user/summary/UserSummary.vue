@@ -47,7 +47,7 @@
         </div>
 
         <div class="d-flex justify-content-center m-2">
-            <a v-if="available" id="fetch-button" href="http://localhost:5000/user/summary/" @click="(e)=>{
+            <a v-if="available" id="fetch-button" :href="api.defaults.baseURL + 'user/summary/'" @click="(e)=>{
                 if (!available){
                     e.preventDefault();
                 }
