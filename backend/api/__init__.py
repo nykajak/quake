@@ -41,8 +41,11 @@ app.config['CELERY_BROKER_URL'] = 'redis://localhost:6379/1'
 app.config['CELERY_RESULT_BACKEND'] = 'redis://localhost:6379/2'
 
 # Cache settings
-app.config["CACHE_TYPE"] = "SimpleCache"
+app.config["CACHE_TYPE"] = "redis"
 app.config["CACHE_DEFAULT_TIMEOUT"] = 300
+app.config['CACHE_REDIS_HOST'] = 'localhost'
+app.config['CACHE_REDIS_PORT'] = 6379
+app.config['CACHE_REDIS_DB'] = 3
 
 # Initialising JWT for auth
 jwt = JWTManager(app)
@@ -55,6 +58,7 @@ mail = Mail(app)
 
 # Initialising flask_cache
 cache = Cache(app)
+cache.init_app(app)
 
 # Initialising flask_cors for cross site origin requests
 CORS(app,supports_credentials=True)
