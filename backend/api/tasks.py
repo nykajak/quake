@@ -200,6 +200,6 @@ def setup_periodic_tasks(sender, **kwargs):
 
     # Periodic task #2
     sender.add_periodic_task(
-        crontab(day_of_month=1),
+        crontab(minute=0, hour=0, day_of_month=1),
         scheduledMonthlyReport.s()
     )
