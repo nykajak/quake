@@ -183,7 +183,6 @@ def triggeredFullReport(uid):
             line += "\n"
             f.write(line)
     
-    # Note: Need to tidy up the HTML template
     # Sending email notification when done!
     msg = Message("Attempt summary report generated!", sender="jakyn@gmail.com", recipients = [user.email])
     html_body = render_template("./notify.html")
