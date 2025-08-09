@@ -1,5 +1,5 @@
 # Quake
-Quizzing application built as part of IITM BS Degree - Diploma level - MAD 2 project, all commits made by @nykajak from IITM account
+Quizzing application built as part of IITM BS Degree - Diploma level - MAD 2 project, all commits made by [nykajak](https://github.com/nykajak) even if from IITM account
 
 # Setup instructions
 - git clone this repo
